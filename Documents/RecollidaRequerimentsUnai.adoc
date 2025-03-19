@@ -1,0 +1,143 @@
+:copyleft:
+
+:author: Unai i Adrià
+:revdate: 14/03/2025
+:revnumber: 1.0
+:doctype: book
+:encoding: utf-8
+:lang: ca
+:toc: left
+:toclevels: 3
+:icons: font
+:imagesdir: /Images
+
+= *Projecte 4: EntreBicis*
+
+Recollida de requeriments Unai
+
+image::IMGRequisits.png[align=left]
+
+Acta: 06/03/2025-10:00-11:15
+
+=== Assistents.
+
+** Adrià Mayo
+** Marc Botana
+** Daniel Corral
+** Unai Reyes
+** Yoel López
+** Eric Fernandez
+** Carlos Mendoza
+** Raul Adan
+** Ana Serrano
+** Reyes Amador
+** Nacho Gallardo
+** Mario Olaya
+** Hector Vico
+** Yaiza Melero
+** Helen Dahle
+** Manel Orós
+** Esther Sánchez
+
+=== Breu resum de la funcionalitat de l’aplicació.
+
+L'aplicació està dissenyada per fomentar la salut a través del *desplaçament sostenible*, permetent que els ciclistes rebin un premi per quilòmetre recorregut i rebin recompenses en *comerços locals*. La validació dels quilòmetres s'efectua mitjançant un únic *administrador*, assegurant que els recorreguts compleixin amb una *velocitat mitjana* i que estiguin al voltant del *Garraf*, amb un procés de *registre* que es realitza mitjançant un *formulari*.
+
+Paga un preu per *quilòmetre* recorregut i lliura recompenses per això en *comerços locals*.
+
+Hi ha d'haver un sol admin que revisi que els quilòmetres són vàlids.
+*20km/h* de mitjana per validar les recompenses.
+
+Usuaris que són ciclistes.
+
+I els comerciants de les recompenses.
+
+Només per a usuaris de *Vilanova*, *Garraf* i *Baix Penedès*. També cal ser més gran i el sistema de registre no és automàtic, s'omple un formulari
+
+Quan vols una recompensa es reserva des de l'aplicació i validarà la recollida en un màxim de 48 hi després va al comerç a buscar la recompensa.
+
+=== Identificació dels principals processos de negoci.
+
+*Registre i Verificació d'Usuaris:* Els usuaris es registren a través d'un formulari, complint els requisits de ser majors d'edat i residir al Garraf.
+
+*Monitoratge i Validació del Recorregut:* Els ciclistes registren els seus desplaçaments, els quals són verificats per un únic administrador. Es comprova que la velocitat mitjana sigui d'almenys 20 km/h i la velocitat no superi la màxima de 50-60 km/h per validar la recollida dels kilòmetres.
+
+*Càlcul de Cost i Distribució de Recompenses:* Els desplaçaments es tradueixen en un cost per kilòmetre recorregut (10p/km), i a partir d'aquestes dades es determinen les recompenses que els usuaris poden obtenir en comerços locals.
+
+*Procés de Reserva i Redempció de Recompenses:* Quan un usuari vol una recompensa, aquesta es reserva a través de l'aplicació. La validació per a la recollida de la recompensa es realitza en un termini màxim de 48 hores, moment en què l'usuari es dirigeix al comerç corresponent.
+
+*Integració amb Comerços Locals:* Els comerços locals participen oferint les recompenses, creant un sistema de col·laboració on els desplaçaments sostenibles es tradueixen en beneficis per als usuaris i en promoció per als comerços.
+
+*Autenticació i Accés a l'Aplicació:* L'usuari inicia sessió a l'app mitjançant el seu inici de sessió, garantint l'accés segur i personalitzat a les funcionalitats de la plataforma.
+
+
+*Inici del Recorregut:* Un cop autenticat, l'usuari pot activar la funció d'inici de ruta, una a la vegada. Així, el sistema comença a registrar el trajecte recorregut, associant-lo a l'usuari per a un seguiment precís.
+
+
+*Parar el Recorregut:* L’usuari pot aturar la ruta per continuar-la després.
+
+*Final del Recorregut:* L’usuari pot parar la ruta començada.
+
+*Monitoratge en Temps Real i Gestió Automàtica de la Ruta:* Durant el recorregut, el sistema monitoritza contínuament la velocitat de l'usuari. En el cas que la velocitat arribi a 0 durant 5 minuts consecutius, la ruta es deté automàticament, assegurant la precisió en el registre dels desplaçaments.
+
+
+*Visualització del Trajecte:* A mesura que l'usuari es desplaça, el sistema marca el recorregut amb una línia visible, facilitant la revisió i comprovació posterior del trajecte realitzat.
+
+=== Descripció de les principals entitats del negoci i la seva possible clau primària.
+
+*Usuari:* Representa els ciclistes que utilitzen l'aplicació per registrar els seus recorreguts i accedir a les recompenses. Clau primària: *user_id*. (Opció d’afegir a una taula Usuaris amb camp Rol)
+
+
+*Administrador:* És l'*usuari* encarregat de verificar que els recorreguts compleixin els requisits. Clau primària: *admin_id*. (Opció d’afegir a una taula Usuaris amb camp Rol)
+
+*Ruta:* Registra el trajecte realitzat per cada usuari, incloent-hi informació com el recorregut geogràfic, la durada i la velocitat mitjana. Clau primària: *ruta_id.*
+
+
+*Recompensa:* Representa els beneficis o incentius que els usuaris poden obtenir per acumular quilòmetres. Clau primària: *recompensa_id.*
+
+
+*Comerç Local:* Són els establiments participants on els usuaris poden recollir les seves recompenses. Clau primària: *comerç_id.*
+
+=== Identificació dels rols i dels seus principals guions.
+
+*Usuari (Ciclista):*
+
+
+* *Guions principals:*
+
+** Registre i autenticació a l'aplicació.
+
+** Inici i finalització manual o automàtica (en cas de baixa de velocitat) de la ruta.
+** Visualització en temps real del recorregut, amb marcació del trajecte.
+** Reserva de recompenses i recollida dins del termini establert.
+
+*Administrador:*
+
+
+* *Guions principals:*
+** Verificació i validació dels recorreguts, assegurant que compleixin els criteris (com la velocitat mitjana mínima).
+** Revisió dels registres de desplaçaments per garantir la integritat de les dades.
+** Gestió de incidències o anomalies en el seguiment dels recorreguts.
+
+*Comerç Local:*
+
+
+* *Guions principals:*
+** Recepció i validació de les reserves de recompenses sol·licitades pels usuaris.
+** Coordinació amb el sistema per registrar la recollida de la recompensa dins del termini establert.
+** Actualització de l'estat de les recompenses i manteniment de la seva oferta dins de l'aplicació.
+
+
+=== Investigació del component visual que permet ubicar punts en un mapa formant una ruta a un dispositiu Android.
+
+Utilitzant OpenStreetMap, és habitual fer servir un component com el MapView, que es troba en biblioteques com osmdroid. Aquest component visual et permet carregar els mapes d'OSM, gestionar la interacció amb l'usuari (zoom, pan, etc.) i dibuixar elements sobre el mapa. Per formar una ruta, normalment es fa servir:
+
+* *Markers:* Per marcar punts específics del recorregut.
+
+* *Polylines:* Per connectar aquests punts amb línies que indiquin el trajecte realitzat.
+
+La implementació inclou configurar el MapView dins del layout, gestionar el cicle de vida de la vista per a l'optimització de recursos, i actualitzar els markers i polylines en temps real a mesura que es reben noves coordenades. Així, el component visual permet que l'usuari visualitzi clarament per on ha passat, millorant la seva experiència d'usuari en el seguiment del recorregut.
+
+
+
+

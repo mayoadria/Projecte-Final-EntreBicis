@@ -1,0 +1,323 @@
+:copyleft:
+
+:author: Unai i Adrià
+:revdate: 14/03/2025
+:revnumber: 1.0
+:doctype: book
+:encoding: utf-8
+:lang: ca
+:toc: left
+:toclevels: 3
+:icons: font
+:imagesdir: /Images
+
+= *Projecte 4: EntreBicis*
+
+Fase de disseny
+
+=== Contextualització de l’organització client
+
+L’objectiu principal de l’aplicació és l’educació mediambiental i cívica.
+
+Les bicicletes seran compartides, s’envien al mecànic del poble, posar-les a punt fins que apareix una persona que es vol fer a càrrec.
+Aquesta aplicació es mantindrà a partir de donatius de la gent del poble o de persones de pobles propers.
+A part es faran trobades per fer intercanvis de coneixements sostenibles.
+
+Només es poden registrar persones que viuen a Vilanova i la Geltrú, Garraf, Alt Penedès, o que viuen a pobles propers. També persones que fan la seva vida a Vilanova, no seria un registre automàtic, s’ha de poder tenir una petita connexió online.
+
+Hi haurà un petit qüestionari a la web
+
+L’alta del registre no hi serà automàtic, l’haurà de fer un administrador. A part i s'haurà de fer una petita trucada via meet entre l’administrador i la persona que es vol registrar.
+
+Les bicicletes no hi tindran cap identificador
+
+L’aplicació hi tindrà diferents comerços o recompenses, per exemple:
+Ball de flamenc
+Yoga
+Abonament a un circuit curt en bicicleta (Tour)
+Floristeries
+Un esmorzar a diferents restaurants
+
+La manera d’obtenir les recompenses hi serà via uns punts que obtindrà en realitzar les diferents rutes amb bicicleta.
+
+Les recompenses s'hauran de reservar a través de l’aplicació i el client hi tindrà un límit de 48 hores per recollir la recompensa.
+
+El comerç no hi validarà la recompensa, hi serà el mateix ciclista quan rebi la recompensa.
+
+El saldo de punts s’ha de restar quan es fa la reserva del producte.
+
+Les rutes es validaran tenint en compte l’inici i el final de la ruta i la seva velocitat mitjana.
+
+Les rutes les haurà de revisar l’administrador.
+
+Hi haurà un màxim de recompenses mensuals, entre 3 o 4 per usuari.
+
+Els ciclistes no hi tindran un límit de quilòmetres màxim per dia.
+
+No hi haurà límit mínim de quilòmetres per fer una ruta.
+
+Els punts s’hi podran acumular entre diferents rutes.
+
+L’equivalència dels punts hi serà igual a 1 quilòmetre igual a 10 punts
+
+L’usuari haurà d’iniciar la ruta des del seu telèfon, a part en el cas que es quedi aturat durant un límit de temps, la ruta es donarà com finalitzada. Finalment, aquest tram on el ciclista es quedi aturat, si la velocitat és igual 0, no hi afectarà la mitjana de la ruta.
+
+Els missatges de comunicació amb l’usuari hi seran a través de l’aplicació del telèfon
+
+Les rutes podran pausar i quan es vulgui es podrà continuar amb la mateixa ruta
+
+
+=== Breu resum del projecte
+Monotonitzar el quilometratge que faria un ciclista, comptabilitzar els quilòmetres per poder atorgar recompenses, no com una competició sinó com a un premi per fer els quilòmetres i així ajudar al comerç local, tot relacionat amb els productes locals i sostenibles.
+
+=== Requeriments Funcionals
+
+* RF01: Validar ruta (admin)
+
+* RF02: Invalidar ruta (admin)
+
+* RF03: Iniciar ruta (ciclista)
+
+* RF04: Visualitzar detalls ampliats d’una ruta
+
+* RF05: Finalitzar ruta (ciclista)
+
+* RF06: Llistar rutes
+
+* RF07: Filtrar rutes
+
+* RF08: Ordenar rutes
+
+* RF09: Crear recompensa (admin)
+
+* RF10: Modificar recompensa disponible (admin)
+
+* RF11: Eliminar recompensa disponible (admin)
+
+* RF12: Reservar recompensa (ciclista)
+
+* RF13: Eliminar reserva de recompensa
+
+* RF14: Assignar recompensa (admin)
+
+* RF15: Desassignar recompensa (admin)
+
+* RF16: Recollir recompensa (ciclista)
+
+* RF17: Caducar reserva de recompensa
+
+* RF18: Llistar recompenses
+
+* RF19: Filtrar recompenses
+
+* RF20: Ordenar recompenses
+
+* RF21: Mostrar detall de la recompensa
+
+* RF22: Crear usuari (admin)
+
+* RF23: Modificar usuari
+
+* RF24: Eliminar usuari  (admin)
+
+* RF25: Llistar usuaris (admin)
+
+* RF26: Visualitzar detalls de l’usuari
+
+* RF27: Recuperar password usuari
+
+* RF28: Activar / desactivar usuaris (admin)
+
+* RF29: Login / Logout
+
+* RF30: Crear un punt de bescanvi  (admin)
+
+* RF31: Modificar un punt de bescanvi (admin)
+
+* RF32: Eliminar un punt de bescanvi (admin)
+
+* RF33: Llistar punts de bescanvi
+
+* RF34: Filtrar per nom de punts de bescanvi
+
+* RF35: Visualitzar detalls de punts de bescanvi
+
+* RF36: Modificar paràmetres del sistema (admin)
+
+=== Requisits No Funcionals
+
+==== Globals
+
+* RN01: L’aplicació ha de ser multilloc, amb un màxim de 50 usuaris de tipus ciclista.
+
+* RN02: L’aplicació ha de tenir l’arquitectura client-servidor  basada en una API REST desenvolupada amb Spring Boot al servidor. Tindrà dos clients: un front-end web per a l'administrador creat amb HTML+CSS+Thymeleaf i una app mòbil per a Android, desenvolupat en Kotlin i Jetpack Compose.
+
+* RN03: L’administrador i/o el personal de manteniment de l’aplicació han de tenir el suport d’un sistema de logs (registres en fitxers) on es vagin desant els errors, excepcions, avisos o situacions que requereixin atenció.
+
+* RN04: El codi ha de ser optimitzat, eficient i sense redundàncies, seguint les bones pràctiques de desenvolupament per a cada tecnologia emprada.
+
+* RN05: S’han d’utilitzar les classes, interfícies i mètodes i packages de forma òptima i adient,  seguint els les bones pràctiques d’arquitectura de software.
+
+* RN06: Les capçaleres de mètodes i classes rellevants (sobretot mètodes de negoci) han d’estar degudament comentades en format JavaDoc per al backend i KDoc per al codi Kotlin de l'app mobile.
+
+* RN07:Qualsevol excepció que es produeix durant l’execució ha de ser degudament informada a l’usuari amb informació concreta i comprensible per l’usuari, en el llenguatge de l’aplicació.
+
+* RN09: S’ha d'utilitzar el git/gitlab per implementar el projecte de forma óptima i adient. S’han de fer servir les següents branques: main/master, developer i branques per features, encara que el projecte el faci un únic integrant.
+
+* RN10: Tots els merges de funcionalitats s’han de fer per merge-request a developer. Les branques fusionades s’eliminen després del merge-request. Pels equips d’ún únic integrant no s’han de fer merge-request però si eliminar les branques fusionades després del merge.
+
+* RN11: Han de realitzar-se proves unitàries dels mètodes del controller per garantir la funcionalitat del backend.
+
+* RN12: La comunicació entre el frontend Mobile i el backend s’ha de portar a terme mitjançant els principis REST, assegurant una arquitectura desacoblada i escalable.
+
+* RN14: Tota la interfície d'usuari (UI) dels front-ends i tots els missatges d’avís, error i altres informacions mostrades a l’usuari han d’estar en català.
+
+==== Requisits del frontend Mobile
+
+* RN20: L’app s’ha de desenvolupar utilitzant l’IDE Android Studio, implementant el llenguatge Kotlin per crear una aplicació nativa compatible amb dispositius Android.
+
+* RN21: L’app ha de seguir l’arquitectura Feature Layer juntament amb “Clean Architecture” (UI layer - Domain layer - Data layer).
+
+* RN22: En la capa IU ha de seguir la arquitectura moderna MVVM (Model-View-ViewModel) . El ViewModel ha de gestionar l'estat de l'aplicació amb MutableStateFlow.
+
+* RN23: S’ha d’utilitzar Jetpack Compose per implementar la interfície gràfica de l’app.
+
+* RN24: La interfície d'usuari (UI) de l’app ha de complir amb les directrius de disseny Material Design. El disseny visual ha de ser atractiu, amb coherència en colors, tipografies, icones i una distribució eficient dels elements. Totes les pantalles han de seguir el mateix estil per garantir una experiència homogènia.
+
+* RN25: Reutilització i coherència de components: Els elements visuals de la interfície han d'estar definits de manera modular i reutilitzable en diversos composables. Això garanteix coherència en l'estil i facilita el manteniment i escalabilitat del disseny. Els components repetitius, com botons, targetes, formularis o missatges emergents, han de seguir un patró estandarditzat per oferir una experiència visual uniforme.
+
+* RN26: Usabilitat (UX) i accessibilitat: La interfície de l’app ha de ser intuïtiva, eficient i fàcil d’usar. No hi pot haver passos innecessaris per accedir a les funcionalitats i s'ha de deixar molt clar què es pot fer en cada moment. A més, el disseny ha de mantenir coherència entre les funcionalitats disponibles i les restringides.
+
+* RN27: Fluïdesa garantida: L’app ha de respondre a les entrades de l'usuari en tot moment, evitant bloquejos o congelacions durant operacions intensives. S’han d’utilitzar mecanismes com a operacions asíncrones quan sigui necessari.
+
+* RN28: S’ha d'utilitzar un component visual de Navegació per facilitar l’accés a les funcionalitats principals de l’aplicació.
+
+* RN29: L’app s’ha de poder executar en qualsevol emulador i dispositiu mòbil amb sistema operatiu Android.
+
+==== Requisits backend
+
+* RN41: L’estructura del projecte ha de ser de tipus Maven.
+
+* RN42: Les capes de servei, lógica de negoci i de persistència han d’estar ubicades al backend.
+
+* RN43: El backend s’ha d’implementar mitjançant SpringBoot
+
+* RN44: El backend ha de ser portable i totalment funcional entre sistemes Linux i Windows.
+
+==== Requisits frontend web
+
+* RN51: L'usuari administrador ha de poder accedir a l’aplicació mitjançant Internet i un navegador web.
+
+* RN52: Coherència de colors, fonts, icones, distribució i agrupació de components.
+
+* RN53: Responsive: En cas de poder variar la grandària de la pantalla, s’ha d’adaptar el seu continguts de forma proporcionada.
+
+* RN54: Atenció a la diversitat (tenir en compte discapacitats visuals, motrius, dislexia, etc…).
+
+* RN55: Fluïdesa: L’aplicació ha de respondre a les entrades de l'usuari en tot moment. Això vol dir que si ha de quedar “congelada” mentre realitza qualsevol operació l’usuari ha d’estar degudament informat.
+
+* RN56: Amigable i intuitiu: Coherència i comprensió ràpida de les funcionalitats disponibles i no disponibles en cada moment, evitant que l’usuari pugui realitzar incoherències funcionals.
+
+==== Seguretat
+
+* RN61: L’accés als front-ends han de disposar d’un sistema d’autenticació mitjançant usuari i contrasenya, assegurant intents d'accés no autoritzats.
+
+* RN62: El backend no ha de permetre l'accés mitjançant URL que no estiguin autoritzades.
+
+* RN63: L’emmagatzemament de la contrasenya d’usuari ha de ser un procés segur en tot moment utilitzant tècniques de hash robustes.
+
+* RN64: L’aplicació ha de protegir en tot moment les dades personals dels usuaris davant accessos no autoritzats tant de la part client com de la part d’API rest. Aquestes mai poden quedar exposades a altres usuaris de l’aplicació.
+
+* RN65: Les sessions d’usuari no poden romandre obertes per temps indefinit i han de caducar-se de forma segura.
+
+* RN66: Les dades entre el client web i el servidor han d’estar xifrades via https usant certificat TLS. Aquest certificat ha d’estar validat per una autoritat de confiança. Si el certificat és autosignat, complirà parcialment amb aquest requisit.
+
+==== Desplegament (deploy)
+
+* RN71: El backend i el SGBD han d'estar allotjats al mateix servidor. Aquest ha de ser accessible des d'Internet i amb alta disponibilitat (24x7).
+
+* RN72: El desplegament de l’aplicació i del SGBD s’ha de poder realitzar mitjançant contenidors Doker.
+
+
+=== Guions per actors
+
+==== Guió Administrador
+
+image::guionAdmin.png[align=left]
+
+==== Guió Ciclista
+
+image::guionCiclista.png[align=left]
+
+==== Guió Sistema
+
+image::guionSistema.png[align=left]
+
+=== Diagrama d'arquitectura
+
+image::EsquemaArquitectura.png[align=left]
+
+=== Diagrama E-R
+
+image::er.png[align=left]
+
+=== Diagrama Casos d'ús
+
+* Ciclista
+
+image::CasosUsCic.png[align=left]
+
+* Admin
+
+image::CUA.png[align=left]
+
+* Sistema
+
+image::CUS.png[align=left]
+
+=== Disseny de la BD
+
+image::image.png[align=left]
+
+*Enllaç al document amb el codi*
+
+* link:https://docs.google.com/document/d/1XrYSPlBKz71ZLcq9CBysH91Yf87URJCudzgAQHY9gWA/edit?usp=sharing[Codi Base de Dades]
+
+=== Figma
+
+* link:https://www.figma.com/design/gCaIXX93jDAqSUNSWt1Ivu/Entre-Bicis?node-id=0-1&p=f&t=Cj1KZFFOpEd5k9mn-0[Figma]
+
+
+image::p1.png[align=left]
+image::p2.png[align=left]
+image::p3.png[align=left]
+image::p4.png[align=left]
+image::p5.png[align=left]
+image::lW.png[align=left]
+image::panelW.png[align=left]
+image::panelUsu.png[align=left]
+image::panelUsuE.png[align=left]
+image::panelA.png[align=left]
+image::panelR.png[align=left]
+image::panelRE.png[align=left]
+image::panelC.png[align=left]
+image::panelCE.png[align=left]
+image::panelRuta.png[align=left]
+
+
+
+=== Trello
+
+*Sprints*
+
+image::sp1.png[align=left]
+
+image::sp2.png[align=left]
+
+*Tascas Unai*
+
+image::TUnai.png[align=left]
+
+*Tascas Adrià*
+
+image::TAdria.png[align=left]

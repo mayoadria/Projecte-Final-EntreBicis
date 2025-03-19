@@ -1,0 +1,33 @@
+:copyleft:
+
+:author: Unai i Adrià
+:revdate: 14/03/2025
+:revnumber: 1.0
+:doctype: book
+:encoding: utf-8
+:lang: ca
+:toc: left
+:toclevels: 3
+:icons: font
+:imagesdir: ./Documents/Images
+:footer: This is the footer text.
+= *Projecte 4: EntreBicis*
+
+include::./Documents/Cabezera.adoc[]
+
+image::Logo.png[align=left]
+= Index
+
+
+
+* link:./Documents/RecollidaRequerimentsUnai.adoc[Recollida Requeriments Unai]
+* link:./Documents/RecollidaRequerimentsUnai.adoc[Recollida Requeriments Adria]
+* link:./Documents/FaseDisseny.adoc[Fase de Disseny]
+* link:[Fase d'Implementació]
+
+= Organització
+
+* link:https://trello.com/b/eI2V5YVE/entre-bicis[Trello]
+
+
+

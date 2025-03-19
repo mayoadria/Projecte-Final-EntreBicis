@@ -1,0 +1,250 @@
+:copyleft:
+
+:author: Unai i Adrià
+:revdate: 14/03/2025
+:revnumber: 1.0
+:doctype: book
+:encoding: utf-8
+:lang: ca
+:toc: left
+:toclevels: 3
+:icons: font
+:imagesdir: /Images
+
+= *Projecte 4: EntreBicis*
+
+Recollida de requeriments Adrià
+
+image::IMGRequisits.png[align=left]
+
+Acta: 06/03/2025-10:00-11:15
+
+=== Assistents.
+
+** Adrià Mayo
+** Marc Botana
+** Daniel Corral
+** Unai Reyes
+** Yoel López
+** Eric Fernandez
+** Carlos Mendoza
+** Raul Adan
+** Ana Serrano
+** Reyes Amador
+** Nacho Gallardo
+** Mario Olaya
+** Hector Vico
+** Yaiza Melero
+** Helen Dahle
+** Manel Orós
+** Esther Sánchez
+
+=== Apunts de la reunió:
+L’objectiu principal de l’aplicació és *l’educació mediambiental i cívica.*
+
+Les *bicicletes* seran compartides, s’envien al mecànic del poble, posar-les a punt fins que apareix una persona que es vol fer a càrrec.
+
+Aquesta aplicació es mantindrà a partir de donatius de la gent del poble o de persones de pobles propers.
+A part es faran trobades per fer intercanvis de coneixements sostenibles.
+
+Només es poden registrar persones que viuen a *Vilanova i la Geltrú, Garraf, Alt Penedès, o que viuen a pobles propers.* També persones que fan la seva vida a *Vilanova*, no seria un registre automàtic, s’ha de poder tenir una petita connexió online.
+
+Hi haurà un petit qüestionari a la web
+
+L’alta del registre no hi serà automàtic, l’haurà de fer un administrador. A part i s'haurà de fer una petita trucada via meet entre l’administrador i la persona que es vol registrar.
+
+Les bicicletes no hi tindran cap identificador
+
+L’aplicació hi tindrà diferents comerços o recompenses, per exemple:
+
+* Ball de flamenc
+* Yoga
+* Abonament a un circuit curt en bicicleta (Tour)
+* Floristeries
+* Un esmorzar a diferents restaurants
+
+La manera d’obtenir les recompenses hi serà via uns punts que obtindrà en realitzar les diferents rutes amb bicicleta.
+
+Les recompenses s'hauran de reservar a través de l’aplicació i el client hi tindrà un límit de 48 hores per recollir la recompensa.
+
+El comerç no hi validarà la recompensa, hi serà el mateix ciclista quan rebi la recompensa.
+
+El saldo de punts s’ha de restar quan es fa la reserva del producte.
+
+Les rutes es validaran tenint en compte l’inici i el final de la ruta i la seva velocitat mitjana.
+
+Les rutes les haurà de revisar l’administrador.
+
+Hi haurà un màxim de recompenses mensuals, entre 3 o 4 per usuari.
+
+Els ciclistes no hi tindran un límit de quilòmetres màxim per dia.
+
+No hi haurà límit mínim de quilòmetres per fer una ruta.
+
+Els punts s’hi podran acumular entre diferents rutes.
+
+L’equivalència dels punts hi serà igual a 1 quilòmetre igual a 10 punts
+
+L’usuari haurà d’iniciar la ruta des del seu telèfon, a part en el cas que es quedi aturat durant un límit de temps, la ruta es donarà com finalitzada. Finalment, aquest tram on el ciclista es quedi aturat, si la velocitat és igual 0, no hi afectarà la mitjana de la ruta.
+
+Els missatges de comunicació amb l’usuari hi seran a través de l’aplicació del telèfon
+
+Les rutes podran pausar i quan es vulgui es podrà continuar amb la mateixa ruta
+
+=== Resum Aplicació
+Monotonitzar el quilometratge que faria un ciclista, comptabilitzar els quilòmetres per poder atorgar recompenses, no com una competició sinó com a un premi per fer els quilòmetres i així ajudar al comerç local, tot relacionat amb els productes locals i sostenibles.
+
+=== Principals processos de negoci:
+*Fer Registre*
+
+* S’ha de poder registrar nous usuaris que visquin a les zones properes a Vilanova
+* El registre es farà a través de l’administrador
+
+*Fer inici de sessió*
+
+* L’usuari activat per l’administrador
+
+*Iniciar Ruta*
+
+* S’ha de poder iniciar un nova ruta quan l’usuari vulgui
+
+*Pausar Ruta*
+
+* L’usuari podrà pausar la seva ruta en el moment que ell hi vulgui
+
+*Detenir Ruta*
+
+* L’usuari podrà detenir la seva ruta quan ell mateix la doni per finalitzada
+
+*Bescanviar Recompensa*
+
+* Quan l’usuari hi tingui els punts necesaris, hi podrà bescanviar els seus punts per una recompensa
+
+*Validar Ruta*
+
+* L’administrador podrà validar la ruta que realitza un usuari
+
+*Acumular punts*
+
+* L’usuari acumularà punts per cada ruta que realitzi*
+
+=== Entitats principals i clau primària
+
+*Les entitats principals hi seran:*
+
+* Usuari
+** Nom
+** Email
+** Edat
+** DNI (*Clau Primària*)
+** Rols
+** Cartera de punts
+
+* Rols (Enum)
+
+** Administrador
+** Ciclistes
+
+* Ruta
+** ID Ruta (*Clau Primària*)
+** Distància
+** Punts de ruta
+** Verificació
+** Saldo Generat
+** Velocitat Maxima
+** Velocitat Mitjà
+** IdUsuari
+
+* Recompensa
+** ID Recompensa (*Clau Primària*)
+** Nom Recompensa
+** Comerç
+** Cost
+** Historial
+* Comerç
+** ID comerç (*Clau Primària*)
+** Nom
+** Direcció
+
+=== Rols principals
+*Admin* que revisaria si una persona opta a un producte i validar que aquests km tenen coherència (que es facin en bici, màxim una velocitat de 20/km)
+
+*Ciclistes* (Usuaris normals) persones del poble que volen anar en bici i obtenir les recompenses o ajudar al desenvolupament de l’aplicació.
+
+=== Investigació component navegació
+
+==== OpenStreetMap
+
+*OpenStreetMap* (OSM) és una alternativa de codi obert a Google Maps. Permet als desenvolupadors utilitzar mapes a les seves aplicacions sense costos de llicències, amb l'avantatge de ser altament personalitzable.
+
+** Característiques:
+*** Gratis i sense límits
+*** Sense Connexió
+*** Actualització de dades en temps real
+*** Alta personalització
+
+** Avantatges
+
+*** Gratuït i de codi obert
+*** Dades molt personalitzables
+*** Més privacitat
+*** Es pot fer servir sense connexió
+
+** Inconvenients
+*** Interfície molt més simple
+*** Menys informació en temps real
+*** Menys fluïdesa
+*** Poca Informació a internet
+
+** Tecnologies Basades en OpenStreetMap
+
+*Osmdroid*
+
+*** És una biblioteca de codi obert que permet integrar OSM en Android fàcilment.
+*** Similar a l'API de Google Maps, però sense restriccions comercials.
+*** Suporta mapes offline i personalització avançada.
+
+*Mapbox*
+
+*** Usa OSM com base, però afegeix eines avançades per visualitzacions de mapes.
+*** Ofrece millors gràfics i rendiment que osmdroid.
+*** Permet navegació, tràfic en temps real i realitat augmentada.
+*** Requereix registre i té límits d'ús gratuït.
+
+==== Api Google Maps
+
+És un conjunt d'eines proporcionades per Google para agregar mapes interactius a aplicacions mòbils o web.
+
+*Característiques:*
+
+** Mapes interactius amb zoom, rotació i inclinació
+** Té mode normal, mode satèl·lit, hibrido i terreny
+** Permet afegir rutes personalitzades
+** Informació del tràfic
+** Calcula trajectes entre ubicacions
+
+*Avantatges*
+
+** Facilitat per integrar
+** Dades amb freqüència actualització
+** Funcions avançades
+** Molt bé optimitzat i escalable
+
+*Inconvenients*
+
+*** Si s’acaben les consultes, et poden cobrar sense que tu vulguis
+*** Dificultats a l'hora de treure la targeta de crèdit si vols eliminar el servei.
+*** Si es filtra la clau de l’API, terceres persones poden utilitzar la teva aplicació i gastar les teves consultes
+*** Si Google decideix fer canvis, et pot afectar al funcionament de l’aplicació
+
+
+Quan iniciïs compte per primera vegada, tens un crèdit mensual de 200$, el qual et dona per fer diferents tipus de consultes:
+
+** 28.500 càrregues de mapes mòbils (Maps SDK for Android)
+** 28.500 càrregues de mapes web (Maps JavaScript API)
+** 40.000 sol·licituds de geocodificacions
+** 40.000 sol·licituds de direccions
+** 11.700 sol·licituds de Places
+** A part hi ha altres tipus de tarifes:
+
+image::Tarifa.png[align=left]
