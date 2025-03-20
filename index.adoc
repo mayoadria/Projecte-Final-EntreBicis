@@ -20,9 +20,9 @@ image::Logo.png[align=left]
 
 
 
-* link:./Documents/RecollidaRequerimentsUnai.adoc[Recollida Requeriments Unai]
-* link:./Documents/RecollidaRequerimentsUnai.adoc[Recollida Requeriments Adria]
-* link:./Documents/FaseDisseny.adoc[Fase de Disseny]
+* link:./Documents/RecollidaRequerimentsUnai.html[Recollida Requeriments Unai]
+* link:./Documents/RecollidaRequerimentsUnai.html[Recollida Requeriments Adria]
+* link:./Documents/FaseDisseny.html[Fase de Disseny]
 * link:[Fase d'Implementació]
 
 = Organització
