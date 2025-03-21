@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Recompensas</title>
+    <link rel="stylesheet" href="/styles/Recompensa.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <button>Inicio</button>
+    <button>Usuarios</button>
+    <button>Registros</button>
+    <button>Rutas</button>
+    <button>Recompensas</button>
+</div>
+
+<div class="main-content">
+    <h2>Lista de Recompensas</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Descripció</th>
+            <th>Observacions</th>
+            <th>Punt de Bescanvi</th>
+            <th>Cost</th>
+            <th>Estat</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="recompensa : ${recompensas}">
+            <td th:text="${recompensa.id}"></td>
+            <td th:text="${recompensa.descripcio}"></td>
+            <td th:text="${recompensa.observacions}"></td>
+            <td th:text="${recompensa.puntBescanviId}"></td>
+            <td th:text="${recompensa.cost}"></td>
+            <td th:text="${recompensa.estat}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

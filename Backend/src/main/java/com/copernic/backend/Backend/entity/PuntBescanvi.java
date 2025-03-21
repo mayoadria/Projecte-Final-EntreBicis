@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -31,7 +33,6 @@ public class PuntBescanvi {
     @Column
     private String observacions;
 
-    @ManyToOne
-    @JoinColumn(name = "recompensa_id", nullable = false)
-    private Recompensas recompensa;
+    @OneToMany(mappedBy = "puntBescanviId", cascade = CascadeType.ALL)
+    private List<Recompensas> puntBescanviID;
 }
