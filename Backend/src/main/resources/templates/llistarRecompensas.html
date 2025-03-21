@@ -35,11 +35,12 @@
             <td th:text="${recompensa.id}"></td>
             <td th:text="${recompensa.descripcio}"></td>
             <td th:text="${recompensa.observacions}"></td>
-            <td th:text="${recompensa.puntBescanviId}"></td>
+            <td th:text="${recompensa.puntBescanviId?.nom}"></td>
             <td th:text="${recompensa.cost}"></td>
             <td th:text="${recompensa.estat}"></td>
             <td>
                 <a class="btn btn-success"
+                   th:href="@{/recompensas/edit/{id}(id=${recompensa.id})}"
                    >Editar</a>
                 <a class="btn btn-danger" th:href="@{/recompensas/delete/{id}(id=${recompensa.id})}">Esborrar</a>
             </td>

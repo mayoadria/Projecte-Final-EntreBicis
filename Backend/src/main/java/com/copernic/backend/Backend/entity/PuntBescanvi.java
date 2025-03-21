@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
+@ToString
 public class PuntBescanvi {
 
     @Id
@@ -34,5 +36,6 @@ public class PuntBescanvi {
     private String observacions;
 
     @OneToMany(mappedBy = "puntBescanviId", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private List<Recompensas> puntBescanviID;
 }

@@ -18,9 +18,9 @@
 
 <div class="main-content">
     <div class="form-container">
-        <h2>Crear Recompensa</h2>
-        <form th:action="@{/recompensas/guardar}" th:object="${recompensas}" method="post" enctype="multipart/form-data">
-
+        <h2>Modificar Recompensa</h2>
+        <form th:action="@{/recompensas/editar}" th:object="${recompensas}" method="post" enctype="multipart/form-data">
+            <input type="hidden" th:field="*{id}">
             <div class="form-group">
                 <label for="descripcio">Descripció</label>
                 <input type="text" id="descripcio" th:field="*{descripcio}" required>
@@ -34,8 +34,9 @@
                 <input type="number" id="cost" th:field="*{cost}" min="1" required>
             </div>
             <label for="besanvi-select">Punt de Bescanvi:</label>
-            <select id="besanvi-select" name="bescanvi" th:field="*{puntBescanviId}" required>
-                <option th:each="bescanvis : ${bescanvi}" th:value="${bescanvis}" th:text="${bescanvis.nom}"></option>
+            <select id="besanvi-select" name="bescanvi" required>
+                <option value="" disabled selected hidden>Seleccionar una opción</option>
+                <option th:each="bescanvis : ${bescanvi}" th:value="${bescanvis.id}" th:text="${bescanvis.nom}"></option>
             </select>
             <div class="form-group">
                 <select class="input" th:field="*{estat}" id="pais" required>
