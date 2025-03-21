@@ -17,34 +17,34 @@
 </div>
 
 <div class="main-content">
-    <h1>Llista de Recompenses</h1>
+    <h1>Llista Punts Bescanvi</h1>
     <a class="btn btn-crear"
-       th:href="@{/recompensas/crear}">Crear</a>
+       th:href="@{/bescanvi/crear}">Crear</a>
     <table>
         <thead>
         <tr>
             <th>ID</th>
-            <th>Descripció</th>
+            <th>Nom</th>
+            <th>Adreça</th>
             <th>Observacions</th>
-            <th>Punt de Bescanvi</th>
-            <th>Cost</th>
-            <th>Estat</th>
+            <th>Codi Postal</th>
+            <th>Email</th>
             <th>Accions</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="recompensa : ${recompensas}">
-            <td th:text="${recompensa.id}"></td>
-            <td th:text="${recompensa.descripcio}"></td>
-            <td th:text="${recompensa.observacions}"></td>
-            <td th:text="${recompensa.puntBescanviId?.nom}"></td>
-            <td th:text="${recompensa.cost}"></td>
-            <td th:text="${recompensa.estat}"></td>
+        <tr th:each="bescanvis : ${bescanvi}">
+            <td th:text="${bescanvis.id}"></td>
+            <td th:text="${bescanvis.nom}"></td>
+            <td th:text="${bescanvis.adreca}"></td>
+            <td th:text="${bescanvis.observacions}"></td>
+            <td th:text="${bescanvis.codiPostal}"></td>
+            <td th:text="${bescanvis.email}"></td>
             <td>
                 <a class="btn btn-success"
-                   th:href="@{/recompensas/edit/{id}(id=${recompensa.id})}"
-                   >Editar</a>
-                <a class="btn btn-danger" th:href="@{/recompensas/delete/{id}(id=${recompensa.id})}">Esborrar</a>
+                   th:href="@{/bescanvi/edit/{id}(id=${bescanvis.id})}"
+                >Editar</a>
+                <a class="btn btn-danger" th:href="@{/bescanvi/delete/{id}(id=${bescanvis.id})}">Esborrar</a>
             </td>
         </tr>
         </tbody>

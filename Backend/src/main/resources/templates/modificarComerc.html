@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Recompensa</title>
+    <link rel="stylesheet" href="/styles/Recompensa.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <button>Inicio</button>
+    <button>Usuarios</button>
+    <button>Registros</button>
+    <button>Rutas</button>
+    <button>Recompensas</button>
+</div>
+
+<div class="main-content">
+    <div class="form-container">
+        <h2>Modificar Comerç</h2>
+        <form th:action="@{/bescanvi/editar}" th:object="${bescanvi}" method="post" enctype="multipart/form-data">
+            <input type="hidden" th:field="*{id}">
+            <div class="form-group">
+                <label for="nom">Punt de Bescanvi:</label>
+                <input type="text" id="nom" th:field="*{nom}" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" id="email" th:field="*{email}" required>
+            </div>
+            <div class="form-group">
+                <label for="codiPostal">Codi Postal</label>
+                <input type="text" id="codiPostal" th:field="*{codiPostal}" required>
+            </div>
+            <div class="form-group">
+                <label for="observacions">Observacions</label>
+                <input type="text" id="observacions" th:field="*{observacions}" required>
+            </div>
+            <div class="form-group">
+                <label for="telefon">Telefon</label>
+                <input type="text" id="telefon" th:field="*{telefon}" required>
+            </div>
+            <div class="form-group">
+                <label for="personaContacte">Persona de Contacte</label>
+                <input type="text" id="personaContacte" th:field="*{personaContacte}" required>
+            </div>
+            <div class="form-group">
+                <label for="adreca">Adreça</label>
+                <input type="text" id="adreca" th:field="*{adreca}" required>
+            </div>
+            <button type="submit" class="submit-btn">Guardar Comerç</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
