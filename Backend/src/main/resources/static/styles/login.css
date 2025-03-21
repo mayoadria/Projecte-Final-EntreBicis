@@ -1,0 +1,91 @@
+/* Reinicio básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Fondo */
+body {
+    background-color: #aeefff; /* Color de fondo celeste */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Contenedor principal */
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+/* Caja de login */
+.login-box {
+    background-color: #b3ecff; /* Fondo un poco más oscuro que el body */
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-box h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.password-field {
+    display: flex;
+    align-items: center;
+}
+
+.password-field input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.toggle-password {
+    background: none;
+    border: none;
+    margin-left: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-login {
+    width: 100%;
+    background-color: #0099cc;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-login:hover {
+    background-color: #008bb3;
+}
+
+.toggle-password {
+    background: none;
+    border: none;
+    margin-left: 5px;
+    cursor: pointer;
+    font-size: 20px; /* Ajusta el tamaño del icono */
+    color: #333;
+}
