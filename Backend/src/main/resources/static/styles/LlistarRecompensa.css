@@ -61,3 +61,19 @@ th {
 .btn-danger:hover {
     background-color: #a71d2a;
 }
+
+.btn-crear {
+    background-color: #0099cc;
+    color: #fff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right; /* Lo coloca a la derecha */
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.btn-crear:hover {
+    background-color: #008bb3;
+}
