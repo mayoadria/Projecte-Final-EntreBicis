@@ -22,12 +22,24 @@ public class RecompensaLogic {
         return recompensasRepository.findAll();
     }
 
-    public void eliminarRecompensa(Recompensas recompensa) {
-        recompensasRepository.delete(recompensa);
+    public String eliminarRecompensa(Long id) {
+        Recompensas recompensas = findById(id);
+        try {
+            if (recompensas != null) {
+                recompensasRepository.delete(recompensas);
+            }
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+        return "Eliminado";
     }
 
     public void modificarRecompensa(Recompensas recompensa) {
         recompensasRepository.save(recompensa);
+    }
+
+    public Recompensas findById(Long id) {
+        return recompensasRepository.findById(id).get();
     }
 
 }

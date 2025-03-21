@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Recompensas</title>
-    <link rel="stylesheet" href="/styles/Recompensa.css">
+    <link rel="stylesheet" href="/styles/LlistarRecompensa.css">
 </head>
 <body>
 
@@ -27,6 +27,7 @@
             <th>Punt de Bescanvi</th>
             <th>Cost</th>
             <th>Estat</th>
+            <th>Accions</th>
         </tr>
         </thead>
         <tbody>
@@ -37,6 +38,11 @@
             <td th:text="${recompensa.puntBescanviId}"></td>
             <td th:text="${recompensa.cost}"></td>
             <td th:text="${recompensa.estat}"></td>
+            <td>
+                <a class="btn btn-success"
+                   >Editar</a>
+                <a class="btn btn-danger" th:href="@{/recompensas/delete/{id}(id=${recompensa.id})}">Esborrar</a>
+            </td>
         </tr>
         </tbody>
     </table>
