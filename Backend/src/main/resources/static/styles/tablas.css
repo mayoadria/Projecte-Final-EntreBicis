@@ -1,26 +1,16 @@
-/* Reinicio básico */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: Arial, sans-serif;
+
 }
 
-/* Layout general */
 body {
+    font-family: Arial, sans-serif;
     display: flex;
     height: 100vh;
     background-color: #aeefff; /* Color de fondo */
-}
-
-/* Barra lateral (copiada de home.css) */
-.sidebar {
-    width: 200px;
-    background-color: #85d3f2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 20px;
 }
 
 .profile {
@@ -39,7 +29,6 @@ body {
     font-size: 18px;
     color: #333;
 }
-
 nav ul {
     list-style: none;
     width: 100%;
@@ -61,37 +50,15 @@ nav ul li a:hover {
 .icon {
     margin-right: 8px;
 }
-
-.logout {
-    margin-top: auto;
-    margin-bottom: 20px;
-}
-
-.logout a {
-    display: block;
-    padding: 10px 20px;
-    color: #333;
-    text-decoration: none;
-    transition: background-color 0.3s;
-}
-
-.logout a:hover {
-    background-color: #72c0de;
-}
-
-/* Contenido principal */
 .main-content {
     flex: 1;
     padding: 20px;
 }
-
 .main-content h1 {
     margin-bottom: 20px;
     color: #333;
     font-size: 24px;
 }
-
-/* Botón "Crear" */
 .btn-crear {
     background-color: #0099cc;
     color: #fff;
@@ -102,20 +69,19 @@ nav ul li a:hover {
     float: right; /* Lo coloca a la derecha */
     margin-bottom: 10px;
     font-size: 16px;
+    text-decoration: none;
 }
-
 .btn-crear:hover {
     background-color: #008bb3;
 }
 
-/* Tabla de usuarios */
 .users-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #b3ecff;
-    border-radius: 8px;
-    overflow: hidden; /* Para que los bordes sean limpios */
-}
+     width: 100%;
+     border-collapse: collapse;
+     background-color: rgba(191, 229, 253, 0.55);
+     border-radius: 8px;
+     overflow: hidden; /* Para que los bordes sean limpios */
+ }
 
 .users-table thead {
     background-color: #85d3f2;
@@ -134,10 +100,8 @@ nav ul li a:hover {
 }
 
 .users-table tbody tr:hover {
-    background-color: #e0f7ff; /* Efecto hover */
+    background-color: #e3f6fd; /* Efecto hover */
 }
-
-/* Botones de edición y eliminación */
 .btn-edit,
 .btn-delete {
     background: none;
@@ -145,4 +109,28 @@ nav ul li a:hover {
     cursor: pointer;
     font-size: 18px;
     margin-right: 8px;
+    text-decoration: none;
+}
+.logout {
+    margin-top: auto;
+    margin-bottom: 20px;
+}
+.logout a {
+    display: block;
+    padding: 10px 20px;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.logout a:hover {
+    background-color: #72c0de;
+}
+.sidebar {
+    width: 200px;
+    background-color: #85d3f2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
 }
