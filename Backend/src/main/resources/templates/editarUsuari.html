@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Editar Usuari - EntreBicis</title>
+    <link rel="stylesheet" href="/styles/crearUsuari.css" />
+</head>
+<body>
+<!-- Barra lateral (igual que en home.html) -->
+<div class="sidebar">
+    <div class="profile">
+        <img src="https://via.placeholder.com/80" alt="Foto de perfil" />
+        <h3>Admin</h3>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="/home"><span class="icon">🏠</span>Inici</a></li>
+            <li><a href="/usuaris"><span class="icon">👤</span>Usuaris</a></li>
+            <li><a href="#"><span class="icon">📋</span>Registres</a></li>
+            <li><a href="#"><span class="icon">🚴</span>Rutes</a></li>
+            <li><a href="#"><span class="icon">🎁</span>Recompenses</a></li>
+            <li><a href="#"><span class="icon">🛍️</span>Comerços</a></li>
+            <li><a href="#"><span class="icon">⚙️</span>Configuració</a></li>
+        </ul>
+    </nav>
+    <div class="logout">
+        <a href="/logout"><span class="icon">↩️</span>Sortir</a>
+    </div>
+</div>
+
+<!-- Contenido principal: formulario para editar el usuario -->
+<div class="main-content">
+    <h1>Editar Usuari</h1>
+    <div class="create-user-container">
+
+        <div class="profile-picture" id="profilePicture">
+            <!-- Si usuari.foto no es null, mostramos la imagen guardada -->
+            <th:block th:if="${usuari.foto != null}">
+                <!-- Ajusta la ruta según tu proyecto:
+                     Por ejemplo, /images/{nombreArchivo} o un endpoint para servir la foto -->
+                <img id="fotoPreview"
+                     th:src="@{/images/{file}(file=${usuari.foto})}"
+                     alt="Foto usuario" />
+            </th:block>
+
+            <!-- Si usuari.foto es null, mostramos un placeholder -->
+<!--            <th:block th:if="${usuari.foto == null}">-->
+<!--                <img id="fotoPreview"-->
+<!--                     src="https://via.placeholder.com/150"-->
+<!--                     alt="Foto usuario" />-->
+<!--            </th:block>-->
+        </div>
+
+        <input type="file" id="fotoInput" name="foto" accept="image/*" style="display:none" />
+
+        <!-- Form: actualiza el usuario y redirige a /usuaris -->
+        <form class="user-form" action="/usuaris/editar" method="POST">
+            <!-- Campo oculto para identificar el usuario a editar -->
+            <input type="hidden" name="email" th:value="${usuari.email}" readonly />
+
+            <div class="form-field">
+                <label for="email">Correu</label>
+                <input type="email" id="email" name="email"
+                       th:value="${usuari.email}"
+                       required readonly />
+            </div>
+
+            <div class="form-field">
+                <label for="nom">Nom</label>
+                <input type="text" id="nom" name="nom" th:value="${usuari.nom}" required />
+            </div>
+
+            <div class="form-field">
+                <label for="cognom">Cognom</label>
+                <input type="text" id="cognom" name="cognom" th:value="${usuari.cognom}" />
+            </div>
+
+            <div class="form-field">
+                <label for="telefon">Telèfon</label>
+                <input type="text" id="telefon" name="telefon"
+                       pattern="\d{9}" minlength="9" maxlength="9"
+                       inputmode="numeric"
+                       title="Introduce un número de 9 dígitos"
+                       th:value="${usuari.telefon}"
+                       required />
+            </div>
+
+            <div class="form-field">
+                <label for="saldo">Saldo</label>
+                <input type="number" id="saldo" name="saldo"
+                       th:value="${usuari.saldo}"
+                       min="0" max="1000" step="0.1" required />
+            </div>
+
+            <div class="form-field">
+                <label for="poblacio">Població</label>
+                <input type="text" id="poblacio" name="poblacio"
+                       th:value="${usuari.poblacio}" />
+            </div>
+
+            <div class="form-field full-width">
+                <label for="contra">Contrasenya provisional</label>
+                <input type="text" id="contra" name="contra"
+                       th:value="${usuari.contra}" required />
+            </div>
+
+            <button type="submit" class="btn-crear">Editar</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Seleccionar foto y previsualizar
+    document.getElementById('profilePicture').addEventListener('click', function() {
+        document.getElementById('fotoInput').click();
+    });
+
+    document.getElementById('fotoInput').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('fotoPreview').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+</body>
+</html>

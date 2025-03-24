@@ -51,12 +51,24 @@
             <td th:text="${usuari.telefon}"></td>
             <td th:text="${usuari.poblacio}"></td>
             <td>
-                <button class="btn-edit">✏️</button>
-                <button class="btn-delete">🗑️</button>
+                <a th:href="@{/usuaris/editar/{email}(email=${usuari.email})}" class="btn-edit">✏️</a>
+                <button class="btn-delete" th:attr="data-email=${usuari.email}" onclick="deleteUser(this)">🗑️</button>
             </td>
+
         </tr>
         </tbody>
     </table>
 </div>
 </body>
 </html>
+
+<script>
+    function deleteUser(button) {
+        var email = button.getAttribute("data-email");
+        if (confirm("Vols eliminar l'usuari de forma PERMAMENT?")) {
+            window.location.href = "/usuaris/delete/" + encodeURIComponent(email);
+        }
+    }
+</script>
+
+
