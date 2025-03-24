@@ -3,21 +3,19 @@
 <head>
     <meta charset="UTF-8" />
     <title>Gestió d'Usuaris - EntreBicis</title>
-    <!-- Vinculamos la hoja de estilo específico para esta página -->
     <link rel="stylesheet" href="/styles/usuaris.css" />
 </head>
 <body>
 <!-- Barra lateral (idéntica a la de home.html) -->
 <div class="sidebar">
     <div class="profile">
-        <!-- Puedes reemplazar la imagen por la del usuario admin -->
         <img src="https://via.placeholder.com/80" alt="Foto de perfil" />
         <h3>Admin</h3>
     </div>
     <nav>
         <ul>
             <li><a href="/home"><span class="icon">🏠</span>Inici</a></li>
-            <li><a href="#"><span class="icon">👤</span>Usuaris</a></li>
+            <li><a href="/usuaris"><span class="icon">👤</span>Usuaris</a></li>
             <li><a href="#"><span class="icon">📋</span>Registres</a></li>
             <li><a href="#"><span class="icon">🚴</span>Rutes</a></li>
             <li><a href="#"><span class="icon">🎁</span>Recompenses</a></li>
@@ -33,7 +31,7 @@
 <!-- Contenido principal: tabla de usuarios -->
 <div class="main-content">
     <h1>Usuaris</h1>
-    <button class="btn-crear">Crear</button>
+    <a href="/crearUsuaris" class="btn-crear">Crear</a>
 
     <table class="users-table">
         <thead>
@@ -46,22 +44,12 @@
         </tr>
         </thead>
         <tbody>
-        <!-- Ejemplo de datos estáticos; luego se cargarán dinámicamente -->
-        <tr>
-            <td>reyes.unai@gmail.com</td>
-            <td>Unai Reyes</td>
-            <td>614124574</td>
-            <td>Vilanova i la Geltrú</td>
-            <td>
-                <button class="btn-edit">✏️</button>
-                <button class="btn-delete">🗑️</button>
-            </td>
-        </tr>
-        <tr>
-            <td>mayo.adria@copernic.cat</td>
-            <td>Adria Mayo</td>
-            <td>605225582</td>
-            <td>Vilanova i la Geltrú</td>
+        <!-- Bucle Thymeleaf para iterar sobre la lista de usuarios -->
+        <tr th:each="usuari : ${usuaris}">
+            <td th:text="${usuari.email}"></td>
+            <td th:text="${usuari.nom + ' ' + usuari.cognom}"></td>
+            <td th:text="${usuari.telefon}"></td>
+            <td th:text="${usuari.poblacio}"></td>
             <td>
                 <button class="btn-edit">✏️</button>
                 <button class="btn-delete">🗑️</button>
