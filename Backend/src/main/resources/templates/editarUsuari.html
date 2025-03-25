@@ -32,37 +32,19 @@
 <div class="main-content">
     <h1>Editar Usuari</h1>
     <div class="create-user-container">
-
         <div class="profile-picture" id="profilePicture">
-            <!-- Si usuari.foto no es null, mostramos la imagen guardada -->
             <th:block th:if="${usuari.foto != null}">
-                <!-- Ajusta la ruta según tu proyecto:
-                     Por ejemplo, /images/{nombreArchivo} o un endpoint para servir la foto -->
-                <img id="fotoPreview"
-                     th:src="@{/images/{file}(file=${usuari.foto})}"
-                     alt="Foto usuario" />
+                <img id="fotoPreview" th:src="@{/images/{file}(file=${usuari.foto})}" alt="Foto usuario" />
             </th:block>
-
-            <!-- Si usuari.foto es null, mostramos un placeholder -->
-<!--            <th:block th:if="${usuari.foto == null}">-->
-<!--                <img id="fotoPreview"-->
-<!--                     src="https://via.placeholder.com/150"-->
-<!--                     alt="Foto usuario" />-->
-<!--            </th:block>-->
         </div>
-
+        <!-- Input oculto para seleccionar foto (se activa al hacer clic en la foto) -->
         <input type="file" id="fotoInput" name="foto" accept="image/*" style="display:none" />
 
-        <!-- Form: actualiza el usuario y redirige a /usuaris -->
-        <form class="user-form" action="/usuaris/editar" method="POST">
-            <!-- Campo oculto para identificar el usuario a editar -->
-            <input type="hidden" name="email" th:value="${usuari.email}" readonly />
-
+        <!-- Formulario para actualizar el usuario -->
+        <form class="user-form" action="/usuaris/editar" method="POST" enctype="multipart/form-data">
             <div class="form-field">
                 <label for="email">Correu</label>
-                <input type="email" id="email" name="email"
-                       th:value="${usuari.email}"
-                       required readonly />
+                <input type="email" id="email" name="email" th:value="${usuari.email}" required readonly />
             </div>
 
             <div class="form-field">
@@ -81,8 +63,7 @@
                        pattern="\d{9}" minlength="9" maxlength="9"
                        inputmode="numeric"
                        title="Introduce un número de 9 dígitos"
-                       th:value="${usuari.telefon}"
-                       required />
+                       th:value="${usuari.telefon}" required />
             </div>
 
             <div class="form-field">
@@ -94,14 +75,12 @@
 
             <div class="form-field">
                 <label for="poblacio">Població</label>
-                <input type="text" id="poblacio" name="poblacio"
-                       th:value="${usuari.poblacio}" />
+                <input type="text" id="poblacio" name="poblacio" th:value="${usuari.poblacio}" />
             </div>
 
             <div class="form-field full-width">
                 <label for="contra">Contrasenya provisional</label>
-                <input type="text" id="contra" name="contra"
-                       th:value="${usuari.contra}" required />
+                <input type="text" id="contra" name="contra" th:value="${usuari.contra}" required />
             </div>
 
             <button type="submit" class="btn-crear">Editar</button>
@@ -110,11 +89,12 @@
 </div>
 
 <script>
-    // Seleccionar foto y previsualizar
+    // Al hacer clic en la foto se activa el input para seleccionar un archivo
     document.getElementById('profilePicture').addEventListener('click', function() {
         document.getElementById('fotoInput').click();
     });
 
+    // Previsualización de la foto seleccionada
     document.getElementById('fotoInput').addEventListener('change', function(event) {
         const file = event.target.files[0];
         if (file) {
@@ -126,5 +106,6 @@
         }
     });
 </script>
+
 </body>
 </html>
