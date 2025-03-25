@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Recompensa</title>
+    <link rel="stylesheet" href="/styles/Recompensa.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <button>Inicio</button>
+    <button>Usuarios</button>
+    <button>Registros</button>
+    <button>Rutas</button>
+    <button>Recompensas</button>
+</div>
+
+<div class="main-content">
+    <div class="form-container">
+        <h2>Crear Recompensa</h2>
+        <form th:action="@{/recompensas/guardar}" th:object="${recompensas}" method="post" enctype="multipart/form-data">
+
+            <div class="form-group">
+                <label for="descripcio">Descripció</label>
+                <input type="text" id="descripcio" th:field="*{descripcio}" required>
+            </div>
+            <div class="form-group">
+                <label for="observacions">Observacions</label>
+                <textarea id="observacions" th:field="*{observacions}" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="cost">Cost</label>
+                <input type="number" id="cost" th:field="*{cost}" min="1" required>
+            </div>
+            <label for="besanvi-select">Punt de Bescanvi:</label>
+            <select id="besanvi-select" name="bescanvi" th:field="*{puntBescanviId}" required>
+                <option th:each="bescanvis : ${bescanvi}" th:value="${bescanvis}" th:text="${bescanvis.nom}"></option>
+            </select>
+            <div class="form-group">
+                <select class="input" th:field="*{estat}" id="pais" required>
+                    <option value="" disabled selected hidden></option>
+                    <option class="inp_pais" th:each="estat : ${estat}"
+                            th:value="${estat}"
+                            th:text="${estat}"></option>
+                </select>
+            </div>
+
+            <button type="submit" class="submit-btn">Guardar Recompensa</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
