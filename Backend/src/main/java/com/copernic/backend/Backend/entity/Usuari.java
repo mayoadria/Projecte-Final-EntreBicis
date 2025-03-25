@@ -57,7 +57,7 @@ public class Usuari implements UserDetails {
     private int saldo;
 
     @Lob
-    private byte[] foto;
+    private String foto; // Se guardará la cadena Base64
     @Enumerated(EnumType.STRING)
     private Rol rol;
 
@@ -84,4 +84,7 @@ public class Usuari implements UserDetails {
         return email; // Devuelve el email como username
     }
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "imagen_id")
+    private Imagen imagen;
 }

@@ -1,6 +1,7 @@
 package com.copernic.backend.Backend.controller.web;
 
 import com.copernic.backend.Backend.entity.Usuari;
+import com.copernic.backend.Backend.entity.enums.Rol;
 import com.copernic.backend.Backend.logic.web.UsuariLogic;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,10 +10,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class AuthController {
@@ -62,9 +67,21 @@ public class AuthController {
     }
 
 
-    @GetMapping("/usuaris")
-    public String showUsuaris() {
-        return "usuaris";
+//    @GetMapping("/usuaris")
+//    public String showUsuaris(Model model) {
+//        // Obtiene todos los usuarios y filtra los que no son administradores
+//        List<Usuari> usuaris = usuariLogic.getAllUsuaris().stream()
+//                .filter(u -> !u.getRol().equals(Rol.ADMINISTRADOR)) // Ajusta el valor según tu enum (por ejemplo, ADMIN o ADMINISTRADOR)
+//                .collect(Collectors.toList());
+//        model.addAttribute("usuaris", usuaris);
+//        return "usuaris"; // Se buscará usuaris.html en src/main/resources/templates/
+//    }
+
+
+    @GetMapping("/crearUsuaris")
+    public String crearUsuariForm() {
+        return "crearUsuari"; // crear-usuari.html
     }
+
 
 }

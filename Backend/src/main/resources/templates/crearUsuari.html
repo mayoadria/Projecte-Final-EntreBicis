@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Crear Usuari - EntreBicis</title>
+  <link rel="stylesheet" href="/styles/crearUsuari.css" />
+</head>
+<body>
+<!-- Barra lateral, igual que en home.html -->
+<div class="sidebar">
+  <div class="profile">
+    <img src="https://via.placeholder.com/80" alt="Foto de perfil" />
+    <h3>Admin</h3>
+  </div>
+  <nav>
+    <ul>
+      <li><a href="/home"><span class="icon">🏠</span>Inici</a></li>
+      <li><a href="/usuaris"><span class="icon">👤</span>Usuaris</a></li>
+      <li><a href="#"><span class="icon">📋</span>Registres</a></li>
+      <li><a href="#"><span class="icon">🚴</span>Rutes</a></li>
+      <li><a href="#"><span class="icon">🎁</span>Recompenses</a></li>
+      <li><a href="#"><span class="icon">🛍️</span>Comerços</a></li>
+      <li><a href="#"><span class="icon">⚙️</span>Configuració</a></li>
+    </ul>
+  </nav>
+  <div class="logout">
+    <a href="/logout"><span class="icon">↩️</span>Sortir</a>
+  </div>
+</div>
+
+<!-- Contenido principal: formulario para crear el usuario -->
+<div class="main-content">
+  <h1>Crear Usuari</h1>
+  <div class="create-user-container">
+    <!-- Área de foto interactiva -->
+    <div class="profile-picture" id="profilePicture">
+      <img id="fotoPreview" src="https://via.placeholder.com/150" alt="Foto nuevo usuario" />
+    </div>
+
+
+    <!-- Se añade enctype para permitir subir archivos -->
+    <form class="user-form" action="/usuaris/crear" method="POST" enctype="multipart/form-data">
+      <!-- Input file oculto para seleccionar foto -->
+      <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" />
+      <div class="form-field">
+        <label for="email">Correu</label>
+        <input type="email" id="email" name="email" placeholder="ejemplo@correo.com" required />
+      </div>
+      <div class="form-field">
+        <label for="nom">Nom</label>
+        <input type="text" id="nom" name="nom" placeholder="Nombre" required />
+      </div>
+      <div class="form-field">
+        <label for="cognom">Cognom</label>
+        <input type="text" id="cognom" name="cognom" placeholder="Apellido" />
+      </div>
+      <div class="form-field">
+        <label for="telefon">Telèfon</label>
+        <input type="text" id="telefon" name="telefon" placeholder="Número de teléfono"
+               pattern="\d{9}" minlength="9" maxlength="9"
+               inputmode="numeric"
+               title="Introduce un número de 9 dígitos" required />
+      </div>
+      <div class="form-field">
+        <label for="saldo">Saldo</label>
+        <input type="number" id="saldo" name="saldo" placeholder="0" value="0" min="0" max="1000" step="0.1" required />
+      </div>
+      <div class="form-field">
+        <label for="poblacio">Població</label>
+        <input type="text" id="poblacio" name="poblacio" placeholder="Ciudad" />
+      </div>
+      <div class="form-field full-width">
+        <label for="contra">Contrasenya provisional</label>
+        <input type="text" id="contra" name="contra" placeholder="Contraseña provisional" required />
+      </div>
+      <button type="submit" class="btn-crear">Crear</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Al hacer clic en el contenedor de foto, se abre el selector de archivos
+  document.getElementById('profilePicture').addEventListener('click', function() {
+    document.getElementById('fotoInput').click();
+  });
+  // Al seleccionar un archivo, se muestra la previsualización en el marco circular
+  document.getElementById('fotoInput').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('fotoPreview').src = e.target.result;
+      }
+      reader.readAsDataURL(file);
+    }
+  });
+</script>
+</body>
+</html>
