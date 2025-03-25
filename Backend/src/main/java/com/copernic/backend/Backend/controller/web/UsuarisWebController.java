@@ -1,6 +1,5 @@
 package com.copernic.backend.Backend.controller.web;
 
-import com.copernic.backend.Backend.entity.Imagen;
 import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.entity.enums.Rol;
 import com.copernic.backend.Backend.logic.web.UsuariLogic;
@@ -10,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -84,7 +82,10 @@ public class UsuarisWebController {
             existing.setTelefon(usuari.getTelefon());
             existing.setSaldo(usuari.getSaldo());
             existing.setPoblacio(usuari.getPoblacio());
-            existing.setRol(Rol.CICLISTA);
+            if (!existing.getRol().equals(Rol.ADMINISTRADOR)) {
+                existing.setRol(Rol.CICLISTA);
+            }
+
             if (fileFoto != null && !fileFoto.isEmpty()) {
                 String base64Foto = Base64.getEncoder().encodeToString(fileFoto.getBytes());
                 existing.setFoto(base64Foto);

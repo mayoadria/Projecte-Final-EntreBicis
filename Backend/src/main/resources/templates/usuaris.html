@@ -1,32 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <title>Gestió d'Usuaris - EntreBicis</title>
-    <link rel="stylesheet" href="/styles/usuaris.css" />
+    <link rel="stylesheet" href="/styles/usuaris.css"/>
+    <link rel="stylesheet" href="/styles/barraLateral.css"/>
 </head>
 <body>
-<!-- Barra lateral (idéntica a la de home.html) -->
-<div class="sidebar">
-    <div class="profile">
-        <img src="https://via.placeholder.com/80" alt="Foto de perfil" />
-        <h3>Admin</h3>
-    </div>
-    <nav>
-        <ul>
-            <li><a href="/home"><span class="icon">🏠</span>Inici</a></li>
-            <li><a href="/usuaris"><span class="icon">👤</span>Usuaris</a></li>
-            <li><a href="#"><span class="icon">📋</span>Registres</a></li>
-            <li><a href="#"><span class="icon">🚴</span>Rutes</a></li>
-            <li><a href="#"><span class="icon">🎁</span>Recompenses</a></li>
-            <li><a href="#"><span class="icon">🛍️</span>Comerços</a></li>
-            <li><a href="#"><span class="icon">⚙️</span>Configuració</a></li>
-        </ul>
-    </nav>
-    <div class="logout">
-        <a href="/logout"><span class="icon">↩️</span>Sortir</a>
-    </div>
-</div>
+<!-- Barra lateral -->
+<div th:replace="barraLateral :: barralateral"></div>
 
 <!-- Contenido principal: tabla de usuarios -->
 <div class="main-content">

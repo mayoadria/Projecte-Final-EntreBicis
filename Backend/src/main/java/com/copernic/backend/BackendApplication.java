@@ -26,9 +26,9 @@ public class BackendApplication {
                         .nom("Admin")
                         .cognom("Admin")
                         .contra("admin") // Nota: En producción se debe encriptar
-                        .telefon("000000000")
+                        .telefon("123456789")
                         .poblacio("Administradorland")
-                        .saldo(1000000)
+                        .saldo(1000)
                         .rol(Rol.ADMINISTRADOR) // Asegúrate de que tu enum Rol tiene la opción ADMIN
                         .build();
                 userRepository.save(admin);

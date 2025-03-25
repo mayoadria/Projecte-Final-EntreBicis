@@ -1,21 +1,26 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
     <title>Panel de Control - EntreBicis</title>
-    <!-- Vinculamos la hoja de estilo -->
     <link rel="stylesheet" href="/styles/home.css" />
 </head>
 <body>
 <div class="sidebar">
     <div class="profile">
-        <!-- Puedes reemplazar la imagen por la del usuario admin -->
+        <!-- Se puede reemplazar la imagen por la del usuario admin -->
         <img src="https://via.placeholder.com/80" alt="Foto de perfil" />
-        <h3>Admin</h3>
+        <h3 th:text="${admin != null ? admin.nom : 'Admin'}">Admin</h3>
     </div>
     <nav>
         <ul>
-            <li><a href="#"><span class="icon">✏️</span>Editar</a></li>
+            <li>
+                <a th:href="@{/usuaris/editar/{email}(email='admin@entrebicis.com')}">
+                    <span class="icon">✏️</span>Editar
+                </a>
+            </li>
+
+
             <li><a href="#"><span class="icon">⚙️</span>Configuració</a></li>
         </ul>
     </nav>
@@ -35,7 +40,6 @@
             <div class="card">Comerços</div>
             <div class="foto">Foto</div>
         </div>
-
     </div>
 </div>
 </body>

@@ -4,44 +4,26 @@
   <meta charset="UTF-8" />
   <title>Crear Usuari - EntreBicis</title>
   <link rel="stylesheet" href="/styles/crearUsuari.css" />
+  <link rel="stylesheet" href="/styles/barraLateral.css" />
 </head>
 <body>
-<!-- Barra lateral, igual que en home.html -->
-<div class="sidebar">
-  <div class="profile">
-    <img src="https://via.placeholder.com/80" alt="Foto de perfil" />
-    <h3>Admin</h3>
-  </div>
-  <nav>
-    <ul>
-      <li><a href="/home"><span class="icon">🏠</span>Inici</a></li>
-      <li><a href="/usuaris"><span class="icon">👤</span>Usuaris</a></li>
-      <li><a href="#"><span class="icon">📋</span>Registres</a></li>
-      <li><a href="#"><span class="icon">🚴</span>Rutes</a></li>
-      <li><a href="#"><span class="icon">🎁</span>Recompenses</a></li>
-      <li><a href="#"><span class="icon">🛍️</span>Comerços</a></li>
-      <li><a href="#"><span class="icon">⚙️</span>Configuració</a></li>
-    </ul>
-  </nav>
-  <div class="logout">
-    <a href="/logout"><span class="icon">↩️</span>Sortir</a>
-  </div>
-</div>
+<!-- Barra lateral -->
+<div th:replace="barraLateral :: barralateral"></div>
 
 <!-- Contenido principal: formulario para crear el usuario -->
 <div class="main-content">
   <h1>Crear Usuari</h1>
   <div class="create-user-container">
-    <!-- Área de foto interactiva -->
+    <!-- Área de foto interactiva: siempre muestra el placeholder con el icono de lápiz -->
     <div class="profile-picture" id="profilePicture">
-      <img id="fotoPreview" src="https://via.placeholder.com/150" alt="Foto nuevo usuario" />
+      <img id="fotoPreview" src="https://via.placeholder.com/150" alt="" />
+      <span id="editIcon" class="edit-icon">✏️</span>
     </div>
+    <!-- Input file oculto para seleccionar foto -->
+    <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" />
 
-
-    <!-- Se añade enctype para permitir subir archivos -->
+    <!-- Formulario para crear usuario (con enctype para archivos) -->
     <form class="user-form" action="/usuaris/crear" method="POST" enctype="multipart/form-data">
-      <!-- Input file oculto para seleccionar foto -->
-      <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" />
       <div class="form-field">
         <label for="email">Correu</label>
         <input type="email" id="email" name="email" placeholder="ejemplo@correo.com" required />
@@ -79,11 +61,11 @@
 </div>
 
 <script>
-  // Al hacer clic en el contenedor de foto, se abre el selector de archivos
+  // Al hacer clic en el contenedor de foto se abre el selector de archivos
   document.getElementById('profilePicture').addEventListener('click', function() {
     document.getElementById('fotoInput').click();
   });
-  // Al seleccionar un archivo, se muestra la previsualización en el marco circular
+  // Previsualización de la foto seleccionada
   document.getElementById('fotoInput').addEventListener('change', function(event) {
     const file = event.target.files[0];
     if (file) {

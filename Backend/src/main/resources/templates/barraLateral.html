@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="barralateral">
+    <div class="sidebar">
+        <div class="profile">
+            <img src="https://via.placeholder.com/80" alt="Foto de perfil"/>
+            <h3>Admin</h3>
+        </div>
+
+        <!-- Contenedor principal para secciones de navegación -->
+        <nav class="nav-sections">
+            <!-- Enlaces de la parte superior -->
+            <ul class="nav-top">
+                <li><a href="/home"><span class="icon">🏠</span>Inici</a></li>
+                <li><a href="/usuaris"><span class="icon">👤</span>Usuaris</a></li>
+                <li><a href="#"><span class="icon">📋</span>Registres</a></li>
+                <li><a href="#"><span class="icon">🚴</span>Rutes</a></li>
+                <li><a href="#"><span class="icon">🎁</span>Recompenses</a></li>
+                <li><a href="#"><span class="icon">🛍️</span>Comerços</a></li>
+            </ul>
+
+            <!-- Enlaces de la parte inferior -->
+            <ul class="nav-bottom">
+                <li><a href="#"><span class="icon">⚙️</span>Configuració</a></li>
+                <li>
+                    <a th:href="@{/usuaris/editar/{email}(email='admin@entrebicis.com')}">
+                        <span class="icon">✏️</span>Editar
+                    </a>
+                </li>
+                <li><a href="/logout"><span class="icon">↩️</span>Sortir</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>
+</body>
+</html>

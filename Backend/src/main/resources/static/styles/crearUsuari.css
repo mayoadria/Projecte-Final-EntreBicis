@@ -198,3 +198,25 @@ nav ul li a:hover {
 .user-form .full-width {
     grid-column: 1 / span 2;
 }
+
+/* Asegura que el contenedor de la foto muestre el icono centrado */
+.profile-picture {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    margin-bottom: 20px;
+    border: 2px solid #0099cc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-picture .edit-icon {
+    position: absolute;
+    font-size: 48px;
+    color: #0099cc;
+}
+

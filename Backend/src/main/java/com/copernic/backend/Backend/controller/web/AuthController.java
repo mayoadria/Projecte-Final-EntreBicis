@@ -48,9 +48,13 @@ public class AuthController {
     }
 
     @GetMapping("/home")
-    public String showHome() {
+    public String showHome(Model model) {
+        // Recupera el usuario administrador, por ejemplo:
+        Usuari admin = usuariLogic.getUsuariByEmail("admin@entrebicis.com").orElse(null);
+        model.addAttribute("admin", admin);
         return "home";
     }
+
 
 
 //    @GetMapping("/usuaris")

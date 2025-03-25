@@ -39,7 +39,4 @@ public class Usuari {
     @OneToMany(mappedBy = "usuariRecompensa", cascade = CascadeType.ALL)
     private List<Recompensas> recompensas;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "imagen_id")
-    private Imagen imagen;
 }
