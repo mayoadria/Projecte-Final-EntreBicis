@@ -36,11 +36,12 @@
     <div class="profile-picture" id="profilePicture">
       <img id="fotoPreview" src="https://via.placeholder.com/150" alt="Foto nuevo usuario" />
     </div>
-    <!-- Input file oculto para seleccionar foto -->
-    <input type="file" id="fotoInput" name="foto" accept="image/*" style="display:none" />
+
 
     <!-- Se añade enctype para permitir subir archivos -->
     <form class="user-form" action="/usuaris/crear" method="POST" enctype="multipart/form-data">
+      <!-- Input file oculto para seleccionar foto -->
+      <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" />
       <div class="form-field">
         <label for="email">Correu</label>
         <input type="email" id="email" name="email" placeholder="ejemplo@correo.com" required />

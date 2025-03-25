@@ -29,7 +29,7 @@ public class Usuari {
     @Column
     private int saldo;
     @Lob
-    private byte[] foto;
+    private String foto; // Se guardará la cadena Base64
     @Enumerated(EnumType.STRING)
     private Rol rol;
 
@@ -39,6 +39,7 @@ public class Usuari {
     @OneToMany(mappedBy = "usuariRecompensa", cascade = CascadeType.ALL)
     private List<Recompensas> recompensas;
 
-
-
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "imagen_id")
+    private Imagen imagen;
 }
