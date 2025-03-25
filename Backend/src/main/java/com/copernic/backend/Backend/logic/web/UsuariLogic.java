@@ -1,5 +1,6 @@
 package com.copernic.backend.Backend.logic.web;
 
+import com.copernic.backend.Backend.Excepciones.ExcepcionEmailDuplicado;
 import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,11 @@ public class UsuariLogic {
     private UserRepository userRepository;
 
     public Usuari createUsuari(Usuari usuari) {
-        return userRepository.save(usuari);
+        if (existeEmail(usuari.getEmail())) {
+            throw new ExcepcionEmailDuplicado("El correu electrònic ja està registrat.");
+        }else {
+            return userRepository.save(usuari);
+        }
     }
 
     public List<Usuari> getAllUsuaris() {
@@ -33,5 +38,9 @@ public class UsuariLogic {
 
     public void deleteUsuari(String email) {
         userRepository.deleteById(email);
+    }
+
+    public boolean existeEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 }

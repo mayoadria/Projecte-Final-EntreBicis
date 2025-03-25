@@ -5,7 +5,10 @@ import com.copernic.backend.Backend.logic.web.UsuariLogic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +36,7 @@ public class UsuariController {
     }
 
     @PostMapping
-    public ResponseEntity<Usuari> createUsuari(@RequestBody Usuari usuari) {
+    public ResponseEntity<Usuari> createUsuari(@Valid @RequestBody Usuari usuari, BindingResult result) {
         Usuari newUsuari = usuariLogic.createUsuari(usuari);
         return new ResponseEntity<>(newUsuari, HttpStatus.CREATED);
     }
