@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8" />
   <title>Crear Usuari - EntreBicis</title>
   <link rel="stylesheet" href="/styles/crearUsuari.css" />
 </head>
 <body>
-<!-- Barra lateral, igual que en home.html -->
+<!-- Barra lateral -->
 <div class="sidebar">
   <div class="profile">
     <img src="https://via.placeholder.com/80" alt="Foto de perfil" />
@@ -28,19 +28,15 @@
   </div>
 </div>
 
-<!-- Contenido principal: formulario para crear el usuario -->
+<!-- Contenido principal -->
 <div class="main-content">
   <h1>Crear Usuari</h1>
   <div class="create-user-container">
-    <!-- Área de foto interactiva -->
     <div class="profile-picture" id="profilePicture">
       <img id="fotoPreview" src="https://via.placeholder.com/150" alt="Foto nuevo usuario" />
     </div>
 
-
-    <!-- Se añade enctype para permitir subir archivos -->
-    <form class="user-form" action="/usuaris/crear" method="POST" enctype="multipart/form-data">
-      <!-- Input file oculto para seleccionar foto -->
+    <form class="user-form" th:action="@{/usuaris/crearU}" method="POST" enctype="multipart/form-data">
       <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" />
       <div class="form-field">
         <label for="email">Correu</label>
@@ -56,10 +52,7 @@
       </div>
       <div class="form-field">
         <label for="telefon">Telèfon</label>
-        <input type="text" id="telefon" name="telefon" placeholder="Número de teléfono"
-               pattern="\d{9}" minlength="9" maxlength="9"
-               inputmode="numeric"
-               title="Introduce un número de 9 dígitos" required />
+        <input type="text" id="telefon" name="telefon" placeholder="Número de teléfono" pattern="\d{9}" minlength="9" maxlength="9" inputmode="numeric" title="Introduce un número de 9 dígitos" required />
       </div>
       <div class="form-field">
         <label for="saldo">Saldo</label>
@@ -79,11 +72,10 @@
 </div>
 
 <script>
-  // Al hacer clic en el contenedor de foto, se abre el selector de archivos
   document.getElementById('profilePicture').addEventListener('click', function() {
     document.getElementById('fotoInput').click();
   });
-  // Al seleccionar un archivo, se muestra la previsualización en el marco circular
+
   document.getElementById('fotoInput').addEventListener('change', function(event) {
     const file = event.target.files[0];
     if (file) {
