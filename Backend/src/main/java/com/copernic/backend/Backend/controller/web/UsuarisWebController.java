@@ -39,7 +39,7 @@ public class UsuarisWebController {
     }
 
     // Crear un usuario asignando el rol CICLISTA y guardando la foto en Base64 (si se selecciona)
-    @PostMapping("/crear")
+    @PostMapping("/crearU")
     public String crearUsuari(Usuari usuari, @RequestParam(value = "fileFoto", required = false) MultipartFile fileFoto) throws IOException {
         if (fileFoto != null && !fileFoto.isEmpty()) {
             String base64Foto = Base64.getEncoder().encodeToString(fileFoto.getBytes());

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8" />
   <title>Crear Usuari - EntreBicis</title>
@@ -10,7 +10,7 @@
 <!-- Barra lateral -->
 <div th:replace="barraLateral :: barralateral"></div>
 
-<!-- Contenido principal: formulario para crear el usuario -->
+<!-- Contenido principal -->
 <div class="main-content">
   <h1>Crear Usuari</h1>
   <div class="create-user-container">
@@ -19,11 +19,9 @@
       <img id="fotoPreview" src="https://via.placeholder.com/150" alt="" />
       <span id="editIcon" class="edit-icon">✏️</span>
     </div>
-    <!-- Input file oculto para seleccionar foto -->
-    <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" />
 
-    <!-- Formulario para crear usuario (con enctype para archivos) -->
-    <form class="user-form" action="/usuaris/crear" method="POST" enctype="multipart/form-data">
+    <form class="user-form" th:action="@{/usuaris/crearU}" method="POST" enctype="multipart/form-data">
+      <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" />
       <div class="form-field">
         <label for="email">Correu</label>
         <input type="email" id="email" name="email" placeholder="ejemplo@correo.com" required />
@@ -38,10 +36,7 @@
       </div>
       <div class="form-field">
         <label for="telefon">Telèfon</label>
-        <input type="text" id="telefon" name="telefon" placeholder="Número de teléfono"
-               pattern="\d{9}" minlength="9" maxlength="9"
-               inputmode="numeric"
-               title="Introduce un número de 9 dígitos" required />
+        <input type="text" id="telefon" name="telefon" placeholder="Número de teléfono" pattern="\d{9}" minlength="9" maxlength="9" inputmode="numeric" title="Introduce un número de 9 dígitos" required />
       </div>
       <div class="form-field">
         <label for="saldo">Saldo</label>
@@ -66,6 +61,7 @@
     document.getElementById('fotoInput').click();
   });
   // Previsualización de la foto seleccionada
+
   document.getElementById('fotoInput').addEventListener('change', function(event) {
     const file = event.target.files[0];
     if (file) {
