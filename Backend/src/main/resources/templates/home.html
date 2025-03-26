@@ -4,30 +4,11 @@
     <meta charset="UTF-8" />
     <title>Panel de Control - EntreBicis</title>
     <link rel="stylesheet" href="/styles/home.css" />
+    <link rel="stylesheet" href="/styles/barraLateral.css" />
 </head>
 <body>
-<div class="sidebar">
-    <div class="profile">
-        <!-- Se puede reemplazar la imagen por la del usuario admin -->
-        <img src="https://via.placeholder.com/80" alt="Foto de perfil" />
-        <h3 th:text="${admin != null ? admin.nom : 'Admin'}">Admin</h3>
-    </div>
-    <nav>
-        <ul>
-            <li>
-                <a th:href="@{/usuaris/editar/{email}(email='admin@entrebicis.com')}">
-                    <span class="icon">✏️</span>Editar
-                </a>
-            </li>
-
-
-            <li><a href="#"><span class="icon">⚙️</span>Configuració</a></li>
-        </ul>
-    </nav>
-    <div class="logout">
-        <a href="/logout"><span class="icon">↩️</span>Sortir</a>
-    </div>
-</div>
+<!-- Barra lateral -->
+<div th:replace="barraLateral :: barralateral"></div>
 
 <div class="main-content">
     <h1>Panell de Control</h1>

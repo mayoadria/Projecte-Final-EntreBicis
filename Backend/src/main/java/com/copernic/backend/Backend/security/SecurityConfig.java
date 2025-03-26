@@ -89,7 +89,7 @@ public class SecurityConfig {
         admin.setSaldo(20);
         admin.setEmail("admin@entrebicis.com");
         admin.setTelefon("000000000");
-        admin.setRol(Rol.CICLISTA);
+        admin.setRol(Rol.ADMINISTRADOR);
 
         usuariLogic.createUsuari(admin);
     }
