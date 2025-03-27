@@ -26,8 +26,8 @@ public class UsuariController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<Usuari> getUsuari(@PathVariable String email) {
-        Optional<Usuari> usuari = usuariLogic.getUsuariByEmail(email);
+    public ResponseEntity<Usuari> getUsuari(@PathVariable String poblacio) {
+        Optional<Usuari> usuari = usuariLogic.getUsuariByEmail(poblacio);
         if (usuari.isPresent()) {
             return ResponseEntity.ok(usuari.get());
         } else {

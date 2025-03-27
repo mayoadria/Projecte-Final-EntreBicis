@@ -1,5 +1,6 @@
 package com.copernic.backend.Backend.entity;
 
+import com.copernic.backend.Backend.entity.enums.Estat;
 import com.copernic.backend.Backend.entity.enums.Rol;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -61,6 +62,9 @@ public class Usuari implements UserDetails {
     private String foto; // Se guardará la cadena Base64
     @Enumerated(EnumType.STRING)
     private Rol rol;
+
+    @Enumerated(EnumType.STRING)
+    private Estat estat;
 
     @OneToMany(mappedBy = "usuari", cascade = CascadeType.ALL)
     private List<Rutes> rutes;

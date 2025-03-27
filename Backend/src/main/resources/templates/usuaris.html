@@ -23,6 +23,7 @@
             <th>Nom</th>
             <th>Telèfon</th>
             <th>Població</th>
+            <th>Saldo</th>
             <th>Gestió</th>
         </tr>
         </thead>
@@ -33,8 +34,16 @@
             <td th:text="${usuari.nom + ' ' + usuari.cognom}"></td>
             <td th:text="${usuari.telefon}"></td>
             <td th:text="${usuari.poblacio}"></td>
+            <td th:text="${usuari.saldo}"></td>
             <td>
-                <a th:href="@{/usuaris/editar/{email}(email=${usuari.email})}" class="btn-edit">✏️</a>
+
+                <label class="switch">
+                    <input type="checkbox" th:checked="${usuari.estat}"
+                           onchange="toggleUserActivation(this, '${usuari.email}')">
+                    <span class="slider round"></span>
+                </label>
+
+            <a th:href="@{/usuaris/editar/{email}(email=${usuari.email})}" class="btn-edit">✏️</a>
                 <button class="btn-delete" th:attr="data-email=${usuari.email}" onclick="deleteUser(this)">🗑️</button>
             </td>
 

@@ -19,7 +19,7 @@
         </div>
 
         <!-- Formulario para actualizar el usuario -->
-        <form class="user-form" action="/usuaris/editar" method="POST" enctype="multipart/form-data">
+        <form class="user-form" th:action="@{/usuaris/editarUsuari}" method="POST" enctype="multipart/form-data">
             <!-- Input oculto para seleccionar foto (se activa al hacer clic en la foto) -->
             <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" />
 
