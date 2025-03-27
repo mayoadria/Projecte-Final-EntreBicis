@@ -8,6 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Base64;
 
 @Controller
 @RequestMapping("/bescanvi")
@@ -27,9 +31,13 @@ public class ComerçosController {
         return "crearComerc"; // Vista "Registre"
     }
     @PostMapping("/guardar")
-    public String guardarComerc(@ModelAttribute("bescanvis") PuntBescanvi puntBescanvi ,Model model) {
+    public String guardarComerc(@ModelAttribute("bescanvis") PuntBescanvi puntBescanvi ,Model model,
+                                @RequestParam(value = "fileFoto", required = false) MultipartFile fileFoto) {
         try {
-
+            if (fileFoto != null && !fileFoto.isEmpty()) {
+                String base64Foto = Base64.getEncoder().encodeToString(fileFoto.getBytes());
+                puntBescanvi.setFoto(base64Foto);
+            }
             // Guardar la recompensa
             puntBescanviLogic.guardarComerc(puntBescanvi);
 
@@ -53,12 +61,16 @@ public class ComerçosController {
         if (puntBescanvi == null) {
             return "redirect:/bescanvi/llistar"; // Redirigir si no existe el usuario
         }
+        if (puntBescanvi.getFoto() != null && !puntBescanvi.getFoto().isEmpty()) {
+            String fotoDataUrl = "data:image/jpeg;base64," + puntBescanvi.getFoto();
+            model.addAttribute("fotoDataUrl", fotoDataUrl);
+        }
         model.addAttribute("bescanvi", puntBescanvi);
         return "modificarComerc"; // Cargar la vista para editar
     }
 
     @PostMapping("/editar")
-    public String guardarCambios(@ModelAttribute PuntBescanvi bescanvi,Model model) {
+    public String guardarCambios(@ModelAttribute PuntBescanvi bescanvi,Model model,@RequestParam(value = "fileFoto", required = false) MultipartFile fileFoto) throws IOException {
         // Lógica de actualización de recompensa
         PuntBescanvi puntBescanviExistent = puntBescanviLogic.findByID(bescanvi.getId());
 
@@ -71,7 +83,10 @@ public class ComerçosController {
             puntBescanviExistent.setTelefon(bescanvi.getTelefon());
             puntBescanviExistent.setCodiPostal(bescanvi.getCodiPostal());
             puntBescanviExistent.setPersonaContacte(bescanvi.getPersonaContacte());
-
+            if (fileFoto != null && !fileFoto.isEmpty()) {
+                String base64Foto = Base64.getEncoder().encodeToString(fileFoto.getBytes());
+                puntBescanviExistent.setFoto(base64Foto);
+            }
             puntBescanviLogic.modificarRecompensa(puntBescanviExistent);
             return "redirect:/bescanvi/llistar";  // Redirigir al listado
         } else {

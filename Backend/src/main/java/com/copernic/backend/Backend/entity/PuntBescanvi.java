@@ -35,6 +35,9 @@ public class PuntBescanvi {
     @Column
     private String observacions;
 
+    @Lob
+    private String foto;
+
     @OneToMany(mappedBy = "puntBescanviId", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Recompensas> puntBescanviID;
