@@ -26,10 +26,15 @@ public class Recompensas {
     private String observacions;
     @Enumerated(EnumType.STRING)
     private Estat estat;
+    @Lob
+    private String foto;
 
     @ManyToOne
-    @JoinColumn(name = "usuari_email", nullable = false)
+    @JoinColumn(name = "usuari_email", nullable = true)
     private Usuari usuariRecompensa;
-    @OneToMany(mappedBy = "recompensa", cascade = CascadeType.ALL)
-    private List<PuntBescanvi> puntsBescanvi;
+
+    @ManyToOne
+    @JoinColumn(name = "puntBescanviID", nullable = true)
+    private PuntBescanvi puntBescanviId;
+
 }

@@ -1,0 +1,222 @@
+/* Reinicio básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Layout general */
+body {
+    display: flex;
+    height: 100vh;
+    background-color: #aeefff; /* Color de fondo */
+}
+
+/* Barra lateral (copiada de home.css) */
+.sidebar {
+    width: 200px;
+    background-color: #85d3f2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.profile {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile img {
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+}
+
+.profile h3 {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+nav ul {
+    list-style: none;
+    width: 100%;
+    text-align: left;
+}
+
+nav ul li a {
+    display: block;
+    padding: 10px 20px;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+nav ul li a:hover {
+    background-color: #72c0de;
+}
+
+.icon {
+    margin-right: 8px;
+}
+
+.logout {
+    margin-top: auto;
+    margin-bottom: 20px;
+}
+
+.logout a {
+    display: block;
+    padding: 10px 20px;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.logout a:hover {
+    background-color: #72c0de;
+}
+
+/* Contenido principal: centra el formulario horizontal y verticalmente */
+/* Contenido principal: sin centrar globalmente para que el h1 quede a la izquierda */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    /* Se quitan las propiedades de centramiento global para que el h1 se alinee por defecto a la izquierda */
+}
+
+/* Estilo del h1 igual que en usuaris.css */
+.main-content h1 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+}
+
+/* Contenedor del formulario: se centra solo el contenido del formulario */
+.create-user-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    /* Puedes agregar un margen superior si deseas separarlo un poco del h1 */
+    margin-top: 20px;
+}
+
+
+/* Área de la foto interactiva */
+.profile-picture {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    margin-bottom: 20px;
+    border: 2px solid #0099cc;
+}
+
+.profile-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Formulario: centrado en la pantalla */
+.user-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 600px;
+    width: 100%;
+}
+
+/* Campos del formulario */
+.form-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-field label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-field input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Botón Crear */
+.btn-crear {
+    grid-column: 1 / span 2;
+    background-color: #0099cc;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    justify-self: center;
+    width: 120px;
+}
+
+.btn-crear:hover {
+    background-color: #008bb3;
+}
+
+
+
+.user-form .full-width {
+    grid-column: 1 / span 2;
+}
+
+
+
+/* Botón Crear */
+.btn-crear {
+    grid-column: 1 / span 2;
+    background-color: #0099cc;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    justify-self: center;
+    width: 120px;
+}
+
+.btn-crear:hover {
+    background-color: #008bb3;
+}
+
+/* Regla para campos que ocupen toda la fila */
+.user-form .full-width {
+    grid-column: 1 / span 2;
+}
+
+/* Asegura que el contenedor de la foto muestre el icono centrado */
+.profile-picture {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    margin-bottom: 20px;
+    border: 2px solid #0099cc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-picture .edit-icon {
+    position: absolute;
+    font-size: 48px;
+    color: #0099cc;
+}
+

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Editar Usuari - EntreBicis</title>
+    <link rel="stylesheet" href="/styles/crearUsuari.css" />
+    <link rel="stylesheet" href="/styles/barraLateral.css" />
+</head>
+<body>
+<!-- Barra lateral -->
+<div th:replace="barraLateral :: barralateral"></div>
+
+<!-- Contenido principal: formulario para editar el usuario -->
+<div class="main-content">
+    <h1>Editar Usuari</h1>
+    <div class="create-user-container">
+        <div class="profile-picture" id="profilePicture">
+            <img id="fotoPreview" th:src="${fotoDataUrl != null ? fotoDataUrl : 'https://via.placeholder.com/150'}" alt="Foto usuario" />
+        </div>
+
+        <!-- Formulario para actualizar el usuario -->
+        <form class="user-form" th:action="@{/usuaris/editarUsuari}" method="POST" enctype="multipart/form-data">
+            <!-- Input oculto para seleccionar foto (se activa al hacer clic en la foto) -->
+            <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" />
+
+            <div class="form-field">
+                <label for="email">Correu</label>
+                <input type="email" id="email" name="email" th:value="${usuari.email}" required readonly />
+            </div>
+
+            <div class="form-field">
+                <label for="nom">Nom</label>
+                <input type="text" id="nom" name="nom" th:value="${usuari.nom}" required />
+            </div>
+
+            <div class="form-field">
+                <label for="cognom">Cognom</label>
+                <input type="text" id="cognom" name="cognom" th:value="${usuari.cognom}" />
+            </div>
+
+            <div class="form-field">
+                <label for="telefon">Telèfon</label>
+                <input type="text" id="telefon" name="telefon"
+                       pattern="\d{9}" minlength="9" maxlength="9"
+                       inputmode="numeric"
+                       title="Introduce un número de 9 dígitos"
+                       th:value="${usuari.telefon}" required />
+            </div>
+
+            <div class="form-field">
+                <label for="saldo">Saldo</label>
+                <input type="number" id="saldo" name="saldo"
+                       th:value="${usuari.saldo}"
+                       min="0" max="1000" step="0.1" required />
+            </div>
+
+            <div class="form-field">
+                <label for="poblacio">Població</label>
+                <input type="text" id="poblacio" name="poblacio" th:value="${usuari.poblacio}" />
+            </div>
+
+            <button type="submit" class="btn-crear">Editar</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Al hacer clic en la foto se activa el input para seleccionar un archivo
+    document.getElementById('profilePicture').addEventListener('click', function() {
+        document.getElementById('fotoInput').click();
+    });
+
+    // Previsualización de la foto seleccionada
+    document.getElementById('fotoInput').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('fotoPreview').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+
+</body>
+</html>
