@@ -43,4 +43,9 @@ public class UsuariLogic {
     public boolean existeEmail(String email) {
         return userRepository.existsByEmail(email);
     }
+
+        public Usuari findByEmail(String email) {
+            return userRepository.findById(email).orElse(null);
+        }
+
 }

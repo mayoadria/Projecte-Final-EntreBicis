@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Base64;
 import java.util.List;
 
 @Controller
@@ -35,11 +37,17 @@ public class RecompensaController {
         return "crearRecompensas"; // Vista "Registre"
     }
     @PostMapping("/guardar")
-    public String guardarRecompensa(@ModelAttribute("recompensas") Recompensas recompensa, @RequestParam("bescanvi") Long puntBescanviId, Model model) {
+    public String guardarRecompensa(@ModelAttribute("recompensas") Recompensas recompensa,
+                                    @RequestParam("bescanvi") Long puntBescanviId, Model model,
+                                    @RequestParam(value = "fileFoto", required = false) MultipartFile fileFoto
+                                    ) {
         try {
             // Buscar el Punto de Bescanvi en la base de datos
             PuntBescanvi bescanvi = puntBescanviLogic.findByID(puntBescanviId);
-
+            if (fileFoto != null && !fileFoto.isEmpty()) {
+                String base64Foto = Base64.getEncoder().encodeToString(fileFoto.getBytes());
+                recompensa.setFoto(base64Foto);
+            }
             // Asignarlo a la recompensa
             recompensa.setPuntBescanviId(bescanvi);
 
