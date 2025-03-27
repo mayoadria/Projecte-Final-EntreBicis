@@ -4,15 +4,18 @@ import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.entity.enums.Estat;
 import com.copernic.backend.Backend.entity.enums.Rol;
 import com.copernic.backend.Backend.logic.web.UsuariLogic;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.Base64;
 
@@ -70,9 +73,8 @@ public class UsuarisWebController {
         }
     }
 
-
     // Procesar la edición y actualizar el usuario en la base de datos.
-    // Si se suministra una foto nueva se sobreescribe; si no, se mantiene la anterior.
+    // Si se suministra una foto nueva se sobreescribe; si no, se mantiene la existente.
     @PostMapping("/editarUsuari")
     public String editarUsuari(Usuari usuari, @RequestParam(value = "fileFoto", required = false) MultipartFile fileFoto) throws IOException {
         Optional<Usuari> existingOpt = usuariLogic.getUsuariByEmail(usuari.getEmail());
@@ -87,7 +89,6 @@ public class UsuarisWebController {
             if (!existing.getRol().equals(Rol.ADMINISTRADOR)) {
                 existing.setRol(Rol.CICLISTA);
             }
-
             if (fileFoto != null && !fileFoto.isEmpty()) {
                 String base64Foto = Base64.getEncoder().encodeToString(fileFoto.getBytes());
                 existing.setFoto(base64Foto);
@@ -104,4 +105,29 @@ public class UsuarisWebController {
         usuariLogic.deleteUsuari(email);
         return "redirect:/usuaris";
     }
+
+    @PostMapping("/toggleActivation/{email:.+}")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> toggleActivation(
+            @PathVariable String email,
+            @RequestBody Map<String, String> payload) {
+
+        Optional<Usuari> usuariOpt = usuariLogic.getUsuariByEmail(email);
+        if (usuariOpt.isPresent()) {
+            Usuari usuari = usuariOpt.get();
+            try {
+                Estat nouEstat = Estat.valueOf(payload.get("estat"));
+                usuari.setEstat(nouEstat);
+                usuariLogic.updateUsuari(email, usuari);
+                return ResponseEntity.ok(Collections.singletonMap("estat", nouEstat.name()));
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().body(Collections.singletonMap("error", "Estat no vàlid"));
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "Usuari no trobat"));
+        }
+    }
+
+
+
 }

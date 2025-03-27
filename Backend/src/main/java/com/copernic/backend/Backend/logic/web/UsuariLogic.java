@@ -36,6 +36,7 @@ public class UsuariLogic {
         return userRepository.save(usuari);
     }
 
+
     public void deleteUsuari(String email) {
         userRepository.deleteById(email);
     }
