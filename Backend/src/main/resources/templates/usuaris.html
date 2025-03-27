@@ -32,7 +32,7 @@
         <tbody>
         <!-- Bucle Thymeleaf para iterar sobre la lista de usuarios -->
         <tr th:each="usuari : ${usuaris}"
-            data-user-email="${usuari.email}">
+            th:data-user-email="${usuari.email}">
             <td th:text="${usuari.email}"></td>
             <td th:text="${usuari.nom + ' ' + usuari.cognom}"></td>
             <td th:text="${usuari.telefon}"></td>
@@ -48,7 +48,9 @@
             </td>
             <td>
                 <a th:href="@{/usuaris/editar/{email}(email=${usuari.email})}" class="btn-edit">✏️</a>
-                <button class="btn-delete" th:attr="data-email=${usuari.email}" onclick="deleteUser(this)">🗑️</button>
+                <a th:href="@{/usuaris/delete/{email}(email=${usuari.email})}"
+                   class="btn-delete"
+                   onclick="return confirm('¿Está seguro de borrar este usuario?');">🗑️</a>
             </td>
         </tr>
         </tbody>
@@ -57,16 +59,23 @@
 
 <script>
     function toggleUserActivation(checkbox) {
-        // Buscamos el tr contenedor
         var row = checkbox.closest('tr');
-        // Obtenemos el email guardado en data-user-email
-        var email = row.dataset.userEmail; // ó row.getAttribute('data-user-email')
+        var email = row.dataset.userEmail;
 
         var isActive = checkbox.checked;
         var newEstat = isActive ? "ACTIU" : "INACTIU";
 
+        // Si se está desactivando el usuario, solicitamos confirmación
+        if (!isActive) {
+            if (!confirm("¿Está seguro de desactivar este usuario?")) {
+                checkbox.checked = true;
+                return;
+            }
+        }
+
         var csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
         var csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
         var headers = {
             'Content-Type': 'application/json'
         };
@@ -79,7 +88,10 @@
         })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Error al actualizar el estado');
+                    return response.text().then(text => {
+                        console.error("Error response:", text);
+                        throw new Error(text);
+                    });
                 }
                 return response.json();
             })
@@ -87,13 +99,12 @@
                 console.log("Estado actualizado con éxito:", data);
             })
             .catch(error => {
-                console.error("Error:", error);
-                // Revertimos el cambio en caso de error
+                console.error("Error al actualizar estado:", error);
+                // Revertir el cambio en caso de error
                 checkbox.checked = !isActive;
             });
     }
 </script>
-
 
 </body>
 </html>
