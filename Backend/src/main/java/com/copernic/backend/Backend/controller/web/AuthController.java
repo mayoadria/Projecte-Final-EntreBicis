@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +26,9 @@ public class AuthController {
     @Autowired
     private UsuariLogic usuariLogic;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @GetMapping("/")
     public String redirectToLogin() {
         return "redirect:/login";
@@ -40,9 +44,9 @@ public class AuthController {
     public String login(@RequestParam("email") String email,
                         @RequestParam("contra") String contra) {
         Optional<Usuari> admin = usuariLogic.getUsuariByEmail(email);
-        if (admin.isPresent()
-                && admin.get().getContra().equals(contra)
-                && admin.get().getRol().name().equals("ADMINISTRADOR")) {
+        if (admin.isPresent() &&
+                passwordEncoder.matches(contra, admin.get().getContra()) &&
+                admin.get().getRol().name().equals("ADMINISTRADOR")) {
             return "redirect:/home";
         }
         return "redirect:/login?error=true";

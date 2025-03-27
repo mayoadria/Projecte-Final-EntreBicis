@@ -4,7 +4,10 @@
 <div th:fragment="barralateral">
     <div class="sidebar">
         <div class="profile">
-            <img src="https://via.placeholder.com/80" alt="Foto de perfil"/>
+            <img th:src="${#strings.isEmpty(usuari?.foto)
+                ? '/styles/images/MarioPayaso.png'
+                : 'data:image/jpeg;base64,' + usuari.foto}"
+                 alt="Foto de perfil"/>
             <h3>Admin</h3>
         </div>
 
