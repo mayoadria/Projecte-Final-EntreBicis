@@ -8,6 +8,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
@@ -61,17 +63,18 @@ public class UsuarisWebController {
         Optional<Usuari> usuariOpt = usuariLogic.getUsuariByEmail(email);
         if (usuariOpt.isPresent()) {
             Usuari usuari = usuariOpt.get();
-            // Si existe foto, concatenamos en el controlador y la pasamos al modelo
+            // Opcional: si el usuario tiene foto, podemos crear el data URL
             if (usuari.getFoto() != null && !usuari.getFoto().isEmpty()) {
                 String fotoDataUrl = "data:image/jpeg;base64," + usuari.getFoto();
                 model.addAttribute("fotoDataUrl", fotoDataUrl);
             }
             model.addAttribute("usuari", usuari);
-            return "editarUsuari";
+            return "editarUsuari"; // Nombre de la plantilla
         } else {
             return "redirect:/usuaris";
         }
     }
+
 
     // Procesar la edición y actualizar el usuario en la base de datos.
     // Si se suministra una foto nueva se sobreescribe; si no, se mantiene la existente.
@@ -127,7 +130,6 @@ public class UsuarisWebController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "Usuari no trobat"));
         }
     }
-
 
 
 }

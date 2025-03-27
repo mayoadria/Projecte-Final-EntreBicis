@@ -83,7 +83,7 @@ public class SecurityConfig {
         }
 
         Usuari admin = new Usuari();
-        admin.setContra(passwordEncoder().encode("admin"));
+        admin.setContra("admin");
         admin.setCognom("admin");
         admin.setNom("admin");
         admin.setPoblacio("admin");
@@ -92,6 +92,7 @@ public class SecurityConfig {
         admin.setTelefon("000000000");
         admin.setRol(Rol.ADMINISTRADOR);
         admin.setEstat(Estat.ACTIU);
+
 
         usuariLogic.createUsuari(admin);
     }
