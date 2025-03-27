@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Comerç</title>
+    <link rel="stylesheet" href="/styles/crearUsuari.css">
+    <link rel="stylesheet" href="/styles/barraLateral.css">
+</head>
+<body>
+
+<div th:replace="barraLateral :: barralateral"></div>
+
+<div class="main-content">
+    <h1>Crear Punt de Bescanvi</h1>
+    <div class="create-user-container">
+        <div class="profile-picture" id="profilePicture">
+            <img id="fotoPreview" src="https://via.placeholder.com/150" alt="" />
+            <!--            <span id="editIcon" class="edit-icon">✏️</span>-->
+        </div>
+        <form class="user-form" th:action="@{/bescanvi/guardar}" th:object="${bescanvis}" method="post" enctype="multipart/form-data">
+            <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" />
+            <div class="form-field">
+                <label for="nom">Punt de Bescanvi:</label>
+                <input type="text" id="nom" th:field="*{nom}" required>
+            </div>
+            <div class="form-field">
+                <label for="email">Email</label>
+                <input type="text" id="email" th:field="*{email}" required>
+            </div>
+            <div class="form-field">
+                <label for="codiPostal">Codi Postal</label>
+                <input type="text" id="codiPostal" th:field="*{codiPostal}" required>
+            </div>
+            <div class="form-field">
+                <label for="observacions">Observacions</label>
+                <input type="text" id="observacions" th:field="*{observacions}" required>
+            </div>
+            <div class="form-field">
+                <label for="telefon">Telefon</label>
+                <input type="text" id="telefon" th:field="*{telefon}" required>
+            </div>
+            <div class="form-field">
+                <label for="personaContacte">Persona de Contacte</label>
+                <input type="text" id="personaContacte" th:field="*{personaContacte}" required>
+            </div>
+            <div class="form-field full-width">
+                <label for="adreca">Adreça</label>
+                <input type="text" id="adreca" th:field="*{adreca}" required>
+            </div>
+            <button type="submit" class="btn-crear">Guardar Comerç</button>
+        </form>
+    </div>
+</div>
+<script>
+    // Al hacer clic en el contenedor de foto se abre el selector de archivos
+    document.getElementById('profilePicture').addEventListener('click', function() {
+        document.getElementById('fotoInput').click();
+    });
+    // Previsualización de la foto seleccionada
+
+    document.getElementById('fotoInput').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('fotoPreview').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #80deea; /* Color de fondo */
+    margin: 0;
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #4dd0e1;
+    padding: 20px;
+    height: 100vh;
+}
+
+.sidebar button {
+    display: block;
+    color: black;
+    background: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    margin: 10px 0;
+    text-align: left;
+    cursor: pointer;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    justify-content: center; /* Alinea el contenido al centro */
+    align-items: center; /* Alinea el contenido verticalmente */
+}
+
+.container {
+    width: 400px; /* Ajusta el tamaño del contenedor */
+    display: flex;
+    flex-direction: column; /* Alineación vertical */
+    justify-content: center;
+    align-items: center; /* Centrado horizontal */
+    gap: 20px;
+    background-color: #ffffff; /* Fondo blanco para que resalten los campos */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Sombra suave para un mejor contraste */
+}
+
+.label {
+    background-color: #00bcd4; /* Color de los títulos */
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: black;
+    font-weight: bold;
+    text-align: center;
+}
+
+input[type="text"],
+input[type="number"],
+textarea {
+    width: 100%; /* Ajuste el tamaño de los campos al 100% del contenedor */
+    max-width: 300px; /* Limita el tamaño máximo de los campos */
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #29c6f6; /* Color de fondo de los inputs */
+    font-size: 16px;
+    text-align: left; /* Cambié a left para que el texto no esté centrado */
+    margin-bottom: 10px; /* Espaciado entre los campos */
+}
+
+textarea {
+    height: 100px; /* Ajusta la altura del textarea */
+    width: 100%; /* Asegura que el textarea ocupe todo el ancho disponible */
+}
+
+button {
+    background-color: #29c6f6;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    color: white;
+    margin-top: 10px; /* Añadí un pequeño margen superior */
+}
+
+button:hover {
+    background-color: #00a3c4;
+}

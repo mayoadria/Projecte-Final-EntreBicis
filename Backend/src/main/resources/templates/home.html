@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Panel de Control - EntreBicis</title>
+    <link rel="stylesheet" href="/styles/home.css" />
+    <link rel="stylesheet" href="/styles/barraLateral.css" />
+</head>
+<body>
+<!-- Barra lateral -->
+<div th:replace="barraLateral :: barralateral"></div>
+
+<div class="main-content">
+    <h1>Panell de Control</h1>
+    <div class="card-container">
+        <div class="card-item">
+            <a href="/usuaris"><div class="card">👤</div></a>
+            <p>Usuaris</p>
+        </div>
+
+        <div class="card-item">
+            <div class="card">🚴</div>
+            <p>Rutes</p>
+        </div>
+
+        <div class="card-item">
+            <a href="/recompensas/llistar"><div class="card">🎁</div></a>
+            <p>Recompensas</p>
+        </div>
+
+        <div class="card-item">
+            <a href="/bescanvi/llistar"><div class="card">🛍️</div></a>
+            <p>Punt de Bescanvi</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
