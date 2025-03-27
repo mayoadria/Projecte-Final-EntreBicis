@@ -26,6 +26,8 @@ public class Recompensas {
     private String observacions;
     @Enumerated(EnumType.STRING)
     private Estat estat;
+    @Lob
+    private String foto;
 
     @ManyToOne
     @JoinColumn(name = "usuari_email", nullable = true)

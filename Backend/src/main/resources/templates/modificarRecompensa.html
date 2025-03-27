@@ -4,41 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear Recompensa</title>
-    <link rel="stylesheet" href="/styles/Recompensa.css">
+    <link rel="stylesheet" href="/styles/crearUsuari.css">
+    <link rel="stylesheet" href="/styles/barraLateral.css">
 </head>
 <body>
-
-<div class="sidebar">
-    <button>Inicio</button>
-    <button>Usuarios</button>
-    <button>Registros</button>
-    <button>Rutas</button>
-    <button>Recompensas</button>
-</div>
+<div th:replace="barraLateral :: barralateral"></div>
 
 <div class="main-content">
-    <div class="form-container">
-        <h2>Modificar Recompensa</h2>
-        <form th:action="@{/recompensas/editar}" th:object="${recompensas}" method="post" enctype="multipart/form-data">
+    <h1>Modificar Recompensa</h1>
+    <div class="create-user-container">
+        <div class="profile-picture" id="profilePicture">
+            <img id="fotoPreview" th:src="${fotoDataUrl != null ? fotoDataUrl : 'https://via.placeholder.com/150'}" alt="Foto usuario" />
+        </div>
+        <form class="user-form" th:action="@{/recompensas/editar}" th:object="${recompensas}" method="post"
+              enctype="multipart/form-data">
             <input type="hidden" th:field="*{id}">
-            <div class="form-group">
+            <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" />
+            <div class="form-field">
                 <label for="descripcio">Descripció</label>
                 <input type="text" id="descripcio" th:field="*{descripcio}" required>
             </div>
-            <div class="form-group">
+            <div class="form-field">
                 <label for="observacions">Observacions</label>
                 <textarea id="observacions" th:field="*{observacions}" required></textarea>
             </div>
-            <div class="form-group">
+            <div class="form-field">
                 <label for="cost">Cost</label>
                 <input type="number" id="cost" th:field="*{cost}" min="1" required>
             </div>
-            <label for="besanvi-select">Punt de Bescanvi:</label>
-            <select id="besanvi-select" name="bescanvi" required>
-                <option value="" disabled selected hidden>Seleccionar una opción</option>
-                <option th:each="bescanvis : ${bescanvi}" th:value="${bescanvis.id}" th:text="${bescanvis.nom}"></option>
-            </select>
             <div class="form-group">
+                <label for="besanvi-select">Punt de Bescanvi:</label>
+                <select id="besanvi-select" th:field="*{puntBescanviId}" required>
+                    <option value="" disabled selected hidden>Seleccionar una opción</option>
+                    <option th:each="bescanvis : ${puntBescanviId}" th:value="${bescanvis.id}"
+                            th:text="${bescanvis.nom}"></option>
+                </select>
+            </div>
+            <div class="form-field full-width">
                 <select class="input" th:field="*{estat}" id="pais" required>
                     <option value="" disabled selected hidden></option>
                     <option class="inp_pais" th:each="estat : ${estat}"
@@ -47,10 +49,27 @@
                 </select>
             </div>
 
-            <button type="submit" class="submit-btn">Guardar Recompensa</button>
+            <button type="submit" class="btn-crear">Guardar Recompensa</button>
         </form>
     </div>
 </div>
+<script>
+    // Al hacer clic en el contenedor de foto se abre el selector de archivos
+    document.getElementById('profilePicture').addEventListener('click', function() {
+        document.getElementById('fotoInput').click();
+    });
+    // Previsualización de la foto seleccionada
 
+    document.getElementById('fotoInput').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('fotoPreview').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
 </body>
 </html>
