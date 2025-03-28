@@ -81,6 +81,8 @@ body {
     background-color: #008bb3;
 }
 
+
+/*Animación*/
 .toggle-password {
     background: none;
     border: none;
@@ -89,3 +91,29 @@ body {
     font-size: 20px; /* Ajusta el tamaño del icono */
     color: #333;
 }
+
+.btn-container {
+    position: relative;
+    height: 60px;
+    margin-top: 20px;
+    overflow: visible; /* Cambiado de hidden a visible */
+}
+
+
+.btn-login {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.7s ease-in-out; /* Transición más lenta y fluida */
+    z-index: 9999;
+}
+
+
+.move-left   { transform: translateX(-120%); }
+.move-right  { transform: translateX(120%); }
+.move-up     { transform: translateY(-120%); }
+.move-down   { transform: translateY(120%); }
+
+.reset-pos   { transform: translate(0, 0); }

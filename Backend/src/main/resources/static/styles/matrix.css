@@ -1,0 +1,144 @@
+/* Reinicio básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Layout general */
+body {
+    display: flex;
+    height: 100vh;
+    background-color: #aeefff; /* Color de fondo */
+}
+
+/* Barra lateral */
+.sidebar {
+    width: 200px;
+    background-color: #85d3f2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
+
+nav ul {
+    list-style: none;
+    width: 100%;
+    text-align: left;
+}
+
+nav ul li a {
+    display: block;
+    padding: 10px 20px;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+nav ul li a:hover {
+    background-color: #72c0de;
+}
+
+.icon {
+    margin-right: 8px;
+}
+
+.logout {
+    margin-top: auto;
+    margin-bottom: 20px;
+}
+
+.logout a {
+    display: block;
+    padding: 10px 20px;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.logout a:hover {
+    background-color: #72c0de;
+}
+
+/* Contenido principal */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content h1 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+}
+
+/* Contenedor para centrar el formulario vertical y horizontalmente */
+.form-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;      /* Centra verticalmente */
+    justify-content: center; /* Centra horizontalmente */
+}
+
+/* Contenedor del formulario */
+.form-container {
+    display: flex;
+    justify-content: center;
+}
+
+/* Formulario de parámetros del sistema */
+.user-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;          /* Aumenta la separación entre campos */
+    max-width: 900px;   /* Aumenta el ancho máximo para ocupar más pantalla */
+    width: 90%;         /* Se ajusta al 90% del contenedor */
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-field label {
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 18px; /* Letra más grande para el label */
+    color: #333;
+}
+
+.form-field input {
+    padding: 12px;
+    font-size: 16px;   /* Letra más grande en los campos */
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    height: 45px;      /* Campos más altos */
+}
+
+/* Botón Guardar */
+.btn-crear {
+    grid-column: 1 / span 2;
+    background-color: #0099cc;
+    color: #fff;
+    padding: 15px 40px;  /* Más padding para agrandarlo */
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;     /* Fuente más grande */
+    justify-self: center;
+    width: auto;         /* Ajuste automático del ancho */
+    margin-top: 10px;
+}
+
+.btn-crear:hover {
+    background-color: #008bb3;
+}
+
+/* Campos que ocupen toda la fila */
+.user-form .full-width {
+    grid-column: 1 / span 2;
+}
