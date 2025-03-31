@@ -5,29 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Recompensas</title>
     <link rel="stylesheet" href="/styles/tablas.css">
+    <link rel="stylesheet" href="/styles/barraLateral.css">
 </head>
 <body>
-<div class="sidebar">
-<div class="profile">
-    <!-- Puedes reemplazar la imagen por la del usuario admin -->
-    <img src="https://via.placeholder.com/80" alt="Foto de perfil" />
-    <h3>Admin</h3>
-</div>
-<nav>
-    <ul>
-        <li><a href="/home"><span class="icon">🏠</span>Inici</a></li>
-        <li><a href="/usuaris"><span class="icon">👤</span>Usuaris</a></li>
-<!--        <li><a href="#"><span class="icon">📋</span>Registres</a></li>-->
-        <li><a href="#"><span class="icon">🚴</span>Rutes</a></li>
-        <li><a href="/recompensas/llistar"><span class="icon">🎁</span>Recompenses</a></li>
-        <li><a href="/bescanvi/llistar"><span class="icon">🛍️</span>Comerços</a></li>
-        <li><a href="#"><span class="icon">⚙️</span>Configuració</a></li>
-    </ul>
-</nav>
-<div class="logout">
-    <a href="/logout"><span class="icon">↩️</span>Sortir</a>
-</div>
-</div>
+<!-- Barra lateral -->
+<div th:replace="barraLateral :: barralateral"></div>
 
 <div class="main-content">
     <h1>Llista Punts Bescanvi</h1>
