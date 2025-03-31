@@ -5,6 +5,7 @@ import com.copernic.backend.Backend.repository.RecompensasRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,6 +21,16 @@ public class RecompensaLogic {
 
     public List<Recompensas> llistarRecompensas() {
         return recompensasRepository.findAll();
+    }
+
+    public List<Recompensas> llistarRecompensasAndroid(){
+
+        List<Recompensas> ret= new ArrayList<>();
+
+        ret = recompensasRepository.findAll();
+
+        return ret;
+
     }
 
     public String eliminarRecompensa(Long id) {

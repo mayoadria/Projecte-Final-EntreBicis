@@ -14,13 +14,14 @@ import androidx.navigation.compose.rememberNavController
 import cat.copernic.amayo.frontend.navigation.BottomNavItem
 import cat.copernic.amayo.frontend.navigation.BottomNavigationBar
 import cat.copernic.amayo.frontend.recompensaManagment.ui.recompensa
+import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmodel
 import cat.copernic.amayo.frontend.usuariManagment.ui.perfil
 
 @Composable
 fun BottomNav(navController: NavController){
 
     val bottomNavController = rememberNavController()
-
+    val viewLlista: llistaViewmodel = viewModel()
 
 
     Scaffold(
@@ -36,7 +37,7 @@ fun BottomNav(navController: NavController){
                 inici()
             }
             composable(BottomNavItem.Rec.route) {
-                recompensa(
+                recompensa(viewLlista
                 )
             }
             composable(BottomNavItem.Perfil.route) {

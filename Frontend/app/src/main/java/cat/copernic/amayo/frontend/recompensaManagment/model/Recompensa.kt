@@ -8,5 +8,5 @@ data class Recompensa(
     var cost: Int? = null,
     var estat: Estat? = null,
     var observacions: String? = null,
-    var image: String? = null,
+    var foto: String? = null,
 )

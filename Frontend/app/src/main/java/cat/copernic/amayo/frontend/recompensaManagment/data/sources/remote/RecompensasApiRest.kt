@@ -8,9 +8,9 @@ import retrofit2.http.Path
 interface RecompensasApiRest {
 
     @GET("all")
-    suspend fun getAllClients(): Response<List<Recompensa>>
+    suspend fun findAll(): Response<List<Recompensa>>
 
     @GET("byId/{id}")
-    suspend fun getUserById(@Path("id") email : String ): Response<Recompensa>
+    suspend fun getById(@Path("id") email : String ): Response<Recompensa>
 
 }
