@@ -40,7 +40,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/logout", "/styles/**", "/images/**").permitAll()
+                        .requestMatchers("/login", "/logout", "/styles/**", "/images/**", "/api/**").permitAll()
                         .requestMatchers("/home/**").hasRole("ADMINISTRADOR") // Solo admins
                         .requestMatchers("/recompensas/**").hasRole("ADMINISTRADOR") // Solo admins
                         .requestMatchers("/bescanvi/**").hasRole("ADMINISTRADOR") // Solo admins
