@@ -96,7 +96,7 @@ fun Header(onFilterApplied: (String, String, String, String) -> Unit, onSortSele
                     onDismissRequest = { expanded = false }
                 ) {
                     DropdownMenuItem(
-                        text = { Text("Filtros") },
+                        text = { Text("Filtres") },
                         onClick = {
                             expanded = false
                             showFilterDialog = true
@@ -150,32 +150,28 @@ fun FilterDialog(
         title = { Text("Selecciona els filtres") },
         text = {
             Column {
-                Text("Filtrar per Descripció:")
                 TextField(
                     value = filterDesc,
                     onValueChange = { filterDesc = it },
-                    placeholder = { Text("Introduce descripció") }
+                    placeholder = { Text("Introdueix una descripció") }
                 )
 
-                Text("Filtrar per Observacions:")
                 TextField(
                     value = filterObs,
                     onValueChange = { filterObs = it },
-                    placeholder = { Text("Introduce observacions") }
+                    placeholder = { Text("Introdueix observacions") }
                 )
 
-                Text("Filtrar per Cost:")
                 TextField(
                     value = filterCost,
                     onValueChange = { filterCost = it },
-                    placeholder = { Text("Introduce cost") }
+                    placeholder = { Text("Introdueix un cost") }
                 )
 
-                Text("Filtrar per Estat:")
                 TextField(
                     value = filterEstat,
                     onValueChange = { filterEstat = it },
-                    placeholder = { Text("Introduce estat") }
+                    placeholder = { Text("Introdueix un estat") }
                 )
             }
         },
@@ -208,10 +204,10 @@ fun SortDialog(
                     Text("Ordenar Z-A")
                 }
                 Button(onClick = { onSortSelected("cost", true) }) {
-                    Text("Ordenar Costo Asc.")
+                    Text("Ordenar Cost Asc.")
                 }
                 Button(onClick = { onSortSelected("cost", false) }) {
-                    Text("Ordenar Costo Desc.")
+                    Text("Ordenar Cost Desc.")
                 }
             }
         },
