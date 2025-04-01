@@ -1,5 +1,8 @@
 package cat.copernic.amayo.frontend.recompensaManagment.viewmodels
 
+import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cat.copernic.amayo.frontend.recompensaManagment.model.Recompensa
@@ -31,6 +34,8 @@ class llistaViewmodel : ViewModel() {
     val recompesa: StateFlow<List<Recompensa>> = _recompesa
 
 
+    private val _recompensaD = mutableStateOf<Recompensa?>(null)
+    val recompensaD: State<Recompensa?> = _recompensaD
     init {
         LlistarRecompenses()
     }
@@ -45,6 +50,21 @@ class llistaViewmodel : ViewModel() {
                     println("Error!!")
                 }
 
+            } catch (e: Exception) {
+                println("Error: ${e.message}")
+            }
+        }
+    }
+
+    fun listar(id: Long) {
+        viewModelScope.launch {
+            try {
+                val response = recompensaApi.getById(id)
+                if (response.isSuccessful) {
+                    _recompensaD.value = response.body()
+                } else {
+                    println("Error: ${response.errorBody()?.string()}")
+                }
             } catch (e: Exception) {
                 println("Error: ${e.message}")
             }

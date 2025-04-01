@@ -15,9 +15,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 @Composable
-fun recompensa(llistaViewmodel: llistaViewmodel) {
+fun recompensa(llistaViewmodel: llistaViewmodel,navController: NavController) {
     var filtroDesc by remember { mutableStateOf("") }
     var filtroObs by remember { mutableStateOf("") }
     var filtroEstat by remember { mutableStateOf("") }
@@ -42,7 +43,7 @@ fun recompensa(llistaViewmodel: llistaViewmodel) {
 
     Column(modifier = Modifier.fillMaxSize().background(Color.White).statusBarsPadding()) {
         Header(
-            onFilterApplied = { desc, obs, cost, estat ->
+            onFilterApplied = { desc, obs, estat ->
                 filtroDesc = desc
                 filtroObs = obs
                 filtroEstat = estat
@@ -54,13 +55,13 @@ fun recompensa(llistaViewmodel: llistaViewmodel) {
         )
 
         filteredRecompensas.forEach { recompensas ->
-            RecompensaItem(recompensa = recompensas, scale = 1f)
+            RecompensaItem(recompensa = recompensas, navController,scale = 1f)
         }
     }
 }
 
 @Composable
-fun Header(onFilterApplied: (String, String, String, String) -> Unit, onSortSelected: (String, Boolean) -> Unit) {
+fun Header(onFilterApplied: (String, String, String) -> Unit, onSortSelected: (String, Boolean) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     var showFilterDialog by remember { mutableStateOf(false) }
     var showSortDialog by remember { mutableStateOf(false) }
@@ -117,7 +118,7 @@ fun Header(onFilterApplied: (String, String, String, String) -> Unit, onSortSele
     if (showFilterDialog) {
         FilterDialog(
             onApplyFilter = { desc, obs, cost, estat ->
-                onFilterApplied(desc, obs, cost, estat)
+                onFilterApplied(desc, obs, estat)
                 showFilterDialog = false
             },
             onDismiss = { showFilterDialog = false }

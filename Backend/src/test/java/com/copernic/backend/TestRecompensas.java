@@ -61,4 +61,25 @@ public class TestRecompensas {
         System.out.println(receivedList);
     }
 
+    @Test
+    public void testGetByIdOk(){
+
+        Recompensas carta = new Recompensas();
+
+        carta.setDescripcio("Prueba2");
+        carta.setObservacions("Prueba2");
+        carta.setEstat(Estat.ACTIU);
+        carta.setCost(100);
+        recompensasRepository.save(carta);
+
+        String url = "http://localhost:" + port + "/api/recompensa/byId/" + carta.getId();
+
+        ResponseEntity<Recompensas> response = restTemplate.exchange(
+                url, HttpMethod.GET,null,Recompensas.class
+        );
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+    }
+
 }

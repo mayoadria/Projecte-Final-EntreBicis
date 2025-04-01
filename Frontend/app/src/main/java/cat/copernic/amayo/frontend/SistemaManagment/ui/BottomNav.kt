@@ -37,7 +37,7 @@ fun BottomNav(navController: NavController){
                 inici()
             }
             composable(BottomNavItem.Rec.route) {
-                recompensa(viewLlista
+                recompensa(viewLlista,navController
                 )
             }
             composable(BottomNavItem.Perfil.route) {

@@ -1,5 +1,6 @@
 package cat.copernic.amayo.frontend.recompensaManagment.model
 
+import cat.copernic.amayo.frontend.puntBesacanviManagment.model.PuntBescanvi
 import cat.copernic.amayo.frontend.rutaManagment.model.Estat
 
 data class Recompensa(
@@ -9,4 +10,5 @@ data class Recompensa(
     var estat: Estat? = null,
     var observacions: String? = null,
     var foto: String? = null,
+    var puntBescanviId: PuntBescanvi? = null
 )

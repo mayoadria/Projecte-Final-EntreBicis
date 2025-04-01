@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.util.Base64
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,18 +26,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import cat.copernic.amayo.frontend.recompensaManagment.model.Recompensa
 
 
 @Composable
-fun RecompensaItem(recompensa: Recompensa, scale: Float) {
+fun RecompensaItem(recompensa: Recompensa,navController: NavController, scale: Float) {
     val bitmap = remember(recompensa.foto) {
         recompensa.foto?.let { decodeBase64ToBitmap(it) }
     }
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(16.dp)
+            .clickable { navController.navigate("detalls/${recompensa.id}") },
         elevation = CardDefaults.cardElevation(scaledDp(4.dp, scale))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
