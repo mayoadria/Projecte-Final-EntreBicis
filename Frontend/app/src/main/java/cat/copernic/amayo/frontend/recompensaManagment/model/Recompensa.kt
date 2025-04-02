@@ -1,7 +1,5 @@
 package cat.copernic.amayo.frontend.recompensaManagment.model
 
-import cat.copernic.amayo.frontend.puntBesacanviManagment.model.Estat
-
 data class Recompensa(
     var id: Long? = null,
     var descripcio: String? = null,
