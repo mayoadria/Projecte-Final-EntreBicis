@@ -185,3 +185,19 @@ input:checked + .slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
+
+.filtre {
+    display: flex;
+    flex-direction: column;
+}
+
+.filt-txt {
+    margin-top: 5px;
+}
+
+.filt-input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}

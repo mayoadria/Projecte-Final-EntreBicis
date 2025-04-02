@@ -11,41 +11,63 @@
 
 <!-- Barra lateral -->
 <div th:replace="barraLateral :: barralateral"></div>
+<form th:action="@{/recompensas/llistar}" method="get">
+    <div class="main-content">
+        <h1>Llista de Recompenses</h1>
+        <a class="btn-crear" th:href="@{/recompensas/crear}">Crear</a>
 
-<div class="main-content">
-    <h1>Llista de Recompenses</h1>
-    <a class="btn-crear"
-       th:href="@{/recompensas/crear}">Crear</a>
-    <table class="users-table">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Descripció</th>
-            <th>Observacions</th>
-            <th>Punt de Bescanvi</th>
-            <th>Cost</th>
-            <th>Estat</th>
-            <th>Accions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="recompensa : ${recompensas}">
-            <td th:text="${recompensa.id}"></td>
-            <td th:text="${recompensa.descripcio}"></td>
-            <td th:text="${recompensa.observacions}"></td>
-            <td th:text="${recompensa.puntBescanviId?.nom}"></td>
-            <td th:text="${recompensa.cost}"></td>
-            <td th:text="${recompensa.estat}"></td>
-            <td>
-                <a class="btn-edit"
-                   th:href="@{/recompensas/edit/{id}(id=${recompensa.id})}"
-                   >✏️</a>
-                <a class="btn-delete" th:href="@{/recompensas/delete/{id}(id=${recompensa.id})}">🗑️</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+        <div class="filtros">
+            <label for="nomRecompensa">Descripció:</label>
+            <input type="text" id="nomRecompensa" name="nomRecompensa" th:value="${param.nomRecompensa}">
 
+            <label for="puntBescanvi">Punt de Bescanvi:</label>
+            <input type="text" id="puntBescanvi" name="puntBescanvi" th:value="${param.puntBescanvi}">
+
+            <label for="nomUsuari">Usuari:</label>
+            <input type="text" id="nomUsuari" name="nomUsuari" th:value="${param.nomUsuari}">
+
+            <label for="rangPunts">Rang Punts:</label>
+            <input type="text" id="rangPunts" name="rangPunts" th:value="${param.rangPunts}">
+
+            <label for="estat">Estado:</label>
+            <select id="estat" name="estat">
+                <option value="">Todos</option>
+                <option th:each="estat : ${estats}" th:value="${estat}" th:text="${estat}"
+                        th:selected="${param.estat == estat}"></option>
+            </select>
+
+            <button type="submit">Filtrar</button>
+        </div>
+    </div>
+
+
+<table class="users-table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Descripció</th>
+        <th>Observacions</th>
+        <th>Punt de Bescanvi</th>
+        <th>Cost</th>
+        <th>Estat</th>
+        <th>Accions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="recompensa : ${recompensas}">
+        <td th:text="${recompensa.id}"></td>
+        <td th:text="${recompensa.descripcio}"></td>
+        <td th:text="${recompensa.observacions}"></td>
+        <td th:text="${recompensa.puntBescanviId?.nom}"></td>
+        <td th:text="${recompensa.cost}"></td>
+        <td th:text="${recompensa.estat}"></td>
+        <td>
+            <a class="btn-edit" th:href="@{/recompensas/edit/{id}(id=${recompensa.id})}">✏️</a>
+            <a class="btn-delete" th:href="@{/recompensas/delete/{id}(id=${recompensa.id})}">🗑️</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</form>
 </body>
 </html>

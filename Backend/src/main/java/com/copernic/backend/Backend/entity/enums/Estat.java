@@ -1,5 +1,5 @@
 package com.copernic.backend.Backend.entity.enums;
 
 public enum Estat {
-    ACTIU,INACTIU
+    ACTIU,INACTIU,DISPONIBLES,RESERVADES,ASSIGNADES,RECOLLIDA
 }
