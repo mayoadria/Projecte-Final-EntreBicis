@@ -33,6 +33,8 @@ public class RecompensaController {
             @RequestParam(name = "nomUsuari", required = false) String nomUsuari,
             @RequestParam(name = "rangPunts", required = false) String rangPunts,
             @RequestParam(name = "estat", required = false) Estat estat,
+            @RequestParam(name = "ordenarPor", required = false) String ordenarPor,
+            @RequestParam(name = "orden", required = false) String orden,
             Model model) {
 
         List<Recompensas> recompensa = logic.llistarRecompensas();
@@ -77,10 +79,46 @@ public class RecompensaController {
                     .collect(Collectors.toList());
         }
 
+        // Lógica de ordenación
+        if (ordenarPor != null) {
+            if (ordenarPor.equals("cost")) {
+                if ("desc".equals(orden)) {
+                    recompensa = recompensa.stream()
+                            .sorted((r1, r2) -> Integer.compare(r2.getCost(), r1.getCost()))  // Orden descendente por costo
+                            .collect(Collectors.toList());
+                } else {
+                    recompensa = recompensa.stream()
+                            .sorted((r1, r2) -> Integer.compare(r1.getCost(), r2.getCost()))  // Orden ascendente por costo
+                            .collect(Collectors.toList());
+                }
+            } else if (ordenarPor.equals("dataAsignacio")) {
+                if ("desc".equals(orden)) {
+                    recompensa = recompensa.stream()
+                            .sorted((r1, r2) -> r2.getDataAsignacio().compareTo(r1.getDataAsignacio()))  // Orden descendente por fecha
+                            .collect(Collectors.toList());
+                } else {
+                    recompensa = recompensa.stream()
+                            .sorted((r1, r2) -> r1.getDataAsignacio().compareTo(r2.getDataAsignacio()))  // Orden ascendente por fecha
+                            .collect(Collectors.toList());
+                }
+            } else if (ordenarPor.equals("dataCreacio")) {
+                if ("desc".equals(orden)) {
+                    recompensa = recompensa.stream()
+                            .sorted((r1, r2) -> r2.getDataCreacio().compareTo(r1.getDataCreacio()))  // Orden descendente por fecha
+                            .collect(Collectors.toList());
+                } else {
+                    recompensa = recompensa.stream()
+                            .sorted((r1, r2) -> r1.getDataCreacio().compareTo(r2.getDataCreacio()))  // Orden ascendente por fecha
+                            .collect(Collectors.toList());
+                }
+            }
+        }
+
         model.addAttribute("recompensas", recompensa);
         model.addAttribute("estats", Estat.values());
         return "llistarRecompensas";
     }
+
 
 
     @GetMapping("/crear")

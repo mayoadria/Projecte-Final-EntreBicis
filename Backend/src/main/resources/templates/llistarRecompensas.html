@@ -11,63 +11,108 @@
 
 <!-- Barra lateral -->
 <div th:replace="barraLateral :: barralateral"></div>
+
 <form th:action="@{/recompensas/llistar}" method="get">
     <div class="main-content">
         <h1>Llista de Recompenses</h1>
         <a class="btn-crear" th:href="@{/recompensas/crear}">Crear</a>
 
-        <div class="filtros">
-            <label for="nomRecompensa">Descripció:</label>
-            <input type="text" id="nomRecompensa" name="nomRecompensa" th:value="${param.nomRecompensa}">
+        <!-- Botón para desplegar filtros -->
+        <button class="filter-toggle">Mostrar Filtros</button>
 
-            <label for="puntBescanvi">Punt de Bescanvi:</label>
-            <input type="text" id="puntBescanvi" name="puntBescanvi" th:value="${param.puntBescanvi}">
+        <!-- Contenedor de filtros -->
+        <div class="filter-content">
+            <div class="filtre">
+                <label for="nomRecompensa" class="filt-txt">Descripció:</label>
+                <input type="text" id="nomRecompensa" name="nomRecompensa" th:value="${param.nomRecompensa}" class="filt-input">
+            </div>
 
-            <label for="nomUsuari">Usuari:</label>
-            <input type="text" id="nomUsuari" name="nomUsuari" th:value="${param.nomUsuari}">
+            <div class="filtre">
+                <label for="puntBescanvi" class="filt-txt">Punt de Bescanvi:</label>
+                <input type="text" id="puntBescanvi" name="puntBescanvi" th:value="${param.puntBescanvi}" class="filt-input">
+            </div>
 
-            <label for="rangPunts">Rang Punts:</label>
-            <input type="text" id="rangPunts" name="rangPunts" th:value="${param.rangPunts}">
+            <div class="filtre">
+                <label for="nomUsuari" class="filt-txt">Usuari:</label>
+                <input type="text" id="nomUsuari" name="nomUsuari" th:value="${param.nomUsuari}" class="filt-input">
+            </div>
 
-            <label for="estat">Estado:</label>
-            <select id="estat" name="estat">
-                <option value="">Todos</option>
-                <option th:each="estat : ${estats}" th:value="${estat}" th:text="${estat}"
-                        th:selected="${param.estat == estat}"></option>
-            </select>
+            <div class="filtre">
+                <label for="rangPunts" class="filt-txt">Rang Punts:</label>
+                <input type="text" id="rangPunts" name="rangPunts" th:value="${param.rangPunts}" class="filt-input">
+            </div>
 
-            <button type="submit">Filtrar</button>
+            <div class="filtre">
+                <label for="estat" class="filt-txt">Estado:</label>
+                <select id="estat" name="estat" class="filt-input">
+                    <option value="">Todos</option>
+                    <option th:each="estat : ${estats}" th:value="${estat}" th:text="${estat}"
+                            th:selected="${param.estat == estat}"></option>
+                </select>
+            </div>
+
+            <div class="filtre">
+                <label for="ordenarPor" class="filt-txt">Ordenar por:</label>
+                <select name="ordenarPor" id="ordenarPor" class="filt-input">
+                    <option value="cost" th:selected="${param.ordenarPor == 'cost'}">Costo</option>
+                    <option value="dataAsignacio" th:selected="${param.ordenarPor == 'dataAsignacio'}">Fecha de Asignación</option>
+                    <option value="dataCreacio" th:selected="${param.ordenarPor == 'dataCreacio'}">Fecha de Creación</option>
+                </select>
+            </div>
+
+            <div class="filtre">
+                <label for="orden" class="filt-txt">Orden:</label>
+                <select name="orden" id="orden" class="filt-input">
+                    <option value="asc" th:selected="${param.orden == 'asc'}">Ascendente</option>
+                    <option value="desc" th:selected="${param.orden == 'desc'}">Descendente</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-crear">Filtrar</button>
         </div>
     </div>
 
-
-<table class="users-table">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Descripció</th>
-        <th>Observacions</th>
-        <th>Punt de Bescanvi</th>
-        <th>Cost</th>
-        <th>Estat</th>
-        <th>Accions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="recompensa : ${recompensas}">
-        <td th:text="${recompensa.id}"></td>
-        <td th:text="${recompensa.descripcio}"></td>
-        <td th:text="${recompensa.observacions}"></td>
-        <td th:text="${recompensa.puntBescanviId?.nom}"></td>
-        <td th:text="${recompensa.cost}"></td>
-        <td th:text="${recompensa.estat}"></td>
-        <td>
-            <a class="btn-edit" th:href="@{/recompensas/edit/{id}(id=${recompensa.id})}">✏️</a>
-            <a class="btn-delete" th:href="@{/recompensas/delete/{id}(id=${recompensa.id})}">🗑️</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <!-- Tabla de recompensas -->
+    <table class="users-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Descripció</th>
+            <th>Observacions</th>
+            <th>Punt de Bescanvi</th>
+            <th>Cost</th>
+            <th>Estat</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="recompensa : ${recompensas}">
+            <td th:text="${recompensa.id}"></td>
+            <td th:text="${recompensa.descripcio}"></td>
+            <td th:text="${recompensa.observacions}"></td>
+            <td th:text="${recompensa.puntBescanviId?.nom}"></td>
+            <td th:text="${recompensa.cost}"></td>
+            <td th:text="${recompensa.estat}"></td>
+            <td>
+                <a class="btn-edit" th:href="@{/recompensas/edit/{id}(id=${recompensa.id})}">✏️</a>
+                <a class="btn-delete" th:href="@{/recompensas/delete/{id}(id=${recompensa.id})}">🗑️</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </form>
+
+<script>
+    // Mostrar y ocultar filtros
+    const filterToggle = document.querySelector('.filter-toggle');
+    const filterContent = document.querySelector('.filter-content');
+
+    // Evitar que el filtro se abra/cierre inmediatamente
+    filterToggle.addEventListener('click', function(event) {
+        event.preventDefault(); // Evita que se ejecute por defecto cualquier otro comportamiento
+        filterContent.classList.toggle('active');
+    });
+</script>
+
 </body>
 </html>
