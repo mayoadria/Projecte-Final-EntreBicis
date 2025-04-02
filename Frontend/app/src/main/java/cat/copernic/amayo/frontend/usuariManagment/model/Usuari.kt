@@ -1,6 +1,7 @@
 package cat.copernic.amayo.frontend.usuariManagment.model
 
-import cat.copernic.amayo.frontend.puntBesacanviManagment.model.Estat
+import cat.copernic.amayo.frontend.rutaManagment.model.Estat
+
 
 data class Usuari (
     var email: String? = null,

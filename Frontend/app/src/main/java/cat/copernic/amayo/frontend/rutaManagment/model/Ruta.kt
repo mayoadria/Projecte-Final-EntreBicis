@@ -1,6 +1,5 @@
 package cat.copernic.amayo.frontend.rutaManagment.model
 
-import cat.copernic.amayo.frontend.puntBesacanviManagment.model.Estat
 
 data class ruta(
     var id: Long? = null,
