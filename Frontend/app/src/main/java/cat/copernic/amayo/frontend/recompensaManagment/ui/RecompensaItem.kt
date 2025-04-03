@@ -9,9 +9,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -31,45 +33,51 @@ import cat.copernic.amayo.frontend.recompensaManagment.model.Recompensa
 
 
 @Composable
-fun RecompensaItem(recompensa: Recompensa,navController: NavController, scale: Float) {
-    val bitmap = remember(recompensa.foto) {
-        recompensa.foto?.let { decodeBase64ToBitmap(it) }
-    }
+fun RecompensaItem(recompensa: Recompensa, navController: NavController, scale: Float) {
+    val bitmap = remember(recompensa.foto) { recompensa.foto?.let { decodeBase64ToBitmap(it) } }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(10.dp)
             .clickable { navController.navigate("detalls/${recompensa.id}") },
-        elevation = CardDefaults.cardElevation(scaledDp(4.dp, scale))
+        elevation = CardDefaults.cardElevation(scaledDp(1.dp, scale)),
+        shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0x9C9CF3FF)) // Azul claro
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.Cyan)
-                    .padding(8.dp)
+                    .background(Color(0xCE4E98DE), shape = RoundedCornerShape(8.dp))
+                    .padding(12.dp)
             ) {
-                Column {
-                    recompensa.descripcio?.let { Text(text = it, fontWeight = FontWeight.Bold, fontSize = 20.sp) }
-                    recompensa.observacions?.let { Text(text = it, fontSize = 14.sp) }
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    recompensa.descripcio?.let {
+                        Text(text = it, fontWeight = FontWeight.Bold, fontSize = 20.sp, color = Color.White)
+                    }
+                    recompensa.observacions?.let {
+                        Text(text = it, fontSize = 14.sp, color = Color.White.copy(alpha = 0.8f))
+                    }
                 }
                 recompensa.cost?.let {
                     Text(
-                        text = it.toString(),
+                        text = "$it Puntos",
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
+                        fontSize = 18.sp,
+                        color = Color.White,
                         modifier = Modifier.align(Alignment.CenterEnd)
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             bitmap?.let {
                 Image(
                     bitmap = it.asImageBitmap(),
                     contentDescription = "Imagen de la recompensa",
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp) // Limitar la altura
+                        .fillMaxSize()
+                        .background(Color(0x009CF3FF), shape = RoundedCornerShape(8.dp))
                 )
             }
         }

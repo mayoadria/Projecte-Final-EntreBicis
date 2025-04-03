@@ -36,43 +36,55 @@ fun detalls(viewmodel: llistaViewmodel, recompensaId: Long) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF50E5FF))
-            .padding(16.dp),
+            .background(Color(0xFFE3F2FD)) // Azul claro
+            .padding(16.dp).statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Detalls Premi", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        Text("658,54฿", color = Color.White, modifier = Modifier.align(Alignment.End))
+        Text(
+            text = "Detalls del Premi",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFF0288D1)
+        )
         Spacer(modifier = Modifier.height(8.dp))
 
         Card(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(8.dp)
+            shape = RoundedCornerShape(12.dp),
+            elevation = CardDefaults.cardElevation(6.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 recompensa?.descripcio?.let {
                     Text(
-                        it,
+                        text = it,
                         fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF424242)
                     )
                 }
                 recompensa?.cost?.let {
                     Text(
-                        it.toString(),
+                        text = "$it Punts",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black
+                        color = Color(0xFF0288D1)
                     )
                 }
-
                 Spacer(modifier = Modifier.height(4.dp))
-                recompensa?.observacions?.let { Text(it) }
+                recompensa?.observacions?.let {
+                    Text(text = it, fontSize = 16.sp, color = Color(0xFF757575))
+                }
                 Spacer(modifier = Modifier.height(8.dp))
-                recompensa?.puntBescanviId?.nom?.let { Text(it) }
-                recompensa?.puntBescanviId?.adreca?.let { Text(it) }
-                Spacer(modifier = Modifier.height(4.dp))
-                recompensa?.puntBescanviId?.personaContacte?.let { Text(it) }
-                recompensa?.puntBescanviId?.telefon?.let { Text(it) }
+                Divider()
+                Spacer(modifier = Modifier.height(8.dp))
+                Column {
+                    Text("Punt d'intercanvi:", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color(0xFF0288D1))
+                    recompensa?.puntBescanviId?.nom?.let { Text(it, fontSize = 16.sp, color = Color(0xFF424242)) }
+                    recompensa?.puntBescanviId?.adreca?.let { Text(it, fontSize = 14.sp, color = Color(0xFF757575)) }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    recompensa?.puntBescanviId?.personaContacte?.let { Text("Contacto: $it", fontSize = 14.sp, color = Color(0xFF757575)) }
+                    recompensa?.puntBescanviId?.telefon?.let { Text("Tel: $it", fontSize = 14.sp, color = Color(0xFF757575)) }
+                }
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -83,17 +95,19 @@ fun detalls(viewmodel: llistaViewmodel, recompensaId: Long) {
                 contentDescription = "Imagen de la recompensa",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp) // Limitar la altura
+                    .height(220.dp) // Ajustar tamaño
+                    .background(Color.Gray, shape = RoundedCornerShape(12.dp))
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = { /* Acción de reserva */ },
-            colors = ButtonDefaults.buttonColors(Color(0xFF50E5FF)),
-            modifier = Modifier.fillMaxWidth()
+            colors = ButtonDefaults.buttonColors(Color(0xFF0288D1)),
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp)
         ) {
-            Text("Reserva", color = Color.White, fontSize = 18.sp)
+            Text("Reservar", color = Color.White, fontSize = 18.sp)
         }
     }
 }

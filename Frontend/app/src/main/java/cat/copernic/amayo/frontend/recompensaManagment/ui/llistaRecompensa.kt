@@ -4,11 +4,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmodel
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,7 +43,7 @@ fun recompensa(llistaViewmodel: llistaViewmodel,navController: NavController) {
         else -> filteredRecompensas
     }
 
-    Column(modifier = Modifier.fillMaxSize().background(Color.White).statusBarsPadding()) {
+    Column(modifier = Modifier.fillMaxSize().background(Color(0x9C9CF3FF)).statusBarsPadding()) {
         Header(
             onFilterApplied = { desc, obs, estat ->
                 filtroDesc = desc
@@ -62,35 +64,51 @@ fun recompensa(llistaViewmodel: llistaViewmodel,navController: NavController) {
 
 @Composable
 fun Header(onFilterApplied: (String, String, String) -> Unit, onSortSelected: (String, Boolean) -> Unit) {
-    var expanded by remember { mutableStateOf(false) }
-    var showFilterDialog by remember { mutableStateOf(false) }
-    var showSortDialog by remember { mutableStateOf(false) }
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    var showFilterDialog by rememberSaveable { mutableStateOf(false) }
+    var showSortDialog by rememberSaveable { mutableStateOf(false) }
 
-    Column(modifier = Modifier.fillMaxWidth().background(Color(0xFF64D8FF))) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(0xCE4E98DE))
+            .padding(8.dp)
+    ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Premi", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Black)
-            Text("658,54B", fontSize = 16.sp, color = Color.White, fontWeight = FontWeight.Bold)
+            Text(
+                text = "Premis",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
+            Text(
+                text = "658,54B",
+                fontSize = 16.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
         }
 
         Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Spacer(modifier = Modifier.weight(1f))
-
             Box {
-                IconButton(onClick = { expanded = true }) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "Menú",
-                        tint = Color.Black
-                    )
-                }
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "Menú",
+                    tint = Color.Black,
+                    modifier = Modifier.clickable { expanded = true }
+                )
 
                 DropdownMenu(
                     expanded = expanded,
