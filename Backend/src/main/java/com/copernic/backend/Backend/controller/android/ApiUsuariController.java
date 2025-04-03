@@ -20,6 +20,23 @@ public class ApiUsuariController {
         // Inicialización si es necesaria
     }
 
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Usuari usuari) {
+        try {
+            // Se asume que en la lógica tienes un metodo login que valida las credenciales
+            Usuari usuariLogin = logic.login(usuari.getEmail(), usuari.getContra());
+            if (usuariLogin != null) {
+                return new ResponseEntity<>(usuariLogin, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Credencials incorrectes", HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al intentar login: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
     @PutMapping("/editar/{email}")
     public ResponseEntity<?> updateUsuari(@PathVariable String email, @RequestBody Usuari usuari) {
         try {

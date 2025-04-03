@@ -37,4 +37,21 @@ public class UsuariAndroidLogic {
             throw new Exception("Usuari no trobat");
         }
     }
+
+    public Usuari login(String email, String contra) {
+        Optional<Usuari> optionalUser = userRepository.findById(email);
+        if(optionalUser.isPresent()){
+            Usuari existing = optionalUser.get();
+            // Verifica que la contraseña coincida con la codificada almacenada
+            if(passwordEncoder.matches(contra, existing.getContra())){
+                return existing;
+            } else {
+                return null; // Credenciales incorrectas
+            }
+        } else {
+            return null; // Usuario no encontrado
+        }
+    }
+
+
 }
