@@ -76,7 +76,8 @@ fun RecompensaItem(recompensa: Recompensa, navController: NavController, scale: 
                     bitmap = it.asImageBitmap(),
                     contentDescription = "Imagen de la recompensa",
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxWidth() // Ajusta el ancho al contenedor
+                        .height(200.dp) // Cambia el alto de la imagen
                         .background(Color(0x009CF3FF), shape = RoundedCornerShape(8.dp))
                 )
             }

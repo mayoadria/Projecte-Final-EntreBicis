@@ -6,6 +6,8 @@ import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmode
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
@@ -56,8 +58,14 @@ fun recompensa(llistaViewmodel: llistaViewmodel,navController: NavController) {
             }
         )
 
-        filteredRecompensas.forEach { recompensas ->
-            RecompensaItem(recompensa = recompensas, navController,scale = 1f)
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(filteredRecompensas) { recompensa ->
+                RecompensaItem(recompensa = recompensa, navController, scale = 1f)
+            }
         }
     }
 }

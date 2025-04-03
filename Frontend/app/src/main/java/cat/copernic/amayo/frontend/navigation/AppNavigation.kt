@@ -21,7 +21,7 @@ fun AppNavigation() {
     val viewLlista: llistaViewmodel = viewModel()
     NavHost(
         navController = navController,
-        startDestination = "recompensa",
+        startDestination = "login",
         modifier = Modifier.fillMaxSize()
     ) {
         composable("login") { LoginScreen(navController) }
