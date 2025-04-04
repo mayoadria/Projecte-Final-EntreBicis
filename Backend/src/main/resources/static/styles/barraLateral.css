@@ -4,7 +4,7 @@
     background-color: #85d3f2;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centra horizontalmente el contenido */
+    align-items: center; /* Centra el bloque de navegación horizontalmente */
     height: 100vh;       /* Ocupa toda la altura de la ventana */
     padding-top: 20px;
 }
@@ -19,7 +19,7 @@
     border-radius: 50%;
     width: 80px;
     height: 80px;
-    object-fit: cover; /* para que rellene */
+    object-fit: cover; /* Para que la imagen rellene el contenedor */
 }
 
 .profile h3 {
@@ -32,12 +32,14 @@
 .nav-sections {
     display: flex;
     flex-direction: column;
-    width: 100%; /* Para que los ul ocupen el ancho */
-    flex: 1;     /* Permite empujar la sección de abajo al final */
+    align-items: flex-start; /* Alinea los ítems a la izquierda dentro del contenedor */
+    width: 80%;             /* Ajusta el ancho para que se vea centrado en la barra */
+    flex: 1;                /* Permite que el contenedor tome el espacio disponible y empuje la lista inferior al fondo */
 }
 
 /* Listas de la parte superior e inferior */
-.nav-top, .nav-bottom {
+.nav-top,
+.nav-bottom {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -47,9 +49,9 @@
 /* Enlaces de ambas secciones */
 .nav-top li a,
 .nav-bottom li a {
-    display: flex;           /* Permite centrar ícono y texto si se desea */
-    align-items: center;     /* Centra verticalmente ícono y texto */
-    justify-content: center; /* Centra horizontalmente ícono y texto */
+    display: flex;               /* Para disponer ícono y texto en línea */
+    align-items: center;         /* Centra verticalmente ícono y texto */
+    justify-content: flex-start; /* Alinea ícono y texto a la izquierda */
     padding: 10px 20px;
     color: #333;
     text-decoration: none;
@@ -62,13 +64,18 @@
     background-color: #72c0de;
 }
 
-/* Iconos: margen a la derecha si quieres separar texto e icono */
+/* Iconos: margen a la derecha para separar ícono y texto */
 .icon {
     margin-right: 8px;
 }
 
-/* Sección inferior: empujada al fondo y con margen para separarla del borde */
+/* Sección inferior: empujada al fondo y separada del borde inferior */
 .nav-bottom {
-    margin-top: auto;      /* Empuja esta lista hacia abajo */
-    margin-bottom: 40px;   /* Separación con el borde inferior */
+    margin-top: auto;   /* Empuja la lista hacia abajo */
+    margin-bottom: 40px; /* Espacio adecuado respecto al borde inferior */
+}
+
+/* Espaciado entre ítems inferiores igual que los superiores (sin margen extra) */
+.nav-bottom li:not(:last-child) {
+    margin-bottom: 0;
 }

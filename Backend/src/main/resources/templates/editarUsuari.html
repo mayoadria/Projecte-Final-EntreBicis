@@ -20,8 +20,11 @@
 
         <!-- Formulario para actualizar el usuario -->
         <form class="user-form" th:action="@{/usuaris/editarUsuari}" method="POST" enctype="multipart/form-data">
-            <!-- Input oculto para seleccionar foto (se activa al hacer clic en la foto) -->
+            <!-- Input oculto para la foto -->
             <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" />
+
+            <!-- Campo oculto para conservar el email original -->
+            <input type="hidden" name="originalEmail" th:value="${usuari.email}" />
 
             <div class="form-field">
                 <label for="email">Correu</label>
@@ -82,6 +85,5 @@
         }
     });
 </script>
-
 </body>
 </html>

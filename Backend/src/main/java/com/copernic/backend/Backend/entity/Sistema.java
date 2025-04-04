@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-
 @Entity
 @Data
 @NoArgsConstructor
@@ -15,14 +14,17 @@ import lombok.experimental.SuperBuilder;
 public class Sistema {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column
     private Double velMax;
+
     @Column
     private Double tempsMaxAturat;
+
     @Column
     private int conversioSaldo;
+
     @Column
     private String tempsRecollida;
 }

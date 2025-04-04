@@ -8,7 +8,7 @@
 
 /* Fondo */
 body {
-    background-color: #aeefff; /* Color de fondo celeste */
+    background-color: #aeefff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -24,7 +24,7 @@ body {
 
 /* Caja de login */
 .login-box {
-    background-color: #b3ecff; /* Fondo un poco más oscuro que el body */
+    background-color: #b3ecff;
     border-radius: 8px;
     padding: 30px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -58,14 +58,17 @@ body {
     border-radius: 4px;
 }
 
+/* Botón toggle para la contraseña */
 .toggle-password {
     background: none;
     border: none;
     margin-left: 5px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 20px;
+    color: #333;
 }
 
+/* Botón de login */
 .btn-login {
     width: 100%;
     background-color: #0099cc;
@@ -81,11 +84,10 @@ body {
     background-color: #008bb3;
 }
 
-.toggle-password {
-    background: none;
-    border: none;
-    margin-left: 5px;
-    cursor: pointer;
-    font-size: 20px; /* Ajusta el tamaño del icono */
-    color: #333;
+/* Contenedor para el botón de login (sin movimiento) */
+.btn-container {
+    position: relative;
+    height: 60px;
+    margin-top: 20px;
+    overflow: visible;
 }

@@ -38,12 +38,25 @@ public class UsuariLogic {
         return userRepository.findById(email);
     }
 
-    public Usuari updateUsuari(String email, Usuari usuari) {
-        // Asumimos que el usuari existe; en el controlador se puede validar la existencia.
-        usuari.setEmail(email); // Aseguramos que la clave primaria se mantiene
-        return userRepository.save(usuari);
+    // Actualiza la entidad existente sin modificar el identificador (email)
+    public Usuari updateUsuari(String email, Usuari usuariActualitzat) {
+        Optional<Usuari> existingOpt = userRepository.findById(email);
+        if (existingOpt.isPresent()) {
+            Usuari existing = existingOpt.get();
+            // Actualizar solo los campos modificables
+            existing.setNom(usuariActualitzat.getNom());
+            existing.setCognom(usuariActualitzat.getCognom());
+            existing.setContra(usuariActualitzat.getContra());
+            existing.setTelefon(usuariActualitzat.getTelefon());
+            existing.setSaldo(usuariActualitzat.getSaldo());
+            existing.setPoblacio(usuariActualitzat.getPoblacio());
+            existing.setFoto(usuariActualitzat.getFoto());
+            // No se toca el campo "email" ya que es el identificador
+            return userRepository.save(existing);
+        } else {
+            throw new RuntimeException("Usuari no trobat");
+        }
     }
-
 
     public void deleteUsuari(String email) {
         userRepository.deleteById(email);
@@ -53,8 +66,7 @@ public class UsuariLogic {
         return userRepository.existsByEmail(email);
     }
 
-        public Usuari findByEmail(String email) {
-            return userRepository.findById(email).orElse(null);
-        }
-
+    public Usuari findByEmail(String email) {
+        return userRepository.findById(email).orElse(null);
+    }
 }
