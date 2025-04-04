@@ -2,6 +2,7 @@ package com.copernic.backend;
 
 import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.entity.enums.Estat;
+import com.copernic.backend.Backend.entity.enums.EstatUsuari;
 import com.copernic.backend.Backend.entity.enums.Rol;
 import com.copernic.backend.Backend.logic.android.UsuariAndroidLogic;
 import com.copernic.backend.Backend.repository.UserRepository;
@@ -39,7 +40,7 @@ public class TestUsuari {
                 .saldo(100)
                 .foto("fotoBase64")
                 .rol(Rol.CICLISTA)       // Asegúrate de que estos enums existen en tu proyecto
-                .estat(Estat.ACTIU)
+                .estat(EstatUsuari.ACTIU)
                 .build();
         userRepository.save(original);
 

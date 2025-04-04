@@ -2,6 +2,7 @@ package com.copernic.backend.Backend.controller.web;
 
 import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.entity.enums.Estat;
+import com.copernic.backend.Backend.entity.enums.EstatUsuari;
 import com.copernic.backend.Backend.entity.enums.Rol;
 import com.copernic.backend.Backend.logic.web.UsuariLogic;
 import jakarta.transaction.Transactional;
@@ -56,7 +57,7 @@ public class UsuarisWebController {
             usuari.setFoto(base64Foto);
         }
         usuari.setRol(Rol.CICLISTA);
-        usuari.setEstat(Estat.ACTIU);
+        usuari.setEstat(EstatUsuari.ACTIU);
         usuariLogic.createUsuari(usuari);
         return "redirect:/usuaris";
     }
@@ -125,7 +126,7 @@ public class UsuarisWebController {
         if (usuariOpt.isPresent()) {
             Usuari usuari = usuariOpt.get();
             try {
-                Estat nouEstat = Estat.valueOf(payload.get("estat"));
+                EstatUsuari nouEstat = EstatUsuari.valueOf(payload.get("estat"));
                 usuari.setEstat(nouEstat);
                 usuariLogic.updateUsuari(email, usuari);
                 return ResponseEntity.ok(Collections.singletonMap("estat", nouEstat.name()));

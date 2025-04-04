@@ -3,6 +3,7 @@ package com.copernic.backend.Backend.security;
 import com.copernic.backend.Backend.entity.Sistema;
 import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.entity.enums.Estat;
+import com.copernic.backend.Backend.entity.enums.EstatUsuari;
 import com.copernic.backend.Backend.entity.enums.Rol;
 import com.copernic.backend.Backend.logic.web.UsuariLogic;
 import com.copernic.backend.Backend.repository.SistemaRepository;
@@ -96,7 +97,7 @@ public class SecurityConfig {
         admin.setEmail("admin@entrebicis.com");
         admin.setTelefon("000000000");
         admin.setRol(Rol.ADMINISTRADOR);
-        admin.setEstat(Estat.ACTIU);
+        admin.setEstat(EstatUsuari.ACTIU);
 
         usuariLogic.createUsuari(admin);
     }

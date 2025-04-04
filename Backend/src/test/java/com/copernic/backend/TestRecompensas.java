@@ -41,7 +41,7 @@ public class TestRecompensas {
 
         carta.setDescripcio("Prueba");
         carta.setObservacions("Prueba");
-        carta.setEstat(Estat.ACTIU);
+        carta.setEstat(Estat.DISPONIBLES);
         carta.setCost(100);
 
         recompensasRepository.save(carta);
@@ -68,7 +68,7 @@ public class TestRecompensas {
 
         carta.setDescripcio("Prueba2");
         carta.setObservacions("Prueba2");
-        carta.setEstat(Estat.ACTIU);
+        carta.setEstat(Estat.DISPONIBLES);
         carta.setCost(100);
         recompensasRepository.save(carta);
 
