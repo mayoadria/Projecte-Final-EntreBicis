@@ -49,7 +49,7 @@ public class Usuari implements UserDetails {
     private String poblacio;
 
     @Column
-    private int saldo;
+    private Double saldo;
 
     @Lob
     private String foto; // Se guardará la cadena Base64
