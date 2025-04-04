@@ -1,5 +1,6 @@
 package com.copernic.backend.Backend.controller.web;
 
+import com.copernic.backend.Backend.Excepciones.ExcepcionEmailDuplicado;
 import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.entity.enums.Estat;
 import com.copernic.backend.Backend.entity.enums.EstatUsuari;
@@ -60,7 +61,31 @@ public class UsuarisWebController {
         usuari.setEstat(EstatUsuari.ACTIU);
         usuariLogic.createUsuari(usuari);
         return "redirect:/usuaris";
+        }
+    public String crearUsuari(@ModelAttribute("newUsuari") Usuari usuari,
+                              @RequestParam(value = "fileFoto", required = false) MultipartFile fileFoto,
+                              Model model) {
+        try {
+            if (fileFoto != null && !fileFoto.isEmpty()) {
+                String base64Foto = Base64.getEncoder().encodeToString(fileFoto.getBytes());
+                usuari.setFoto(base64Foto);
+            }
+            usuari.setRol(Rol.CICLISTA);
+            usuari.setEstat(EstatUsuari.ACTIU);
+            usuariLogic.createUsuari(usuari);
+            return "redirect:/usuaris";
+        } catch (ExcepcionEmailDuplicado e) {
+            model.addAttribute("error", e.getMessage());
+            // Devolver el objeto con los datos ingresados para que se repopule el formulario
+            model.addAttribute("newUsuari", usuari);
+            return "crearUsuari";
+        } catch (IOException ex) {
+            model.addAttribute("error", "Error procesando la imagen.");
+            model.addAttribute("newUsuari", usuari);
+            return "crearUsuari";
+        }
     }
+
 
     // Mostrar el formulario de edición para un usuario dado su email
     @GetMapping("/editar/{email:.+}")

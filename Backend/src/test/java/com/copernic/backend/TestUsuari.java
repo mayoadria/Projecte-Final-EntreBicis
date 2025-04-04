@@ -2,7 +2,6 @@ package com.copernic.backend;
 
 import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.entity.enums.Estat;
-import com.copernic.backend.Backend.entity.enums.EstatUsuari;
 import com.copernic.backend.Backend.entity.enums.Rol;
 import com.copernic.backend.Backend.logic.android.UsuariAndroidLogic;
 import com.copernic.backend.Backend.repository.UserRepository;
@@ -55,7 +54,7 @@ public class TestUsuari {
                 .foto("newFotoBase64")
                 .build();
 
-        // Acción: llamar al método de actualización
+        // Llamar al metodo de actualización
         Usuari updatedUser = usuariAndroidLogic.updateUsuari("test@example.com", updateInfo);
 
         // Verificaciones
