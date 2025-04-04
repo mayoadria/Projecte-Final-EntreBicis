@@ -8,12 +8,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,13 +42,15 @@ public class UsuarisWebController {
 
     // Mostrar la página para crear un usuario
     @GetMapping("/crear")
-    public String showCrearUsuariForm() {
+    public String showCrearUsuariForm(Model model) {
+        // Se añade una nueva instancia para asegurar que el formulario se vincule a un objeto nuevo
+        model.addAttribute("newUsuari", new Usuari());
         return "crearUsuari";
     }
 
     // Crear un usuario asignando el rol CICLISTA y guardando la foto en Base64 (si se selecciona)
     @PostMapping("/crearUsuari")
-    public String crearUsuari(Usuari usuari, @RequestParam(value = "fileFoto", required = false) MultipartFile fileFoto) throws IOException {
+    public String crearUsuari(@ModelAttribute("newUsuari") Usuari usuari, @RequestParam(value = "fileFoto", required = false) MultipartFile fileFoto) throws IOException {
         if (fileFoto != null && !fileFoto.isEmpty()) {
             String base64Foto = Base64.getEncoder().encodeToString(fileFoto.getBytes());
             usuari.setFoto(base64Foto);
@@ -67,30 +67,30 @@ public class UsuarisWebController {
         Optional<Usuari> usuariOpt = usuariLogic.getUsuariByEmail(email);
         if (usuariOpt.isPresent()) {
             Usuari usuari = usuariOpt.get();
-            // Opcional: si el usuario tiene foto, podemos crear el data URL
+            // Si el usuario tiene foto, se crea el data URL
             if (usuari.getFoto() != null && !usuari.getFoto().isEmpty()) {
                 String fotoDataUrl = "data:image/jpeg;base64," + usuari.getFoto();
                 model.addAttribute("fotoDataUrl", fotoDataUrl);
             }
             model.addAttribute("usuari", usuari);
-            return "editarUsuari"; // Nombre de la plantilla
+            // En la vista de edición se debe incluir un campo oculto "originalEmail" para evitar modificar el identificador
+            return "editarUsuari";
         } else {
             return "redirect:/usuaris";
         }
     }
 
-
-    // Procesar la edición y actualizar el usuario en la base de datos.
-    // Si se suministra una foto nueva se sobreescribe; si no, se mantiene la existente.
+    // Procesar la edición y actualizar el usuario. Se utiliza el email original para evitar modificar el identificador.
     @PostMapping("/editarUsuari")
-    public String editarUsuari(Usuari usuari, @RequestParam(value = "fileFoto", required = false) MultipartFile fileFoto) throws IOException {
-        Optional<Usuari> existingOpt = usuariLogic.getUsuariByEmail(usuari.getEmail());
+    public String editarUsuari(@RequestParam("originalEmail") String originalEmail, Usuari usuari, @RequestParam(value = "fileFoto", required = false) MultipartFile fileFoto) throws IOException {
+        Optional<Usuari> existingOpt = usuariLogic.getUsuariByEmail(originalEmail);
         if (existingOpt.isPresent()) {
             Usuari existing = existingOpt.get();
             existing.setNom(usuari.getNom());
             existing.setCognom(usuari.getCognom());
-            // Solo actualizamos la contraseña si se ha proporcionado un nuevo valor no vacío
-            if (usuari.getContra() != null && !usuari.getContra().isEmpty() && !usuari.getContra().equals(existing.getContra())) {
+            // Actualizar la contraseña solo si se proporciona un nuevo valor distinto
+            if (usuari.getContra() != null && !usuari.getContra().isEmpty() &&
+                    !passwordEncoder.matches(usuari.getContra(), existing.getContra())) {
                 existing.setContra(passwordEncoder.encode(usuari.getContra()));
             }
             existing.setTelefon(usuari.getTelefon());
@@ -103,8 +103,7 @@ public class UsuarisWebController {
                 String base64Foto = Base64.getEncoder().encodeToString(fileFoto.getBytes());
                 existing.setFoto(base64Foto);
             }
-            // Actualiza el usuario en la base de datos
-            usuariLogic.updateUsuari(existing.getEmail(), existing);
+            usuariLogic.updateUsuari(originalEmail, existing);
         }
         return "redirect:/usuaris";
     }
@@ -138,5 +137,9 @@ public class UsuarisWebController {
         }
     }
 
+    @InitBinder("usuari")
+    public void initBinder(WebDataBinder binder) {
+        binder.setDisallowedFields("email");
+    }
 
 }

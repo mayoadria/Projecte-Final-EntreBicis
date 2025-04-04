@@ -4,6 +4,7 @@
     padding: 0;
     box-sizing: border-box;
     font-family: Arial, sans-serif;
+
 }
 
 body {
@@ -17,6 +18,9 @@ body {
 
 /* Barra lateral */
 
+nav ul li a:hover {
+    background-color: #72c0de;
+}
 
 /* Main content */
 .main-content {
