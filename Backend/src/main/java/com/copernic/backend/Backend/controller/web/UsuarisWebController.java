@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
@@ -27,6 +28,9 @@ public class UsuarisWebController {
 
     @Autowired
     private UsuariLogic usuariLogic;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // Listar usuarios, excluyendo administradores
     @GetMapping
@@ -85,7 +89,10 @@ public class UsuarisWebController {
             Usuari existing = existingOpt.get();
             existing.setNom(usuari.getNom());
             existing.setCognom(usuari.getCognom());
-            existing.setContra(usuari.getContra());
+            // Solo actualizamos la contraseña si se ha proporcionado un nuevo valor no vacío
+            if (usuari.getContra() != null && !usuari.getContra().isEmpty() && !usuari.getContra().equals(existing.getContra())) {
+                existing.setContra(passwordEncoder.encode(usuari.getContra()));
+            }
             existing.setTelefon(usuari.getTelefon());
             existing.setSaldo(usuari.getSaldo());
             existing.setPoblacio(usuari.getPoblacio());
@@ -96,7 +103,7 @@ public class UsuarisWebController {
                 String base64Foto = Base64.getEncoder().encodeToString(fileFoto.getBytes());
                 existing.setFoto(base64Foto);
             }
-            // Si no se envía una nueva foto, se conserva la existente.
+            // Actualiza el usuario en la base de datos
             usuariLogic.updateUsuari(existing.getEmail(), existing);
         }
         return "redirect:/usuaris";

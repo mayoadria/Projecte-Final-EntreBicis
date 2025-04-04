@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Parámetros del Sistema</title>
+    <link rel="stylesheet" href="/styles/matrix.css" />
+    <link rel="stylesheet" href="/styles/barraLateral.css" />
+</head>
+<body>
+<!-- Barra lateral -->
+<div th:replace="barraLateral :: barralateral"></div>
+
+<div class="main-content">
+    <h1>Parámetros del Sistema</h1>
+    <div class="form-wrapper">
+        <div class="form-container">
+            <form class="user-form" th:action="@{/sistema/actualizar}" method="post" th:object="${sistema}">
+                <div class="form-field">
+                    <label for="velMax">Velocidad Máxima</label>
+                    <input type="number" step="0.1" id="velMax" name="velMax" th:value="*{velMax}" />
+                </div>
+
+                <div class="form-field">
+                    <label for="tempsMaxAturat">Tiempo Máx. Parado</label>
+                    <input type="number" step="0.1" id="tempsMaxAturat" name="tempsMaxAturat" th:value="*{tempsMaxAturat}" />
+                </div>
+
+                <div class="form-field">
+                    <label for="conversioSaldo">Conversión Saldo</label>
+                    <input type="number" id="conversioSaldo" name="conversioSaldo" th:value="*{conversioSaldo}" />
+                </div>
+
+                <div class="form-field">
+                    <label for="tempsRecollida">Tiempo Recogida</label>
+                    <input type="text" id="tempsRecollida" name="tempsRecollida" th:value="*{tempsRecollida}" />
+                </div>
+
+                <button type="submit" class="btn-crear">Guardar</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
