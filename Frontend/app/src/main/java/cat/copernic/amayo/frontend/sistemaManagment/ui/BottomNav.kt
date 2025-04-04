@@ -1,6 +1,5 @@
-package cat.copernic.amayo.frontend.SistemaManagment.ui
+package cat.copernic.amayo.frontend.sistemaManagment.ui
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -34,8 +33,11 @@ fun BottomNav(navController: NavController){
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(BottomNavItem.Inici.route) {
-                inici()
+                inici(onPlusClick = {
+                    // navController.navigate("ruta")
+                })
             }
+
             composable(BottomNavItem.Rec.route) {
                 recompensa(viewLlista,navController
                 )

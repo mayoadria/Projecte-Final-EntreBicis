@@ -7,8 +7,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import cat.copernic.amayo.frontend.SistemaManagment.ui.BottomNav
-import cat.copernic.amayo.frontend.SistemaManagment.ui.inici
+import cat.copernic.amayo.frontend.sistemaManagment.ui.BottomNav
 import cat.copernic.amayo.frontend.recompensaManagment.ui.detalls
 import cat.copernic.amayo.frontend.recompensaManagment.ui.recompensa
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmodel
@@ -21,7 +20,7 @@ fun AppNavigation() {
     val viewLlista: llistaViewmodel = viewModel()
     NavHost(
         navController = navController,
-        startDestination = "login",
+        startDestination = "inici",
         modifier = Modifier.fillMaxSize()
     ) {
         composable("login") { LoginScreen(navController) }
