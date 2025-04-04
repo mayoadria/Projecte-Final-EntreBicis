@@ -1,10 +1,12 @@
 package com.copernic.backend.Backend.security;
 
+import com.copernic.backend.Backend.entity.Sistema;
 import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.entity.enums.Estat;
+import com.copernic.backend.Backend.entity.enums.EstatUsuari;
 import com.copernic.backend.Backend.entity.enums.Rol;
 import com.copernic.backend.Backend.logic.web.UsuariLogic;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.copernic.backend.Backend.repository.SistemaRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,27 +24,29 @@ import java.util.Optional;
 @EnableWebSecurity
 public class SecurityConfig {
 
-
-
     private final ValidadorUsuaris validadorUsuaris;
-    private UsuariLogic usuariLogic;
+    private final UsuariLogic usuariLogic;
+    private final SistemaRepository sistemaRepository;
 
-    public SecurityConfig(ValidadorUsuaris validadorUsuaris, UsuariLogic usuariServiceSQL,UserDetailsService userDetailsService) {
+    public SecurityConfig(ValidadorUsuaris validadorUsuaris,
+                          UsuariLogic usuariServiceSQL,
+                          UserDetailsService userDetailsService,
+                          SistemaRepository sistemaRepository) {
         this.validadorUsuaris = validadorUsuaris;
         this.usuariLogic = usuariServiceSQL;
-
+        this.sistemaRepository = sistemaRepository;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/logout", "/styles/**", "/images/**").permitAll()
+                        .requestMatchers("/login", "/logout", "/styles/**", "/images/**","/api/**").permitAll()
                         .requestMatchers("/home/**").hasRole("ADMINISTRADOR") // Solo admins
                         .requestMatchers("/recompensas/**").hasRole("ADMINISTRADOR") // Solo admins
                         .requestMatchers("/bescanvi/**").hasRole("ADMINISTRADOR") // Solo admins
                         .requestMatchers("/usuaris/**").hasRole("ADMINISTRADOR") // Solo admins
-                         // Usuarios y admins
+                        // Usuarios y admins
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -58,9 +62,11 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login")
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
-                ).userDetailsService(validadorUsuaris);
+                )
+                .userDetailsService(validadorUsuaris);
 
         crearAdminSiNoExiste();
+        crearSistemaSiNoExiste();
 
         return http.build();
     }
@@ -78,7 +84,7 @@ public class SecurityConfig {
     private void crearAdminSiNoExiste() {
         Optional<Usuari> adminExistente = usuariLogic.getUsuariByEmail("admin@entrebicis.com");
         if (adminExistente.isPresent()) {
-            System.out.println("El administrador ja existeix.");
+            System.out.println("El administrador ya existe.");
             return;
         }
 
@@ -87,14 +93,30 @@ public class SecurityConfig {
         admin.setCognom("admin");
         admin.setNom("admin");
         admin.setPoblacio("admin");
-        admin.setSaldo(20);
+        admin.setSaldo(20.0);
         admin.setEmail("admin@entrebicis.com");
         admin.setTelefon("000000000");
         admin.setRol(Rol.ADMINISTRADOR);
-        admin.setEstat(Estat.ACTIU);
-
+        admin.setEstat(EstatUsuari.ACTIU);
 
         usuariLogic.createUsuari(admin);
     }
-}
 
+    private void crearSistemaSiNoExiste() {
+        Optional<Sistema> sistemaExistente = sistemaRepository.findById(1L);
+        if (sistemaExistente.isPresent()) {
+            System.out.println("El sistema ya existe.");
+            return;
+        }
+
+        Sistema sistema = new Sistema();
+        sistema.setId(1L); // Forzamos el ID=1
+        sistema.setVelMax(20.0);          // Valor por defecto (ajusta según tus necesidades)
+        sistema.setTempsMaxAturat(10.0);    // Valor por defecto
+        sistema.setConversioSaldo(2);       // Valor por defecto
+        sistema.setTempsRecollida("60");    // Valor por defecto
+
+        sistemaRepository.save(sistema);
+        System.out.println("Sistema por defecto creado con ID=1.");
+    }
+}

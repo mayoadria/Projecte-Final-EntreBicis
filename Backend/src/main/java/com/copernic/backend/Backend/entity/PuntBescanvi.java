@@ -1,5 +1,6 @@
 package com.copernic.backend.Backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -40,5 +41,6 @@ public class PuntBescanvi {
 
     @OneToMany(mappedBy = "puntBescanviId", cascade = CascadeType.ALL)
     @ToString.Exclude
+    @JsonIgnoreProperties("puntBescanviId")
     private List<Recompensas> puntBescanviID;
 }

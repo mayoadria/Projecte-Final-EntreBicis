@@ -4,10 +4,9 @@
 <div th:fragment="barralateral">
     <div class="sidebar">
         <div class="profile">
-            <img th:src="${#strings.isEmpty(usuari?.foto)
-                ? '/styles/images/MarioPayaso.png'
-                : 'data:image/jpeg;base64,' + usuari.foto}"
-                 alt="Foto de perfil"/>
+            <img th:src="${#strings.isEmpty(usuari?.foto) or usuari.foto.length() > 100000
+    ? '/styles/images/MarioPayaso.png'
+    : 'data:image/jpeg;base64,' + usuari.foto}" alt="Foto de perfil"/>
             <h3>Admin</h3>
         </div>
 
@@ -24,7 +23,7 @@
 
             <!-- Enlaces de la parte inferior -->
             <ul class="nav-bottom">
-                <li><a href="#"><span class="icon">⚙️</span>Configuració</a></li>
+                <li><a href="/sistema"><span class="icon">⚙️</span>Configuració</a></li>
                 <li>
                     <a th:href="@{/usuaris/editar/{email}(email='admin@entrebicis.com')}">
                         <span class="icon">✏️</span>Editar

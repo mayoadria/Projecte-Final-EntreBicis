@@ -69,7 +69,7 @@ public class AuthController {
     public String showHome(Model model) {
         // Recupera el usuario administrador, por ejemplo:
         Usuari admin = usuariLogic.getUsuariByEmail("admin@entrebicis.com").orElse(null);
-        model.addAttribute("admin", admin);
+        model.addAttribute("usuari", admin);
         return "home";
     }
 
