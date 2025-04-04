@@ -58,6 +58,9 @@
         <label for="contra">Contrasenya provisional</label>
         <input type="text" id="contra" th:field="*{contra}" placeholder="Contraseña provisional" required />
       </div>
+      <div th:if="${error}" style="color: red;">
+        <p th:text="${error}"></p>
+      </div>
 
       <button type="submit" class="btn-crear">Crear</button>
     </form>

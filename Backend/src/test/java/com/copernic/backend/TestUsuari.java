@@ -38,7 +38,7 @@ public class TestUsuari {
                 .poblacio("City")
                 .saldo(100)
                 .foto("fotoBase64")
-                .rol(Rol.CICLISTA)       // Asegúrate de que estos enums existen en tu proyecto
+                .rol(Rol.CICLISTA)
                 .estat(Estat.ACTIU)
                 .build();
         userRepository.save(original);
@@ -54,7 +54,7 @@ public class TestUsuari {
                 .foto("newFotoBase64")
                 .build();
 
-        // Acción: llamar al método de actualización
+        // Llamar al metodo de actualización
         Usuari updatedUser = usuariAndroidLogic.updateUsuari("test@example.com", updateInfo);
 
         // Verificaciones
