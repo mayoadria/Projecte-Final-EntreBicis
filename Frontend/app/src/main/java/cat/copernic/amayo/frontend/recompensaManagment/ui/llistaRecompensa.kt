@@ -20,9 +20,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import cat.copernic.amayo.frontend.core.auth.SessionViewModel
 
 @Composable
-fun recompensa(llistaViewmodel: llistaViewmodel,navController: NavController) {
+fun recompensa(llistaViewmodel: llistaViewmodel,navController: NavController,sessionViewModel: SessionViewModel) {
     var filtroDesc by remember { mutableStateOf("") }
     var filtroObs by remember { mutableStateOf("") }
     var filtroEstat by remember { mutableStateOf("") }

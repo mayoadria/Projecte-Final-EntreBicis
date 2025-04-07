@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Base64;
@@ -43,7 +44,6 @@ public class ApiUsuariController {
 
             Usuari usuari = optionalUsuari.get();
 
-            // Verifica la contraseña usando el PasswordEncoder
             if (passwordEncoder.matches(contra, usuari.getContra())) {
                 return new ResponseEntity<>(usuari, headers, HttpStatus.OK);
             } else {
@@ -65,4 +65,23 @@ public class ApiUsuariController {
             return new ResponseEntity<>("Error actualitzant usuari: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/getByEmail/{email}")
+    public ResponseEntity<Usuari> getByEmail(@PathVariable String email) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-store");
+
+        try {
+            Optional<Usuari> client = logic.getUsuariByEmail(email);
+
+            return client
+                    .map(usuari -> new ResponseEntity<>(usuari, headers, HttpStatus.OK))
+                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

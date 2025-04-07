@@ -5,12 +5,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import cat.copernic.amayo.frontend.core.auth.SessionViewModel
 import cat.copernic.amayo.frontend.navigation.BottomNavItem
 import cat.copernic.amayo.frontend.navigation.BottomNavigationBar
 import cat.copernic.amayo.frontend.recompensaManagment.ui.recompensa
@@ -18,11 +21,11 @@ import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmode
 import cat.copernic.amayo.frontend.usuariManagment.ui.perfil
 
 @Composable
-fun BottomNav(navController: NavController){
+fun BottomNav(navController: NavController,sessionViewModel: SessionViewModel){
 
     val bottomNavController = rememberNavController()
     val viewLlista: llistaViewmodel = viewModel()
-
+    val nom by sessionViewModel.userData.collectAsState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -34,15 +37,15 @@ fun BottomNav(navController: NavController){
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(BottomNavItem.Inici.route) {
-                inici()
+                inici(sessionViewModel)
             }
             composable(BottomNavItem.Rec.route) {
-                recompensa(viewLlista,navController
+                recompensa(viewLlista,navController,sessionViewModel
                 )
             }
             composable(BottomNavItem.Perfil.route) {
                 /* Contenido de esta pantalla */
-                perfil()
+                perfil(sessionViewModel)
             }
         }
     }

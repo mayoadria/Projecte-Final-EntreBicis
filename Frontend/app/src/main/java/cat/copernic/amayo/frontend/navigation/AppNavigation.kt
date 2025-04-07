@@ -9,25 +9,30 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import cat.copernic.amayo.frontend.SistemaManagment.ui.BottomNav
 import cat.copernic.amayo.frontend.SistemaManagment.ui.inici
+import cat.copernic.amayo.frontend.core.auth.SessionViewModel
+import cat.copernic.amayo.frontend.core.auth.SplashScreen
 import cat.copernic.amayo.frontend.recompensaManagment.ui.detalls
 import cat.copernic.amayo.frontend.recompensaManagment.ui.recompensa
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmodel
 import cat.copernic.amayo.frontend.usuariManagment.ui.LoginScreen
 import cat.copernic.amayo.frontend.usuariManagment.ui.perfil
+import cat.copernic.amayo.frontend.usuariManagment.viewmodels.LoginViewModel
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(sessionViewModel: SessionViewModel) {
     val navController = rememberNavController()
     val viewLlista: llistaViewmodel = viewModel()
+    val loginView: LoginViewModel = viewModel()
     NavHost(
         navController = navController,
-        startDestination = "login",
+        startDestination = "splash",
         modifier = Modifier.fillMaxSize()
     ) {
-        composable("login") { LoginScreen(navController) }
-        composable("inici") { BottomNav(navController) }
-        composable("recompensa") { recompensa(viewLlista,navController) }
-        composable("perfil") { perfil() }
+        composable("splash") { SplashScreen(navController, sessionViewModel) }
+        composable("login") { LoginScreen(navController, loginView,sessionViewModel) }
+        composable("inici") { BottomNav(navController,sessionViewModel) }
+        composable("recompensa") { recompensa(viewLlista,navController,sessionViewModel) }
+        composable("perfil") { perfil(sessionViewModel) }
         composable("detalls/{id}") { backStackEntry ->
             val cartId =
                 backStackEntry.arguments?.getString("id")?.toLong() ?: return@composable

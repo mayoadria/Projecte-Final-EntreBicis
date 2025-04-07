@@ -10,4 +10,7 @@ import retrofit2.http.Path
 interface UsuariApi {
     @GET("api/usuari/validar/{email}/{contra}")
     suspend fun login(@Path("email") email : String, @Path("contra") contra : String): Response<Usuari>
+
+    @GET("api/usuari/getByEmail/{email}")
+    suspend fun getByEmail(@Path("email") email: String): Response<Usuari>
 }
