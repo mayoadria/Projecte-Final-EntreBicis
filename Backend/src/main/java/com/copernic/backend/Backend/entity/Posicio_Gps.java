@@ -1,5 +1,6 @@
 package com.copernic.backend.Backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,5 +30,6 @@ public class Posicio_Gps {
 
     @ManyToOne
     @JoinColumn(name = "ruta_id", nullable = false)
+    @JsonBackReference
     private Rutes rutes;
 }
