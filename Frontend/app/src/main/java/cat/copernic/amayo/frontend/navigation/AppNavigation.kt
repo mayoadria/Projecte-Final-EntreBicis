@@ -32,7 +32,7 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
         composable("login") { LoginScreen(navController, loginView,sessionViewModel) }
         composable("inici") { BottomNav(navController,sessionViewModel) }
         composable("recompensa") { recompensa(viewLlista,navController,sessionViewModel) }
-        composable("perfil") { perfil(sessionViewModel) }
+        composable("perfil") { perfil(sessionViewModel,navController) }
         composable("detalls/{id}") { backStackEntry ->
             val cartId =
                 backStackEntry.arguments?.getString("id")?.toLong() ?: return@composable

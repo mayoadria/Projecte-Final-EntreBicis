@@ -56,15 +56,15 @@ public class ApiUsuariController {
     }
 
 
-    @PutMapping("/editar/{email}")
-    public ResponseEntity<?> updateUsuari(@PathVariable String email, @RequestBody Usuari usuari) {
-        try {
-            Usuari usuariActualitzat = logic.updateUsuari(email, usuari);
-            return new ResponseEntity<>(usuariActualitzat, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Error actualitzant usuari: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @PutMapping("/editar/{email}")
+//    public ResponseEntity<?> updateUsuari(@PathVariable String email, @RequestBody Usuari usuari) {
+//        try {
+//            Usuari usuariActualitzat = logic.updateUsuari(email, usuari);
+//            return new ResponseEntity<>(usuariActualitzat, HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>("Error actualitzant usuari: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     @GetMapping("/getByEmail/{email}")
     public ResponseEntity<Usuari> getByEmail(@PathVariable String email) {
