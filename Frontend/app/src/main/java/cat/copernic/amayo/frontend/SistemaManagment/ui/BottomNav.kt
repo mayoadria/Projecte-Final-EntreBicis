@@ -45,7 +45,7 @@ fun BottomNav(navController: NavController,sessionViewModel: SessionViewModel){
             }
             composable(BottomNavItem.Perfil.route) {
                 /* Contenido de esta pantalla */
-                perfil(sessionViewModel)
+                perfil(sessionViewModel,navController)
             }
         }
     }

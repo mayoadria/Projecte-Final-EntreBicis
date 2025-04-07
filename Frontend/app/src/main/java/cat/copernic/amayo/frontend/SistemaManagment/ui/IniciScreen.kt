@@ -9,7 +9,7 @@ import cat.copernic.amayo.frontend.core.auth.SessionViewModel
 @Composable
 fun inici(sessionViewModel:SessionViewModel){
     val nom by sessionViewModel.userData.collectAsState()
-    Text("Nom: $nom")
+    Text("Nom: ${nom?.nom}")
 }
 
 
