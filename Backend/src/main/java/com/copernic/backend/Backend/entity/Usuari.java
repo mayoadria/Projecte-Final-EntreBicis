@@ -3,6 +3,7 @@ package com.copernic.backend.Backend.entity;
 import com.copernic.backend.Backend.entity.enums.Estat;
 import com.copernic.backend.Backend.entity.enums.EstatUsuari;
 import com.copernic.backend.Backend.entity.enums.Rol;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -60,9 +61,11 @@ public class Usuari implements UserDetails {
     private EstatUsuari estat;
 
     @OneToMany(mappedBy = "usuari", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Rutes> rutes;
 
     @OneToMany(mappedBy = "usuariRecompensa", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Recompensas> recompensas;
 
 
