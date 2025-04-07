@@ -11,6 +11,7 @@ import cat.copernic.amayo.frontend.sistemaManagment.ui.BottomNav
 import cat.copernic.amayo.frontend.recompensaManagment.ui.detalls
 import cat.copernic.amayo.frontend.recompensaManagment.ui.recompensa
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmodel
+import cat.copernic.amayo.frontend.rutaManagment.ui.RutaScreen
 import cat.copernic.amayo.frontend.usuariManagment.ui.LoginScreen
 import cat.copernic.amayo.frontend.usuariManagment.ui.perfil
 
@@ -25,6 +26,7 @@ fun AppNavigation() {
     ) {
         composable("login") { LoginScreen(navController) }
         composable("inici") { BottomNav(navController) }
+        composable("rutas") { RutaScreen() }
         composable("recompensa") { recompensa(viewLlista,navController) }
         composable("perfil") { perfil() }
         composable("detalls/{id}") { backStackEntry ->

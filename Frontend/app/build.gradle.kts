@@ -40,8 +40,8 @@ android {
 }
 
 dependencies {
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.foundation.layout.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -58,5 +59,23 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation(libs.coil.compose)
+
+
+
+    // Dependencias de Jetpack Compose (ajusta las versiones a las que uses)
+    implementation(libs.ui)
+    implementation(libs.material3)
+    implementation(libs.androidx.activity.compose.v161)
+
+
+    // Dependencias para OSMDroid y ubicación
+    // OSM
+    implementation (libs.osmdroid.android)
+    implementation (libs.play.services.location)
+    implementation (libs.play.services.location.v2101)
+
+
+
+
 }

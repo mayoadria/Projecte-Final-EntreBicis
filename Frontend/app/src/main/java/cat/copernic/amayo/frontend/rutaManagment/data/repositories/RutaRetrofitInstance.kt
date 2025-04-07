@@ -1,4 +1,4 @@
-package cat.copernic.amayo.frontend.puntBesacanviManagment.data.repositories
+package cat.copernic.amayo.frontend.rutaManagment.data.repositories
 
 object RutaRetrofitInstance {
 }
