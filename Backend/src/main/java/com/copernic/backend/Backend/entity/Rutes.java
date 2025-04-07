@@ -1,6 +1,8 @@
 package com.copernic.backend.Backend.entity;
 
 import com.copernic.backend.Backend.entity.enums.Estat;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -41,9 +43,11 @@ public class Rutes {
 
     @ManyToOne
     @JoinColumn(name = "usuari_email", nullable = false)
+    @JsonBackReference
     private Usuari usuari;
 
     @OneToMany(mappedBy = "rutes", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Posicio_Gps> posicionsGps;
 
 

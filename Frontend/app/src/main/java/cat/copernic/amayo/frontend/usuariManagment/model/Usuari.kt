@@ -10,7 +10,7 @@ data class Usuari (
     var contra: String? = null,
     var telefon: String? = null,
     var poblacio: String? = null,
-    var saldo: Int? = null,
+    var saldo: Double? = null,
     var rol: Rol? = null,
     var estat: Estat? = null,
 )
