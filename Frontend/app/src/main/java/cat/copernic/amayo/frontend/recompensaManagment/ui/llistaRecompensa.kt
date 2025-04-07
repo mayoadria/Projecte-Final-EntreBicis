@@ -56,7 +56,8 @@ fun recompensa(llistaViewmodel: llistaViewmodel,navController: NavController,ses
             onSortSelected = { criterio, asc ->
                 ordenarPor = criterio
                 ascendente = asc
-            }
+            },
+            sessionViewModel
         )
 
         LazyColumn(
@@ -72,10 +73,11 @@ fun recompensa(llistaViewmodel: llistaViewmodel,navController: NavController,ses
 }
 
 @Composable
-fun Header(onFilterApplied: (String, String, String) -> Unit, onSortSelected: (String, Boolean) -> Unit) {
+fun Header(onFilterApplied: (String, String, String) -> Unit, onSortSelected: (String, Boolean) -> Unit,sessionViewModel: SessionViewModel) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     var showFilterDialog by rememberSaveable { mutableStateOf(false) }
     var showSortDialog by rememberSaveable { mutableStateOf(false) }
+    val usu by sessionViewModel.userData.collectAsState()
 
     Column(
         modifier = Modifier
@@ -97,7 +99,7 @@ fun Header(onFilterApplied: (String, String, String) -> Unit, onSortSelected: (S
                 color = Color.Black
             )
             Text(
-                text = "658,54B",
+                text = "${usu?.saldo}",
                 fontSize = 16.sp,
                 color = Color.White,
                 fontWeight = FontWeight.Bold

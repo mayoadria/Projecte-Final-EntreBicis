@@ -13,4 +13,5 @@ data class Usuari (
     var saldo: Double? = null,
     var rol: Rol? = null,
     var estat: Estat? = null,
+    var foto: String? = null,
 )
