@@ -23,15 +23,19 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import cat.copernic.amayo.frontend.core.auth.SessionUser
+import cat.copernic.amayo.frontend.core.auth.SessionViewModel
 import cat.copernic.amayo.frontend.usuariManagment.viewmodels.LoginViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewModel()) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+fun LoginScreen(navController: NavController, viewModel: LoginViewModel ,sessionViewModel: SessionViewModel) {
+    val isUserLoged by viewModel.isUserLoged.collectAsState()
+    val email by viewModel.email.collectAsState()
+    val password by viewModel.contra.collectAsState()
     var passwordVisible by remember { mutableStateOf(false) }
 
     // Observamos el estado del usuario y error del ViewModel
@@ -39,11 +43,15 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
     val error by viewModel.error.collectAsState()
 
     // Si el usuario es distinto de null, se ha iniciado sesión correctamente
-    LaunchedEffect(usuari) {
-        if (usuari != null) {
+    LaunchedEffect(isUserLoged) {
+        if (isUserLoged) {
+            sessionViewModel.updateSession(
+                SessionUser(email, true)
+            )
             navController.navigate("inici") {
                 popUpTo("login") { inclusive = true }
             }
+            viewModel.resetUserLoged()
         }
     }
 
@@ -67,7 +75,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
             // Campo de correo
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = { viewModel.updateEmail(it) },
                 label = { Text("Correu") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
@@ -78,7 +86,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
             // Campo de contraseña
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = { viewModel.updateContra(it) },
                 label = { Text("Contrasenya") },
                 singleLine = true,
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -98,7 +106,10 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
 
             // Botón Entrar: llama al login del ViewModel
             Button(
-                onClick = { viewModel.login(email, password) },
+                onClick = {viewModel.viewModelScope.launch {
+                    val user = viewModel.login()
+                    sessionViewModel.updateUserData(user)
+                }},
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00CFFF)),
                 shape = RoundedCornerShape(10.dp)
             ) {

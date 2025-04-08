@@ -2,18 +2,27 @@ package com.copernic.backend.Backend.controller.android;
 
 import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.logic.android.UsuariAndroidLogic;
+import com.copernic.backend.Backend.logic.web.UsuariLogic;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Base64;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/usuari")
 public class ApiUsuariController {
 
     @Autowired
-    private UsuariAndroidLogic logic;
+    private UsuariLogic logic;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostConstruct
     private void init() {
@@ -21,29 +30,58 @@ public class ApiUsuariController {
     }
 
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Usuari usuari) {
+    @GetMapping("/validar/{email}/{contra}")
+    public ResponseEntity<Usuari> validateUser(@PathVariable String email, @PathVariable String contra) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-store");
+
         try {
-            // Se asume que en la lógica tienes un metodo login que valida las credenciales
-            Usuari usuariLogin = logic.login(usuari.getEmail(), usuari.getContra());
-            if (usuariLogin != null) {
-                return new ResponseEntity<>(usuariLogin, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Credencials incorrectes", HttpStatus.UNAUTHORIZED);
+            Optional<Usuari> optionalUsuari = logic.getUsuariByEmail(email);
+
+            if (optionalUsuari.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+
+            Usuari usuari = optionalUsuari.get();
+
+            if (passwordEncoder.matches(contra, usuari.getContra())) {
+                return new ResponseEntity<>(usuari, headers, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+
         } catch (Exception e) {
-            return new ResponseEntity<>("Error al intentar login: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
 
-    @PutMapping("/editar/{email}")
-    public ResponseEntity<?> updateUsuari(@PathVariable String email, @RequestBody Usuari usuari) {
+//    @PutMapping("/editar/{email}")
+//    public ResponseEntity<?> updateUsuari(@PathVariable String email, @RequestBody Usuari usuari) {
+//        try {
+//            Usuari usuariActualitzat = logic.updateUsuari(email, usuari);
+//            return new ResponseEntity<>(usuariActualitzat, HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>("Error actualitzant usuari: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
+    @GetMapping("/getByEmail/{email}")
+    public ResponseEntity<Usuari> getByEmail(@PathVariable String email) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-store");
+
         try {
-            Usuari usuariActualitzat = logic.updateUsuari(email, usuari);
-            return new ResponseEntity<>(usuariActualitzat, HttpStatus.OK);
+            Optional<Usuari> client = logic.getUsuariByEmail(email);
+
+            return client
+                    .map(usuari -> new ResponseEntity<>(usuari, headers, HttpStatus.OK))
+                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
         } catch (Exception e) {
-            return new ResponseEntity<>("Error actualitzant usuari: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }

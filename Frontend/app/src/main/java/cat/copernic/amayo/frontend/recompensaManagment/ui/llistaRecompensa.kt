@@ -20,9 +20,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import cat.copernic.amayo.frontend.core.auth.SessionViewModel
 
 @Composable
-fun recompensa(llistaViewmodel: llistaViewmodel,navController: NavController) {
+fun recompensa(llistaViewmodel: llistaViewmodel,navController: NavController,sessionViewModel: SessionViewModel) {
     var filtroDesc by remember { mutableStateOf("") }
     var filtroObs by remember { mutableStateOf("") }
     var filtroEstat by remember { mutableStateOf("") }
@@ -55,7 +56,8 @@ fun recompensa(llistaViewmodel: llistaViewmodel,navController: NavController) {
             onSortSelected = { criterio, asc ->
                 ordenarPor = criterio
                 ascendente = asc
-            }
+            },
+            sessionViewModel
         )
 
         LazyColumn(
@@ -71,10 +73,11 @@ fun recompensa(llistaViewmodel: llistaViewmodel,navController: NavController) {
 }
 
 @Composable
-fun Header(onFilterApplied: (String, String, String) -> Unit, onSortSelected: (String, Boolean) -> Unit) {
+fun Header(onFilterApplied: (String, String, String) -> Unit, onSortSelected: (String, Boolean) -> Unit,sessionViewModel: SessionViewModel) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     var showFilterDialog by rememberSaveable { mutableStateOf(false) }
     var showSortDialog by rememberSaveable { mutableStateOf(false) }
+    val usu by sessionViewModel.userData.collectAsState()
 
     Column(
         modifier = Modifier
@@ -96,7 +99,7 @@ fun Header(onFilterApplied: (String, String, String) -> Unit, onSortSelected: (S
                 color = Color.Black
             )
             Text(
-                text = "658,54B",
+                text = "${usu?.saldo}",
                 fontSize = 16.sp,
                 color = Color.White,
                 fontWeight = FontWeight.Bold

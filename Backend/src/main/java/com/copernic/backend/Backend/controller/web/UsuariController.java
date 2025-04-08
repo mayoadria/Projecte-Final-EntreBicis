@@ -41,16 +41,16 @@ public class UsuariController {
         return new ResponseEntity<>(newUsuari, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{email}")
-    public ResponseEntity<Usuari> updateUsuari(@PathVariable String email, @RequestBody Usuari usuari) {
-        Optional<Usuari> existingUsuari = usuariLogic.getUsuariByEmail(email);
-        if (existingUsuari.isPresent()) {
-            Usuari updatedUsuari = usuariLogic.updateUsuari(email, usuari);
-            return ResponseEntity.ok(updatedUsuari);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+//    @PutMapping("/{email}")
+//    public ResponseEntity<Usuari> updateUsuari(@PathVariable String email, @RequestBody Usuari usuari) {
+//        Optional<Usuari> existingUsuari = usuariLogic.getUsuariByEmail(email);
+//        if (existingUsuari.isPresent()) {
+//            Usuari updatedUsuari = usuariLogic.updateUsuari(email, usuari);
+//            return ResponseEntity.ok(updatedUsuari);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 
     @DeleteMapping("/{email}")
     public ResponseEntity<Void> deleteUsuari(@PathVariable String email) {

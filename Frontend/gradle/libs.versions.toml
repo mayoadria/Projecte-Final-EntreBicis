@@ -5,6 +5,7 @@ androidxActivityCompose = "1.7.1"
 coilCompose = "2.4.0"
 converterGson = "2.9.0"
 coreKtxVersion = "1.10.1"
+datastorePreferences = "1.1.4"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -24,12 +25,14 @@ retrofit = "2.9.0"
 ui = "1.7.8"
 foundationLayoutAndroid = "1.7.2"
 uiVersion = "1.4.3"
+datastoreCoreAndroid = "1.1.4"
 
 [libraries]
 androidx-activity-compose-v161 = { module = "androidx.activity:activity-compose", version.ref = "activityComposeVersion" }
 androidx-activity-compose-v171 = { module = "androidx.activity:activity-compose", version.ref = "androidxActivityCompose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-ktx-v1101 = { module = "androidx.core:core-ktx", version.ref = "coreKtxVersion" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-lifecycle-runtime-ktx-v261 = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtxVersion" }
 androidx-material3-v110 = { module = "androidx.compose.material3:material3", version.ref = "material3Version" }
 androidx-ui-v143 = { module = "androidx.compose.ui:ui", version.ref = "uiVersion" }
@@ -49,6 +52,7 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroid" }
 material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 osmdroid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroidAndroid" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
