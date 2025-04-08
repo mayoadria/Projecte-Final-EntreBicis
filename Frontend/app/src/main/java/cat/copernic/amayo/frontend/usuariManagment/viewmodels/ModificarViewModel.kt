@@ -89,27 +89,26 @@ class ModificarViewModel :ViewModel() {
     }
 
     // Función para actualizar el sobre
-    fun updateClient(client: Usuari, clientId: String, contentResolver: ContentResolver) {
+    fun updateClient(client: Usuari, contentResolver: ContentResolver) {
         viewModelScope.launch {
             try {
                 // Verificar si se ha actualizado la imagen
                 val imageBytes = _selectedImageUri.value?.let { uri ->
-                    convertUriToByteArray(uri, contentResolver) // Convierte el URI de la imagen en un ByteArray
+                    convertUriToByteArray(uri, contentResolver)
                 }
 
-                // Si se obtuvo un ByteArray de la imagen, convertirlo a Base64
+                // Convertir a Base64 si hay imagen nueva
                 val base64Image = imageBytes?.let { Base64.encodeToString(it, Base64.DEFAULT) }
 
-                // Asignar la imagen codificada al sobre, si se ha actualizado
+                // Asignar la nueva imagen si existe
                 if (base64Image != null) {
                     client.foto = base64Image
                 }
 
-                // Llamar a la API para actualizar el sobre
-                val response = UserApi.updateUserPerId(clientId, client)
+                // Llamada al nuevo endpoint sin clientId separado
+                val response = UserApi.update(client)
                 if (response.isSuccessful) {
-                    val updatedClient = response.body()
-                    Log.d("ModificarViewModel", "Sobre actualizado con éxito: $updatedClient")
+                    Log.d("ModificarViewModel", "Usuario actualizado con éxito")
                 } else {
                     Log.e("ModificarViewModel", "Error al actualizar el usuario: ${response.errorBody()?.string()}")
                 }

@@ -49,7 +49,11 @@ import cat.copernic.amayo.frontend.usuariManagment.viewmodels.ModificarViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditarPerfil(sessionViewModel: SessionViewModel,modificarViewModel: ModificarViewModel,navController: NavController){
+fun EditarPerfil(
+    sessionViewModel: SessionViewModel,
+    modificarViewModel: ModificarViewModel,
+    navController: NavController
+) {
     val usu by sessionViewModel.userData.collectAsState()
     var nom by remember { mutableStateOf(usu?.nom ?: "") }
     var cognom by remember { mutableStateOf(usu?.cognom ?: "") }
@@ -59,6 +63,7 @@ fun EditarPerfil(sessionViewModel: SessionViewModel,modificarViewModel: Modifica
     val bitmap = remember(usu?.foto) {
         usu?.foto?.let { decodeBase64ToBitmap(it) }
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -80,66 +85,60 @@ fun EditarPerfil(sessionViewModel: SessionViewModel,modificarViewModel: Modifica
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Nombre
-        nom?.let {
-            TextField(
-                value = it,
-                onValueChange = { nom = it },
-                shape = RoundedCornerShape(50),
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                )
+        // Campos de texto
+        TextField(
+            value = nom,
+            onValueChange = { nom = it },
+            label = { Text("Nombre") },
+            shape = RoundedCornerShape(50),
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
             )
-        }
+        )
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Email
-        cognom?.let {
-            TextField(
-                value = it,
-                onValueChange = { cognom = it },
-                shape = RoundedCornerShape(50),
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                )
+        TextField(
+            value = cognom,
+            onValueChange = { cognom = it },
+            label = { Text("Apellido") },
+            shape = RoundedCornerShape(50),
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
             )
-        }
+        )
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Contraseña
-        telefon?.let {
-            TextField(
-                value = it,
-                onValueChange = { telefon = it },
-                shape = RoundedCornerShape(50),
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                )
+        TextField(
+            value = telefon,
+            onValueChange = { telefon = it },
+            label = { Text("Teléfono") },
+            shape = RoundedCornerShape(50),
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
             )
-        }
+        )
+
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Contraseña
-        poblacio?.let {
-            TextField(
-                value = it,
-                onValueChange = { poblacio = it },
-                shape = RoundedCornerShape(50),
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                )
+        TextField(
+            value = poblacio,
+            onValueChange = { poblacio = it },
+            label = { Text("Población") },
+            shape = RoundedCornerShape(50),
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
             )
-        }
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -152,21 +151,21 @@ fun EditarPerfil(sessionViewModel: SessionViewModel,modificarViewModel: Modifica
                     usuario.telefon = telefon
                     usuario.poblacio = poblacio
 
-                    usuario.email?.let { email ->
-                        modificarViewModel.updateClient(usuario, email, navController.context.contentResolver)
-                        navController.navigate("perfil")
-                    }
+                    modificarViewModel.updateClient(
+                        client = usuario,
+                        contentResolver = navController.context.contentResolver
+                    )
+
+                    navController.navigate("perfil")
                 }
             },
             shape = RoundedCornerShape(50),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
-            colors = ButtonDefaults.buttonColors(
-            )
+            colors = ButtonDefaults.buttonColors()
         ) {
             Text("Guardar", fontWeight = FontWeight.Bold)
         }
     }
-
 }

@@ -9,12 +9,12 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface UsuariApi {
-    @GET("api/usuari/validar/{email}/{contra}")
+    @GET("validar/{email}/{contra}")
     suspend fun login(@Path("email") email : String, @Path("contra") contra : String): Response<Usuari>
 
-    @GET("api/usuari/getByEmail/{email}")
+    @GET("getByEmail/{email}")
     suspend fun getByEmail(@Path("email") email: String): Response<Usuari>
 
-    @PUT("api/usuari/update/{clientId}")
-    suspend fun updateUserPerId(@Path("clientId") clientId: String, @Body client: Usuari): Response<Void>
+    @PUT("update")
+    suspend fun update(@Body product: Usuari): Response<Void>
 }
