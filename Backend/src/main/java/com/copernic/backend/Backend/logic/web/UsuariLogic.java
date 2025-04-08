@@ -51,10 +51,18 @@ public class UsuariLogic {
     }
 
     public boolean existeEmail(String email) {
-        return userRepository.existsByEmail(email);
+        Usuari usu = userRepository.findById(email).orElse(null);
+        return usu != null;
     }
 
     public Usuari findByEmail(String email) {
         return userRepository.findById(email).orElse(null);
+    }
+
+    public String savePerfil(Usuari usu){
+
+        Usuari ret = userRepository.save(usu);
+
+        return ret.getEmail();
     }
 }

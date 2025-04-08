@@ -42,6 +42,5 @@ public class PuntBescanvi {
 
     @OneToMany(mappedBy = "puntBescanviId", cascade = CascadeType.ALL)
     @ToString.Exclude
-    @JsonManagedReference
     private List<Recompensas> puntBescanviID;
 }

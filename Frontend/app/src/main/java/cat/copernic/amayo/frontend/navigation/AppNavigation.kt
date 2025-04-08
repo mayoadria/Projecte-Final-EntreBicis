@@ -14,15 +14,18 @@ import cat.copernic.amayo.frontend.core.auth.SplashScreen
 import cat.copernic.amayo.frontend.recompensaManagment.ui.detalls
 import cat.copernic.amayo.frontend.recompensaManagment.ui.recompensa
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmodel
+import cat.copernic.amayo.frontend.usuariManagment.ui.EditarPerfil
 import cat.copernic.amayo.frontend.usuariManagment.ui.LoginScreen
 import cat.copernic.amayo.frontend.usuariManagment.ui.perfil
 import cat.copernic.amayo.frontend.usuariManagment.viewmodels.LoginViewModel
+import cat.copernic.amayo.frontend.usuariManagment.viewmodels.ModificarViewModel
 
 @Composable
 fun AppNavigation(sessionViewModel: SessionViewModel) {
     val navController = rememberNavController()
     val viewLlista: llistaViewmodel = viewModel()
     val loginView: LoginViewModel = viewModel()
+    val modificarView: ModificarViewModel = viewModel()
     NavHost(
         navController = navController,
         startDestination = "splash",
@@ -38,5 +41,8 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
                 backStackEntry.arguments?.getString("id")?.toLong() ?: return@composable
             val viewModel: llistaViewmodel = viewModel()
             detalls(viewModel,cartId) }
+        composable("editar") {
+            EditarPerfil(sessionViewModel,modificarView,navController)
+        }
     }
 }

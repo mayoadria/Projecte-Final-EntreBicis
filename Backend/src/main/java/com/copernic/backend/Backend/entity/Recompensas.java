@@ -43,7 +43,6 @@ public class Recompensas {
 
     @ManyToOne
     @JoinColumn(name = "puntBescanviID", nullable = true)
-    @JsonBackReference
     private PuntBescanvi puntBescanviId;
 
 }

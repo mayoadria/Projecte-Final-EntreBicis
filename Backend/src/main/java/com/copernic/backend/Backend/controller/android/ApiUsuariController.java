@@ -1,18 +1,17 @@
 package com.copernic.backend.Backend.controller.android;
 
 import com.copernic.backend.Backend.entity.Usuari;
-import com.copernic.backend.Backend.logic.android.UsuariAndroidLogic;
 import com.copernic.backend.Backend.logic.web.UsuariLogic;
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -56,15 +55,54 @@ public class ApiUsuariController {
     }
 
 
-//    @PutMapping("/editar/{email}")
-//    public ResponseEntity<?> updateUsuari(@PathVariable String email, @RequestBody Usuari usuari) {
-//        try {
-//            Usuari usuariActualitzat = logic.updateUsuari(email, usuari);
-//            return new ResponseEntity<>(usuariActualitzat, HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>("Error actualitzant usuari: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+    @GetMapping("/read/all")
+    public ResponseEntity<List<Usuari>> findAll(){
+
+        List<Usuari> llista;
+
+        //el transporte HTTP
+        ResponseEntity<List<Usuari>> response;
+
+        //la cabecera del transporte
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-store"); //no usar caché
+
+        try {
+
+            llista = logic.getAllUsuaris();
+
+            response = new ResponseEntity<>(llista, headers, HttpStatus.OK);
+
+        } catch (Exception e) {
+
+            response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return response;
+    }
+    @PutMapping("/update")
+    public ResponseEntity<Void> updateUserById(@RequestBody Usuari client) {
+
+        ResponseEntity<Void> resposta;
+
+        try {
+            if (client != null) {
+
+                if (logic.existeEmail(client.getEmail())) {
+
+                    logic.savePerfil(client);
+                    resposta = ResponseEntity.ok().build();
+                } else {
+                    resposta = ResponseEntity.notFound().build();
+                }
+            } else {
+                resposta = ResponseEntity.badRequest().build();
+            }
+        } catch (Exception e) {
+            resposta = ResponseEntity.internalServerError().build();
+        }
+        return resposta;
+    }
 
     @GetMapping("/getByEmail/{email}")
     public ResponseEntity<Usuari> getByEmail(@PathVariable String email) {
@@ -83,5 +121,6 @@ public class ApiUsuariController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 }

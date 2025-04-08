@@ -96,20 +96,24 @@ fun perfil(sessionViewModel: SessionViewModel,navController: NavController) {
                 IconButtonWithText(
                     icon = Icons.Default.Edit,
                     text = "Edita",
-                    iconColor = iconColor
-                ) {
-                    // Acción editar perfil
-                    println("Edita pulsado")
-                }
+                    iconColor = iconColor,
+                    onClick = {
+                        navController.navigate("editar") {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                )
 
                 IconButtonWithText(
                     icon = Icons.Default.Star,
                     text = "Rutes",
-                    iconColor = iconColor
-                ) {
-                    // Acción ver rutas
-                    println("Rutes pulsado")
-                }
+                    iconColor = iconColor,
+                            onClick = {
+                        navController.navigate("inici") {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                )
             }
 
             Row(horizontalArrangement = Arrangement.spacedBy(32.dp)) {
