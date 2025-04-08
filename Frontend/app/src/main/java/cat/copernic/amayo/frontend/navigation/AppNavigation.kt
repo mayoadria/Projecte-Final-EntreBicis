@@ -26,7 +26,7 @@ fun AppNavigation() {
     ) {
         composable("login") { LoginScreen(navController) }
         composable("inici") { BottomNav(navController) }
-        composable("rutas") { RutaScreen() }
+        composable("rutas") { RutaScreen(navController) }
         composable("recompensa") { recompensa(viewLlista,navController) }
         composable("perfil") { perfil() }
         composable("detalls/{id}") { backStackEntry ->
