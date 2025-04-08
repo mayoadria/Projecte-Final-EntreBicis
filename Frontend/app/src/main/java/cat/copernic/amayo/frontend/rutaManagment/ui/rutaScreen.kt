@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -31,7 +32,9 @@ import androidx.navigation.NavController
 import cat.copernic.amayo.frontend.R
 import cat.copernic.amayo.frontend.navigation.BottomNavigationBar
 import com.google.android.gms.location.*
+import kotlinx.coroutines.delay
 import org.osmdroid.config.Configuration
+import org.osmdroid.tileprovider.cachemanager.CacheManager
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
@@ -57,6 +60,9 @@ fun RutaScreen(navController: NavController) {
     val routePoints = remember { mutableStateListOf<GeoPoint>() }
     var polyline by remember { mutableStateOf<Polyline?>(null) }
     var autoCenter by remember { mutableStateOf(true) }
+
+    // Estado para mostrar el texto "Cargando mapa..."
+    var showLoadingText by remember { mutableStateOf(true) }
 
     // Cliente de localización
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
@@ -84,9 +90,13 @@ fun RutaScreen(navController: NavController) {
         }
     }
 
-    // Actualizar mapa y polyline en cada cambio de ubicación
+    // Actualizar mapa y polyline en cada cambio de ubicación;
+    // cuando se reciba la primera ubicación se oculta el texto "Cargando mapa..."
     LaunchedEffect(userLocation) {
         userLocation?.let { loc ->
+            if (showLoadingText) {
+                showLoadingText = false
+            }
             val currentZoom = mapView?.zoomLevelDouble ?: 15.0
             if (autoCenter) {
                 mapView?.controller?.setCenter(loc)
@@ -116,7 +126,7 @@ fun RutaScreen(navController: NavController) {
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) } // Barra de navegación global
     ) { innerPadding ->
-        // Box para apilar el mapa como fondo y controles (overlay) encima
+        // Box para apilar el mapa (de fondo), los controles y el texto de carga
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -129,7 +139,7 @@ fun RutaScreen(navController: NavController) {
                     .fillMaxSize()
                     .clipToBounds()
             ) {
-                // Mapa ocupando toda la pantalla, pero escalado un 10% más para precargar tiles extra
+                // Mapa ocupando toda la pantalla, escalado un 10% extra para precargar tiles
                 AndroidView(
                     modifier = Modifier
                         .fillMaxSize()
@@ -139,6 +149,7 @@ fun RutaScreen(navController: NavController) {
                         },
                     factory = { ctx ->
                         MapView(ctx).apply {
+                            setTileSource(org.osmdroid.tileprovider.tilesource.TileSourceFactory.MAPNIK)
                             setMultiTouchControls(true)
                             controller.setZoom(15.0)
                             zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
@@ -152,18 +163,18 @@ fun RutaScreen(navController: NavController) {
                     }
                 )
             }
-            // Overlay inferior para los botones de ruta con fondo azul opaco
+            // Overlay inferior para los controles de ruta con fondo azul opaco
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(80.dp)  // Altura reducida
-                    .background(Color(0xFF9CF3FF))  // Azul opaco
+                    .height(80.dp)
+                    .background(Color(0xFF9CF3FF))
                     .align(Alignment.BottomCenter)
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 8.dp), // Menos margen horizontal
+                        .padding(horizontal = 8.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -230,6 +241,22 @@ fun RutaScreen(navController: NavController) {
                     }
                 }
             }
+            // Overlay para el texto "Cargando mapa..." que se muestra hasta que se cargue la primera ubicación
+            if (showLoadingText) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color(0x99000000)), // Fondo semitransparente negro (opcional para resaltar el texto)
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Cargando mapa...",
+                        color = Color.White,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
         }
     }
 }
@@ -247,7 +274,6 @@ private fun startLocationUpdates(
         setMinUpdateDistanceMeters(5f)
         setWaitForAccurateLocation(false)
     }.build()
-
     val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             locationResult.lastLocation?.let { loc ->
@@ -255,7 +281,6 @@ private fun startLocationUpdates(
             }
         }
     }
-
     fusedLocationClient.requestLocationUpdates(
         locationRequest,
         locationCallback,

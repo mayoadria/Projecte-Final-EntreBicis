@@ -18,10 +18,9 @@ import cat.copernic.amayo.frontend.navigation.BottomNavigationBar
 import cat.copernic.amayo.frontend.recompensaManagment.ui.recompensa
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmodel
 import cat.copernic.amayo.frontend.usuariManagment.ui.perfil
-import cat.copernic.amayo.frontend.sistemaManagment.ui.Inici  // Import necesario
 
 @Composable
-fun BottomNav(navController: NavController,sessionViewModel: SessionViewModel){
+fun BottomNav(navController: NavController, sessionViewModel: SessionViewModel) {
 
     val bottomNavController = rememberNavController()
     val viewLlista: llistaViewmodel = viewModel()
@@ -39,13 +38,13 @@ fun BottomNav(navController: NavController,sessionViewModel: SessionViewModel){
         ) {
             // Pantalla de inici: el botón "+" redirige a "rutas" usando el navController de AppNavigation
             composable(BottomNavItem.Inici.route) {
-                Inici(navController = navController)
+                inici(navController, sessionViewModel)
             }
             composable(BottomNavItem.Rec.route) {
-                recompensa(viewLlista, navController)
+                recompensa(viewLlista, navController, sessionViewModel)
             }
             composable(BottomNavItem.Perfil.route) {
-                perfil()
+                perfil(sessionViewModel, navController)
             }
         }
     }
