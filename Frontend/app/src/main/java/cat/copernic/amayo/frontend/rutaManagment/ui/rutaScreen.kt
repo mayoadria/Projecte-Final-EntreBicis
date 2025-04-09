@@ -7,16 +7,17 @@ import android.os.Looper
 import android.view.MotionEvent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color  // Compose Color
 import androidx.compose.ui.graphics.Color.Companion.Unspecified
@@ -57,12 +58,23 @@ fun RutaScreen(navController: NavController) {
     // Estados para la ruta
     var isRouting by remember { mutableStateOf(false) }
     var isPaused by remember { mutableStateOf(false) }
-    val routePoints = remember { mutableStateListOf<GeoPoint>() }
-    var polyline by remember { mutableStateOf<Polyline?>(null) }
+    // Usamos una lista de segmentos para separar los puntos registrados durante la ruta
+    val routeSegments = remember { mutableStateListOf<MutableList<GeoPoint>>() }
     var autoCenter by remember { mutableStateOf(true) }
 
     // Estado para mostrar el texto "Cargando mapa..."
     var showLoadingText by remember { mutableStateOf(true) }
+
+    // Animación de parpadeo para el texto "Cargando mapa..."
+    val infiniteTransition = rememberInfiniteTransition()
+    val alphaAnim by infiniteTransition.animateFloat(
+        initialValue = 0.5f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            tween(durationMillis = 500),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
 
     // Cliente de localización
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
@@ -90,7 +102,7 @@ fun RutaScreen(navController: NavController) {
         }
     }
 
-    // Actualizar mapa y polyline en cada cambio de ubicación;
+    // Actualizar mapa y segmentos de la ruta en cada cambio de ubicación;
     // cuando se reciba la primera ubicación se oculta el texto "Cargando mapa..."
     LaunchedEffect(userLocation) {
         userLocation?.let { loc ->
@@ -105,18 +117,23 @@ fun RutaScreen(navController: NavController) {
             // Actualizar marcador "Ubicación actual"
             mapView?.overlays?.removeAll { it is Marker && it.title == "Ubicación actual" }
             mapView?.let { mv -> addMarker(mv, loc, "Ubicación actual", context) }
-            // Si se está grabando la ruta y no está en pausa, agregar el punto
+            // Si se está grabando la ruta y no está en pausa, agregar el punto al segmento actual
             if (isRouting && !isPaused) {
-                routePoints.add(loc)
-                if (polyline == null) {
-                    polyline = Polyline().apply {
-                        setPoints(routePoints)
-                        outlinePaint.color = AndroidColor.BLUE
-                        outlinePaint.strokeWidth = 5f
+                // Agregamos el punto al último segmento
+                routeSegments.last().add(loc)
+                // Limpiamos las líneas anteriores y dibujamos cada segmento como una polyline independiente,
+                // insertándolas al inicio de la lista de overlays para que queden debajo de los markers
+                mapView?.overlays?.removeAll { it is Polyline }
+                routeSegments.forEach { segment ->
+                    if (segment.size > 1) {
+                        Polyline().apply {
+                            setPoints(segment)
+                            outlinePaint.color = AndroidColor.BLUE
+                            outlinePaint.strokeWidth = 5f
+                        }.also { polyline ->
+                            mapView?.overlays?.add(0, polyline)
+                        }
                     }
-                    mapView?.overlays?.add(polyline)
-                } else {
-                    polyline?.setPoints(routePoints)
                 }
             }
             mapView?.invalidate()
@@ -194,8 +211,9 @@ fun RutaScreen(navController: NavController) {
                             onClick = {
                                 isRouting = true
                                 isPaused = false
-                                routePoints.clear()
-                                polyline = null
+                                routeSegments.clear()
+                                // Iniciamos con el primer segmento
+                                routeSegments.add(mutableListOf())
                             }
                         ) {
                             Icon(
@@ -216,7 +234,13 @@ fun RutaScreen(navController: NavController) {
                         }
                     } else {
                         // Botón para pausar / reanudar (Pause/Play)
-                        IconButton(onClick = { isPaused = !isPaused }) {
+                        IconButton(onClick = {
+                            // Al reanudar, se crea un nuevo segmento para evitar conectar el último punto antes de pausar con el primero tras reanudar
+                            if (isPaused) {
+                                routeSegments.add(mutableListOf())
+                            }
+                            isPaused = !isPaused
+                        }) {
                             Icon(
                                 painter = painterResource(
                                     if (isPaused) R.drawable.ic_play else R.drawable.ic_pause
@@ -241,19 +265,20 @@ fun RutaScreen(navController: NavController) {
                     }
                 }
             }
-            // Overlay para el texto "Cargando mapa..." que se muestra hasta que se cargue la primera ubicación
+            // Overlay para el texto "Cargando mapa..." con parpadeo; se muestra mientras no se reciba la primera ubicación
             if (showLoadingText) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color(0x99000000)), // Fondo semitransparente negro (opcional para resaltar el texto)
+                        .background(Color(0x99000000)), // Fondo negro semitransparente para resaltar
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = "Cargando mapa...",
                         color = Color.White,
                         fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.alpha(alphaAnim)  // Aplica la animación de parpadeo
                     )
                 }
             }
@@ -268,7 +293,7 @@ private fun startLocationUpdates(
 ) {
     val locationRequest = LocationRequest.Builder(
         Priority.PRIORITY_HIGH_ACCURACY,
-        3000L
+        1000L
     ).apply {
         setMinUpdateIntervalMillis(2000L)
         setMinUpdateDistanceMeters(5f)
