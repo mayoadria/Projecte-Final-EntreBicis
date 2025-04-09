@@ -37,6 +37,7 @@
             <td th:text="${bescanvis.codiPostal}"></td>
             <td th:text="${bescanvis.email}"></td>
             <td>
+                <a class="btn-view" th:href="@{/bescanvi/visualizar/{id}(id=${bescanvis.id})}">👁️</a>
                 <a class="btn-edit"
                    th:href="@{/bescanvi/edit/{id}(id=${bescanvis.id})}"
                 >✏️</a>

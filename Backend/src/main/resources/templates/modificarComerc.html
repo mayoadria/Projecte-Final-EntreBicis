@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear Recompensa</title>
+    <title th:text="${visualizar} ? 'Detalls del Punt de Bescanvi' : 'Modificar Punt de Bescanvi'"></title>
     <link rel="stylesheet" href="/styles/crearUsuari.css">
     <link rel="stylesheet" href="/styles/barraLateral.css">
 </head>
@@ -12,43 +12,45 @@
 <div th:replace="barraLateral :: barralateral"></div>
 
 <div class="main-content">
-    <h1>Modificar Comerç</h1>
+    <h1 th:text="${visualizar} ? 'Detalls del Punt de Bescanvi' : 'Modificar Punt de Bescanvi'"></h1>
     <div class="create-user-container">
         <div class="profile-picture" id="profilePicture">
             <img id="fotoPreview" th:src="${fotoDataUrl != null ? fotoDataUrl : 'https://via.placeholder.com/150'}" alt="Foto usuario" />
         </div>
         <form class="user-form" th:action="@{/bescanvi/editar}" th:object="${bescanvi}" method="post" enctype="multipart/form-data">
             <input type="hidden" th:field="*{id}">
-            <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" />
+            <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" th:disabled="${visualizar}"/>
             <div class="form-field">
                 <label for="nom">Punt de Bescanvi:</label>
-                <input type="text" id="nom" th:field="*{nom}" required>
+                <input type="text" id="nom" th:field="*{nom}" th:readonly="${visualizar}">
             </div>
             <div class="form-field">
                 <label for="email">Email</label>
-                <input type="text" id="email" th:field="*{email}" required>
+                <input type="text" id="email" th:field="*{email}" th:readonly="${visualizar}">
             </div>
             <div class="form-field">
                 <label for="codiPostal">Codi Postal</label>
-                <input type="text" id="codiPostal" th:field="*{codiPostal}" required>
+                <input type="text" id="codiPostal" th:field="*{codiPostal}" th:readonly="${visualizar}">
             </div>
             <div class="form-field">
                 <label for="observacions">Observacions</label>
-                <input type="text" id="observacions" th:field="*{observacions}" required>
+                <input type="text" id="observacions" th:field="*{observacions}" th:readonly="${visualizar}">
             </div>
             <div class="form-field">
                 <label for="telefon">Telefon</label>
-                <input type="text" id="telefon" th:field="*{telefon}" required>
+                <input type="text" id="telefon" th:field="*{telefon}" th:readonly="${visualizar}">
             </div>
             <div class="form-field">
                 <label for="personaContacte">Persona de Contacte</label>
-                <input type="text" id="personaContacte" th:field="*{personaContacte}" required>
+                <input type="text" id="personaContacte" th:field="*{personaContacte}" th:readonly="${visualizar}">
             </div>
             <div class="form-field full-width">
                 <label for="adreca">Adreça</label>
-                <input type="text" id="adreca" th:field="*{adreca}" required>
+                <input type="text" id="adreca" th:field="*{adreca}" th:readonly="${visualizar}">
             </div>
-            <button type="submit" class="btn-crear">Guardar Comerç</button>
+            <div class="form-actions" th:if="${!visualizar}">
+                <button type="submit">Guardar</button>
+            </div>
         </form>
     </div>
 </div>
