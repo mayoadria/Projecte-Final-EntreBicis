@@ -139,7 +139,7 @@ fun detalls(viewmodel: llistaViewmodel, recompensaId: Long, reservaViewmodel: Re
                 id = null, // O lo que sea necesario
                 emailUsuari = nom, // Pasar el email
                 idRecompensa = recompensa, // Pasar el ID de la recompensa
-                Datareserva = fecha,
+                datareserva = fecha,
                 estat = EstatReserva.RESERVADA
             )
 

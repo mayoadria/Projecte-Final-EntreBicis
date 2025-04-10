@@ -19,14 +19,14 @@ public class Reserva {
     private Long id;
 
     @Column
-    private String Datareserva;
+    private String datareserva;
 
     @Column
     @Enumerated(EnumType.STRING)
     private EstatReserva estat;
 
     @ManyToOne
-    @JoinColumn(name = "userID", unique = true)
+    @JoinColumn(name = "userID")
     @JsonBackReference
     private Usuari emailUsuari;
 
