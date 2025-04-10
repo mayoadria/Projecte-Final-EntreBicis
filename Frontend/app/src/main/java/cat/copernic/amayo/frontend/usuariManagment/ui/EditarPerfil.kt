@@ -92,10 +92,7 @@ fun EditarPerfil(
             label = { Text("Nombre") },
             shape = RoundedCornerShape(50),
             modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            )
+
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -106,10 +103,7 @@ fun EditarPerfil(
             label = { Text("Apellido") },
             shape = RoundedCornerShape(50),
             modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            )
+
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -120,10 +114,7 @@ fun EditarPerfil(
             label = { Text("Teléfono") },
             shape = RoundedCornerShape(50),
             modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            )
+
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -134,10 +125,7 @@ fun EditarPerfil(
             label = { Text("Población") },
             shape = RoundedCornerShape(50),
             modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            )
+
         )
 
         Spacer(modifier = Modifier.height(24.dp))
