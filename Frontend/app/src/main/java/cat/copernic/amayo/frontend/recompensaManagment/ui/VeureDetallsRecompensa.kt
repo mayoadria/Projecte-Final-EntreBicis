@@ -2,6 +2,7 @@ package cat.copernic.amayo.frontend.recompensaManagment.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
@@ -11,6 +12,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,11 +23,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import cat.copernic.amayo.frontend.R
+import cat.copernic.amayo.frontend.core.auth.SessionViewModel
+import cat.copernic.amayo.frontend.recompensaManagment.model.EstatRecompensa
+import cat.copernic.amayo.frontend.recompensaManagment.model.EstatReserva
+import cat.copernic.amayo.frontend.recompensaManagment.model.Reserva
+import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.ReservaViewmodel
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmodel
+import cat.copernic.amayo.frontend.usuariManagment.viewmodels.ModificarViewModel
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
-fun detalls(viewmodel: llistaViewmodel, recompensaId: Long) {
+fun detalls(viewmodel: llistaViewmodel, recompensaId: Long, reservaViewmodel: ReservaViewmodel,sessionViewModel: SessionViewModel,modificarViewModel: ModificarViewModel,navController: NavController) {
+    val nom by sessionViewModel.userData.collectAsState()
     val recompensa = viewmodel.recompensaD.value
     val bitmap = remember(recompensa?.foto) {
         recompensa?.foto?.let { decodeBase64ToBitmap(it) }
@@ -102,7 +115,35 @@ fun detalls(viewmodel: llistaViewmodel, recompensaId: Long) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { /* Acción de reserva */ },
+            onClick = {
+                nom?.let { usuario ->
+                    usuario.reserva = true
+
+                    modificarViewModel.updateClient(
+                        client = usuario,
+                        contentResolver = navController.context.contentResolver
+                    )
+                }
+
+                recompensa?.let { recompensa ->
+                    recompensa.estat = EstatRecompensa.RESERVADES
+
+                    viewmodel.updateRecompensa(
+                        client = recompensa,
+                        contentResolver = navController.context.contentResolver
+                    )
+                }
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                val fecha = LocalDate.now().format(formatter)
+                val nuevaReserva = Reserva(
+                id = null, // O lo que sea necesario
+                emailUsuari = nom, // Pasar el email
+                idRecompensa = recompensa, // Pasar el ID de la recompensa
+                datareserva = fecha,
+                estat = EstatReserva.RESERVADA
+            )
+
+                reservaViewmodel.crearReserva(nuevaReserva) },
             colors = ButtonDefaults.buttonColors(Color(0xFF0288D1)),
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp)

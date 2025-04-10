@@ -1,6 +1,7 @@
 package com.copernic.backend.Backend.logic.web;
 
 import com.copernic.backend.Backend.entity.Recompensas;
+import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.repository.RecompensasRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,11 @@ public class RecompensaLogic {
 
     public Recompensas findById(Long id) {
         return recompensasRepository.findById(id).get();
+    }
+
+    public boolean existeRecompensa(Long email) {
+        Recompensas usu = recompensasRepository.findById(email).orElse(null);
+        return usu != null;
     }
 
 }

@@ -35,7 +35,6 @@ public class TestRecompensas {
     private RecompensasRepository recompensasRepository;
     @BeforeAll
     public void setUp() {
-        recompensasRepository.deleteAll();
 
         Recompensas carta = new Recompensas();
 

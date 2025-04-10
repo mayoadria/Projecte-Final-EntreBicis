@@ -2,6 +2,7 @@ package com.copernic.backend.Backend.entity;
 
 import com.copernic.backend.Backend.entity.enums.Estat;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -43,7 +44,10 @@ public class Recompensas {
 
     @ManyToOne
     @JoinColumn(name = "puntBescanviID", nullable = true)
-    @JsonBackReference
+    @JsonBackReference("recompensa-puntBescanvi")
     private PuntBescanvi puntBescanviId;
 
+    @OneToOne(mappedBy = "idRecompensa")
+    @JsonIgnore
+    private Reserva idReserva;
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear Recompensa</title>
+    <title th:text="${visualizar} ? 'Detalls de la Recompensa' : 'Modificar Recompensa'"></title>
     <link rel="stylesheet" href="/styles/crearUsuari.css">
     <link rel="stylesheet" href="/styles/barraLateral.css">
 </head>
@@ -12,7 +12,7 @@
 <div th:replace="barraLateral :: barralateral"></div>
 
 <div class="main-content">
-    <h1>Modificar Recompensa</h1>
+    <h1 th:text="${visualizar} ? 'Detalls de la Recompensa' : 'Modificar Recompensa'"></h1>
     <div class="create-user-container">
         <div class="profile-picture" id="profilePicture">
             <img id="fotoPreview" th:src="${fotoDataUrl != null ? fotoDataUrl : 'https://via.placeholder.com/150'}" alt="Foto usuario" />
@@ -20,29 +20,29 @@
         <form class="user-form" th:action="@{/recompensas/editar}" th:object="${recompensas}" method="post"
               enctype="multipart/form-data">
             <input type="hidden" th:field="*{id}">
-            <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" />
+            <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" th:disabled="${visualizar}" />
             <div class="form-field">
                 <label for="descripcio">Descripció</label>
-                <input type="text" id="descripcio" th:field="*{descripcio}" required>
+                <input type="text" id="descripcio" th:field="*{descripcio}" th:readonly="${visualizar}">
             </div>
             <div class="form-field">
                 <label for="observacions">Observacions</label>
-                <textarea id="observacions" th:field="*{observacions}" required></textarea>
+                <textarea id="observacions" th:field="*{observacions}" th:readonly="${visualizar}"></textarea>
             </div>
             <div class="form-field">
                 <label for="cost">Cost</label>
-                <input type="number" id="cost" th:field="*{cost}" min="1" required>
+                <input type="number" id="cost" th:field="*{cost}" min="1" th:readonly="${visualizar}">
             </div>
             <div class="form-group">
                 <label for="besanvi-select">Punt de Bescanvi:</label>
-                <select id="besanvi-select" th:field="*{puntBescanviId}" required>
+                <select id="besanvi-select" th:field="*{puntBescanviId}" th:disabled="${visualizar}">
                     <option value="" disabled selected hidden>Seleccionar una opción</option>
                     <option th:each="bescanvis : ${puntBescanviId}" th:value="${bescanvis.id}"
                             th:text="${bescanvis.nom}"></option>
                 </select>
             </div>
             <div class="form-field full-width">
-                <select class="input" th:field="*{estat}" id="pais" required>
+                <select class="input" th:field="*{estat}" id="pais" th:disabled="${visualizar}">
                     <option value="" disabled selected hidden></option>
                     <option class="inp_pais" th:each="estat : ${estat}"
                             th:value="${estat}"
@@ -50,7 +50,9 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn-crear">Guardar Recompensa</button>
+            <div class="form-actions" th:if="${!visualizar}">
+                <button type="submit">Guardar</button>
+            </div>
         </form>
     </div>
 </div>
