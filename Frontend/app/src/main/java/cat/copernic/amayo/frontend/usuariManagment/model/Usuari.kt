@@ -14,4 +14,5 @@ data class Usuari (
     var rol: Rol? = null,
     var estat: Estat? = null,
     var foto: String? = null,
+    var reserva: Boolean = false
 )

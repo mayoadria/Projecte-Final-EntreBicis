@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import cat.copernic.amayo.frontend.core.auth.SessionViewModel
+import cat.copernic.amayo.frontend.recompensaManagment.model.EstatRecompensa
 
 @Composable
 fun recompensa(llistaViewmodel: llistaViewmodel,navController: NavController,sessionViewModel: SessionViewModel) {
@@ -34,6 +35,7 @@ fun recompensa(llistaViewmodel: llistaViewmodel,navController: NavController,ses
 
     // Aplicar filtros a la lista de recompensas
     var filteredRecompensas = allRecompensas.filter { recompensa ->
+        recompensa.estat == EstatRecompensa.DISPONIBLES &&
         (filtroDesc.isEmpty() || recompensa.descripcio?.contains(filtroDesc, ignoreCase = true) == true) &&
                 (filtroObs.isEmpty() || recompensa.observacions?.contains(filtroObs, ignoreCase = true) == true) &&
                 (filtroEstat.isEmpty() || recompensa.estat?.name?.contains(filtroEstat, ignoreCase = true) == true)

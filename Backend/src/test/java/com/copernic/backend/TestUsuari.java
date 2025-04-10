@@ -95,7 +95,6 @@ public class TestUsuari {
     public void testUpdateOk() throws IOException {
 
         Usuari carta = new Usuari();
-
         carta.setNom("prueba");
         carta.setCognom("prueba");
         carta.setNom("Dragón a modificar"); // Esto sobrescribe el nombre anterior

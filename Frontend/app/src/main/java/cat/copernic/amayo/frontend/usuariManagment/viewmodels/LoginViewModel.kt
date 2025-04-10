@@ -66,7 +66,7 @@ class LoginViewModel : ViewModel() {
                     }
 
             } catch (e: Exception) {
-                Log.e("LoginViewModel", "Exepció al crear el Client: ${e.message}")
+                Log.e("LoginViewModel", "Exepció al login del Client: ${e.message}")
                 _isUserLoged.value = false
             }
             savedUser

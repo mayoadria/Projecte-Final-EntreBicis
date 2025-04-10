@@ -54,6 +54,8 @@
         @Column
         private Double saldo;
 
+        @Column
+        private Boolean reserva;
         @Lob
         private String foto; // Se guardará la cadena Base64
         @Enumerated(EnumType.STRING)
@@ -72,6 +74,10 @@
         @ToString.Exclude
         private List<Recompensas> recompensas;
 
+        @OneToMany(mappedBy = "emailUsuari")
+        @ToString.Exclude
+        @JsonManagedReference
+        private List<Reserva> reservas;
 
 
         @Override
