@@ -7,14 +7,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import cat.copernic.amayo.frontend.SistemaManagment.ui.BottomNav
-import cat.copernic.amayo.frontend.SistemaManagment.ui.inici
+//import cat.copernic.amayo.frontend.SistemaManagment.ui.BottomNav
+//import cat.copernic.amayo.frontend.sistemaManagment.ui.inici
 import cat.copernic.amayo.frontend.core.auth.SessionViewModel
 import cat.copernic.amayo.frontend.core.auth.SplashScreen
+import cat.copernic.amayo.frontend.sistemaManagment.ui.BottomNav
 import cat.copernic.amayo.frontend.recompensaManagment.ui.detalls
 import cat.copernic.amayo.frontend.recompensaManagment.ui.recompensa
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.ReservaViewmodel
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmodel
+import cat.copernic.amayo.frontend.rutaManagment.ui.RutaScreen
 import cat.copernic.amayo.frontend.usuariManagment.ui.EditarPerfil
 import cat.copernic.amayo.frontend.usuariManagment.ui.LoginScreen
 import cat.copernic.amayo.frontend.usuariManagment.ui.perfil
@@ -36,6 +38,7 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
         composable("splash") { SplashScreen(navController, sessionViewModel) }
         composable("login") { LoginScreen(navController, loginView,sessionViewModel) }
         composable("inici") { BottomNav(navController,sessionViewModel) }
+        composable("rutas") { RutaScreen(navController) }
         composable("recompensa") { recompensa(viewLlista,navController,sessionViewModel) }
         composable("perfil") { perfil(sessionViewModel,navController) }
         composable("detalls/{id}") { backStackEntry ->

@@ -1,6 +1,5 @@
-package cat.copernic.amayo.frontend.SistemaManagment.ui
+package cat.copernic.amayo.frontend.sistemaManagment.ui
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -21,11 +20,12 @@ import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmode
 import cat.copernic.amayo.frontend.usuariManagment.ui.perfil
 
 @Composable
-fun BottomNav(navController: NavController,sessionViewModel: SessionViewModel){
+fun BottomNav(navController: NavController, sessionViewModel: SessionViewModel) {
 
     val bottomNavController = rememberNavController()
     val viewLlista: llistaViewmodel = viewModel()
     val nom by sessionViewModel.userData.collectAsState()
+
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -36,16 +36,15 @@ fun BottomNav(navController: NavController,sessionViewModel: SessionViewModel){
             startDestination = BottomNavItem.Inici.route,
             modifier = Modifier.padding(innerPadding)
         ) {
+            // Pantalla de inici: el botón "+" redirige a "rutas" usando el navController de AppNavigation
             composable(BottomNavItem.Inici.route) {
-                inici(sessionViewModel)
+                inici(navController, sessionViewModel)
             }
             composable(BottomNavItem.Rec.route) {
-                recompensa(viewLlista,navController,sessionViewModel
-                )
+                recompensa(viewLlista, navController, sessionViewModel)
             }
             composable(BottomNavItem.Perfil.route) {
-                /* Contenido de esta pantalla */
-                perfil(sessionViewModel,navController)
+                perfil(sessionViewModel, navController)
             }
         }
     }
