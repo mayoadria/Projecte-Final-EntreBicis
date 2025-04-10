@@ -66,6 +66,7 @@ public class ComerçosController {
             model.addAttribute("fotoDataUrl", fotoDataUrl);
         }
         model.addAttribute("bescanvi", puntBescanvi);
+        model.addAttribute("visualizar", false);
         return "modificarComerc"; // Cargar la vista para editar
     }
 
@@ -93,5 +94,19 @@ public class ComerçosController {
             model.addAttribute("error", "La recompensa no existe o no es válida.");
             return "modificarRecompensa";  // Mostrar error en la vista
         }
+    }
+    @GetMapping("/visualizar/{id}")
+    public String VisualizarPuntBescanvi(@PathVariable Long id, Model model) {
+        PuntBescanvi puntBescanvi = puntBescanviLogic.findByID(id);
+        if (puntBescanvi == null) {
+            return "redirect:/bescanvi/llistar"; // Redirigir si no existe el usuario
+        }
+        if (puntBescanvi.getFoto() != null && !puntBescanvi.getFoto().isEmpty()) {
+            String fotoDataUrl = "data:image/jpeg;base64," + puntBescanvi.getFoto();
+            model.addAttribute("fotoDataUrl", fotoDataUrl);
+        }
+        model.addAttribute("bescanvi", puntBescanvi);
+        model.addAttribute("visualizar", true);
+        return "modificarComerc"; // Cargar la vista para editar
     }
 }

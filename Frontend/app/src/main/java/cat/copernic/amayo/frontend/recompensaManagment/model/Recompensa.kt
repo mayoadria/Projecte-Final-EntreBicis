@@ -7,7 +7,7 @@ data class Recompensa(
     var id: Long? = null,
     var descripcio: String? = null,
     var cost: Int? = null,
-    var estat: Estat? = null,
+    var estat: EstatRecompensa? = null,
     var observacions: String? = null,
     var foto: String? = null,
     var puntBescanviId: PuntBescanvi? = null

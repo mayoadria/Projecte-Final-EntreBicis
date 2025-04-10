@@ -141,6 +141,7 @@ nav ul li a:hover {
 
 /* Estilo de los botones de acción */
 .btn-edit,
+.btn_view,
 .btn-delete {
     background: none;
     border: none;

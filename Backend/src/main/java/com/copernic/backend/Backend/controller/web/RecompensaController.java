@@ -169,10 +169,10 @@ public class RecompensaController {
     }
 
     @GetMapping("/edit/{id}")
-    public String editarUsuario(@PathVariable Long id, boolean visualizar, Model model) {
+    public String editarUsuario(@PathVariable Long id, Model model) {
         Recompensas recompensas = logic.findById(id);
         if (recompensas == null) {
-            return "redirect:/recompensas/llistar"; // Redirigir si no existe el usuario
+            return "redirect:/recompensas/llistar";
         }
         if (recompensas.getFoto() != null && !recompensas.getFoto().isEmpty()) {
             String fotoDataUrl = "data:image/jpeg;base64," + recompensas.getFoto();
@@ -181,7 +181,8 @@ public class RecompensaController {
         model.addAttribute("recompensas", recompensas);
         model.addAttribute("estat", Estat.values());
         model.addAttribute("puntBescanviId", puntBescanviLogic.llistarBescanvi());
-        return "modificarRecompensa"; // Cargar la vista para editar
+        model.addAttribute("visualizar", false); // Editar => visualizar desactivado
+        return "modificarRecompensa";
     }
 
     @PostMapping("/editar")
@@ -228,6 +229,24 @@ public class RecompensaController {
             return "modificarRecompensa";  // Mostrar error en la vista
         }
     }
+
+    @GetMapping("/visualizar/{id}")
+    public String visualizarUsuario(@PathVariable Long id, Model model) {
+        Recompensas recompensas = logic.findById(id);
+        if (recompensas == null) {
+            return "redirect:/recompensas/llistar";
+        }
+        if (recompensas.getFoto() != null && !recompensas.getFoto().isEmpty()) {
+            String fotoDataUrl = "data:image/jpeg;base64," + recompensas.getFoto();
+            model.addAttribute("fotoDataUrl", fotoDataUrl);
+        }
+        model.addAttribute("recompensas", recompensas);
+        model.addAttribute("estat", Estat.values());
+        model.addAttribute("puntBescanviId", puntBescanviLogic.llistarBescanvi());
+        model.addAttribute("visualizar", true); // Visualizar => campos deshabilitados
+        return "modificarRecompensa";
+    }
+
 
 
 }

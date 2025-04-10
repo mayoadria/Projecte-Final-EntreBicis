@@ -1,6 +1,7 @@
 package com.copernic.backend.Backend.controller.android;
 
 import com.copernic.backend.Backend.entity.Recompensas;
+import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.logic.web.RecompensaLogic;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -66,5 +64,29 @@ public class ApiRecompensesController {
             response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return response;
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<Void> updateRecompensa(@RequestBody Recompensas recompensas) {
+
+        ResponseEntity<Void> resposta;
+
+        try {
+            if (recompensas != null) {
+
+                if (logic.existeRecompensa(recompensas.getId())) {
+
+                    logic.guardarRecompensa(recompensas);
+                    resposta = ResponseEntity.ok().build();
+                } else {
+                    resposta = ResponseEntity.notFound().build();
+                }
+            } else {
+                resposta = ResponseEntity.badRequest().build();
+            }
+        } catch (Exception e) {
+            resposta = ResponseEntity.internalServerError().build();
+        }
+        return resposta;
     }
 }

@@ -9,6 +9,7 @@ import com.copernic.backend.Backend.logic.web.UsuariLogic;
 import com.copernic.backend.Backend.repository.SistemaRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,6 +18,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 
 import java.util.Optional;
 
@@ -39,8 +42,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
+        http.csrf().disable()
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.PUT, "/api/usuari/update").permitAll()
                         .requestMatchers("/login", "/logout", "/styles/**", "/images/**","/api/**").permitAll()
                         .requestMatchers("/home/**").hasRole("ADMINISTRADOR") // Solo admins
                         .requestMatchers("/recompensas/**").hasRole("ADMINISTRADOR") // Solo admins
@@ -71,6 +75,13 @@ public class SecurityConfig {
         return http.build();
     }
 
+
+//    @Bean
+//    public HttpFirewall allowSemicolonHttpFirewall() {
+//        StrictHttpFirewall firewall = new StrictHttpFirewall();
+//        firewall.setAllowSemicolon(true); // Permite ';' en las URLs
+//        return firewall;
+//    }
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();

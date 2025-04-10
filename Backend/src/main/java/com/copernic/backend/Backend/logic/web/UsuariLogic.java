@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -39,23 +40,10 @@ public class UsuariLogic {
     }
 
     // Actualiza la entidad existente sin modificar el identificador (email)
-    public Usuari updateUsuari(String email, Usuari usuariActualitzat) {
-        Optional<Usuari> existingOpt = userRepository.findById(email);
-        if (existingOpt.isPresent()) {
-            Usuari existing = existingOpt.get();
-            // Actualizar solo los campos modificables
-            existing.setNom(usuariActualitzat.getNom());
-            existing.setCognom(usuariActualitzat.getCognom());
-            existing.setContra(usuariActualitzat.getContra());
-            existing.setTelefon(usuariActualitzat.getTelefon());
-            existing.setSaldo(usuariActualitzat.getSaldo());
-            existing.setPoblacio(usuariActualitzat.getPoblacio());
-            existing.setFoto(usuariActualitzat.getFoto());
-            // No se toca el campo "email" ya que es el identificador
-            return userRepository.save(existing);
-        } else {
-            throw new RuntimeException("Usuari no trobat");
-        }
+    public void updateUsuari(Usuari usuariActualitzat) {
+        // No se toca el campo "email" ya que es el identificador
+        userRepository.save(usuariActualitzat);
+
     }
 
     public void deleteUsuari(String email) {
@@ -63,10 +51,18 @@ public class UsuariLogic {
     }
 
     public boolean existeEmail(String email) {
-        return userRepository.existsByEmail(email);
+        Usuari usu = userRepository.findById(email).orElse(null);
+        return usu != null;
     }
 
     public Usuari findByEmail(String email) {
         return userRepository.findById(email).orElse(null);
+    }
+
+    public String savePerfil(Usuari usu){
+
+        Usuari ret = userRepository.save(usu);
+
+        return ret.getEmail();
     }
 }

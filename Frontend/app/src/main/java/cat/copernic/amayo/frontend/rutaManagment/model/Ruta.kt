@@ -1,6 +1,5 @@
 package cat.copernic.amayo.frontend.rutaManagment.model
 
-
 data class ruta(
     var id: Long? = null,
     var nom: String? = null,
