@@ -57,7 +57,9 @@ fun detalls(
     }
 
     val context = LocalContext.current
-    val puedeReservar = nom != null && recompensa != null && nom!!.saldo!! >= recompensa.cost!!
+    val puedeReservar =
+        nom != null && recompensa != null && nom!!.saldo!! >= recompensa.cost!! && !nom!!.reserva
+    val tieneReservas = nom != null && recompensa != null && !nom!!.reserva
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -159,40 +161,52 @@ fun detalls(
 
         Button(
             onClick = {
-                if (puedeReservar) {
-                    // Si se puede reservar, se hace la acción
-                    nom?.let { usuario ->
-                        usuario.reserva = true
+                if (tieneReservas) {
+                    if (puedeReservar) {
 
-                        modificarViewModel.updateClient(
-                            client = usuario,
-                            contentResolver = navController.context.contentResolver
+                        // Si se puede reservar, se hace la acción
+                        nom?.let { usuario ->
+                            usuario.reserva = true
+
+                            modificarViewModel.updateClient(
+                                client = usuario,
+                                contentResolver = navController.context.contentResolver
+                            )
+                        }
+
+                        recompensa?.let { recompensa ->
+                            recompensa.estat = EstatRecompensa.RESERVADES
+
+                            viewmodel.updateRecompensa(
+                                client = recompensa,
+                                contentResolver = navController.context.contentResolver
+                            )
+                        }
+
+                        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                        val fecha = LocalDate.now().format(formatter)
+                        val nuevaReserva = Reserva(
+                            id = null, // O lo que sea necesario
+                            emailUsuari = nom, // Pasar el email
+                            idRecompensa = recompensa, // Pasar el ID de la recompensa
+                            datareserva = fecha,
+                            estat = EstatReserva.RESERVADA
                         )
-                    }
 
-                    recompensa?.let { recompensa ->
-                        recompensa.estat = EstatRecompensa.RESERVADES
+                        reservaViewmodel.crearReserva(nuevaReserva)
 
-                        viewmodel.updateRecompensa(
-                            client = recompensa,
-                            contentResolver = navController.context.contentResolver
-                        )
-                    }
 
-                    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                    val fecha = LocalDate.now().format(formatter)
-                    val nuevaReserva = Reserva(
-                        id = null, // O lo que sea necesario
-                        emailUsuari = nom, // Pasar el email
-                        idRecompensa = recompensa, // Pasar el ID de la recompensa
-                        datareserva = fecha,
-                        estat = EstatReserva.RESERVADA
-                    )
-
-                    reservaViewmodel.crearReserva(nuevaReserva)
                 } else {
                     // Si no puede reservar, se muestra el Toast
                     Toast.makeText(context, "Saldo insuficiente.", Toast.LENGTH_LONG).show()
+                }
+                } else {
+                    // Si no puede reservar, se muestra el Toast
+                    Toast.makeText(
+                        context,
+                        "Limit màxim de reserves obtingut.",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             },
             colors = ButtonDefaults.buttonColors(Color(0xFF0288D1)),
