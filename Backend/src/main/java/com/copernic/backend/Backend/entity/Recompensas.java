@@ -44,7 +44,7 @@ public class Recompensas {
 
     @ManyToOne
     @JoinColumn(name = "puntBescanviID", nullable = true)
-    @JsonBackReference("recompensa-puntBescanvi")
+    @JsonIgnoreProperties({"puntBescanviID"})
     private PuntBescanvi puntBescanviId;
 
     @OneToOne(mappedBy = "idRecompensa")
