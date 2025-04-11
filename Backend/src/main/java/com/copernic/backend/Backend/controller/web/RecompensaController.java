@@ -182,6 +182,7 @@ public class RecompensaController {
         model.addAttribute("estat", Estat.values());
         model.addAttribute("puntBescanviId", puntBescanviLogic.llistarBescanvi());
         model.addAttribute("visualizar", false); // Editar => visualizar desactivado
+        model.addAttribute("error", false); // Editar => visualizar desactivado
         return "modificarRecompensa";
     }
 
@@ -197,36 +198,59 @@ public class RecompensaController {
         // Buscar el Punto de Bescanvi
         PuntBescanvi bescanvi = puntBescanviLogic.findByID(puntBescanviId);
 
+
         // Comprobar que la recompensa existe
         if (recompensaExiste != null) {
-            // Actualizar los valores
-            recompensaExiste.setDescripcio(recompensa.getDescripcio());
-            recompensaExiste.setCost(recompensa.getCost());
-            recompensaExiste.setObservacions(recompensa.getObservacions());
-            if (recompensa.getEstat().equals(Estat.ASSIGNADES) && !recompensaExiste.getEstat().equals(Estat.ASSIGNADES)) {
-                recompensaExiste.setDataAsignacio(LocalDate.now().toString()); // Asignar la fecha de asignación
-                System.out.println("✅ Fecha de asignación establecida: " + recompensaExiste.getDataAsignacio());
+            if (recompensaExiste.getEstat() == Estat.DISPONIBLES) {
+                // Actualizar los valores
+                recompensaExiste.setDescripcio(recompensa.getDescripcio());
+                recompensaExiste.setCost(recompensa.getCost());
+                recompensaExiste.setObservacions(recompensa.getObservacions());
+                if (recompensa.getEstat().equals(Estat.ASSIGNADES) && !recompensaExiste.getEstat().equals(Estat.ASSIGNADES)) {
+                    recompensaExiste.setDataAsignacio(LocalDate.now().toString()); // Asignar la fecha de asignación
+                    System.out.println("✅ Fecha de asignación establecida: " + recompensaExiste.getDataAsignacio());
+                }
+                recompensaExiste.setEstat(recompensa.getEstat());
+                recompensaExiste.setPuntBescanviId(bescanvi);
+
+                // Si hay foto nueva, guardarla
+                if (fileFoto != null && !fileFoto.isEmpty()) {
+                    String base64Foto = Base64.getEncoder().encodeToString(fileFoto.getBytes());
+                    recompensaExiste.setFoto(base64Foto);
+                }
+
+                // Verificar si el estado ha cambiado a ASSIGNADES
+
+
+                // Guardar la recompensa modificada
+                logic.modificarRecompensa(recompensaExiste);
+
+                return "redirect:/recompensas/llistar";
+
+            } else {
+                model.addAttribute("error", "La recompensa está " + recompensaExiste.getEstat());
+                model.addAttribute("recompensas", recompensaExiste);
+                model.addAttribute("estat", Estat.values());
+                model.addAttribute("puntBescanviId", puntBescanviLogic.llistarBescanvi());
+                model.addAttribute("visualizar", false);
+                if (recompensaExiste.getFoto() != null && !recompensaExiste.getFoto().isEmpty()) {
+                    String fotoDataUrl = "data:image/jpeg;base64," + recompensaExiste.getFoto();
+                    model.addAttribute("fotoDataUrl", fotoDataUrl);
+                }
+                return "modificarRecompensa";  // Mostrar error en la vista
             }
-            recompensaExiste.setEstat(recompensa.getEstat());
-            recompensaExiste.setPuntBescanviId(bescanvi);
-
-            // Si hay foto nueva, guardarla
-            if (fileFoto != null && !fileFoto.isEmpty()) {
-                String base64Foto = Base64.getEncoder().encodeToString(fileFoto.getBytes());
-                recompensaExiste.setFoto(base64Foto);
-            }
-
-            // Verificar si el estado ha cambiado a ASSIGNADES
-
-
-
-            // Guardar la recompensa modificada
-            logic.modificarRecompensa(recompensaExiste);
-
-            return "redirect:/recompensas/llistar";  // Redirigir al listado
         } else {
             model.addAttribute("error", "La recompensa no existe o no es válida.");
-            return "modificarRecompensa";  // Mostrar error en la vista
+            model.addAttribute("recompensas", recompensa);
+            model.addAttribute("estat", Estat.values());
+            model.addAttribute("puntBescanviId", puntBescanviLogic.llistarBescanvi());
+            model.addAttribute("visualizar", false);if (recompensaExiste.getFoto() != null && !recompensaExiste.getFoto().isEmpty()) {
+                String fotoDataUrl = "data:image/jpeg;base64," + recompensaExiste.getFoto();
+                model.addAttribute("fotoDataUrl", fotoDataUrl);
+            }
+
+            return "modificarRecompensa";
+
         }
     }
 

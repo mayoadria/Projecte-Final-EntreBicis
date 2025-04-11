@@ -14,8 +14,12 @@
 <div class="main-content">
     <h1 th:text="${visualizar} ? 'Detalls de la Recompensa' : 'Modificar Recompensa'"></h1>
     <div class="create-user-container">
+
         <div class="profile-picture" id="profilePicture">
             <img id="fotoPreview" th:src="${fotoDataUrl != null ? fotoDataUrl : 'https://via.placeholder.com/150'}" alt="Foto usuario" />
+        </div>
+        <div th:if="${error}" class="alert-error">
+            <p th:text="${error}"></p>
         </div>
         <form class="user-form" th:action="@{/recompensas/editar}" th:object="${recompensas}" method="post"
               enctype="multipart/form-data">
