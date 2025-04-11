@@ -39,7 +39,8 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
         composable("login") { LoginScreen(navController, loginView,sessionViewModel) }
         composable("inici") { BottomNav(navController,sessionViewModel) }
         composable("rutas") { RutaScreen(navController) }
-        composable("recompensa") { recompensa(viewLlista,navController,sessionViewModel) }
+        composable("recompensa") { recompensa(viewLlista,navController,sessionViewModel,false) }
+        composable("recompensaPropias") { recompensa(viewLlista,navController,sessionViewModel,true) }
         composable("perfil") { perfil(sessionViewModel,navController) }
         composable("detalls/{id}") { backStackEntry ->
             val cartId =

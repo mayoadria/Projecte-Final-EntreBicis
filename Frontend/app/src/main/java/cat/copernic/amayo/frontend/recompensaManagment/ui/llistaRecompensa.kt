@@ -24,19 +24,30 @@ import cat.copernic.amayo.frontend.core.auth.SessionViewModel
 import cat.copernic.amayo.frontend.recompensaManagment.model.EstatRecompensa
 
 @Composable
-fun recompensa(llistaViewmodel: llistaViewmodel,navController: NavController,sessionViewModel: SessionViewModel) {
+fun recompensa(
+    llistaViewmodel: llistaViewmodel,
+    navController: NavController,
+    sessionViewModel: SessionViewModel,
+    verReservadas: Boolean = false // Parámetro para ver recompensas reservadas
+) {
     var filtroDesc by remember { mutableStateOf("") }
     var filtroObs by remember { mutableStateOf("") }
     var filtroEstat by remember { mutableStateOf("") }
     var ordenarPor by remember { mutableStateOf("") }
     var ascendente by remember { mutableStateOf(true) }
 
+    // Obtener las recompensas desde el ViewModel
     val allRecompensas by llistaViewmodel.recompesa.collectAsState()
 
-    // Aplicar filtros a la lista de recompensas
+    // Filtrar recompensas según el estado: DISPONIBLES o RESERVADAS
     var filteredRecompensas = allRecompensas.filter { recompensa ->
-        recompensa.estat == EstatRecompensa.DISPONIBLES &&
-        (filtroDesc.isEmpty() || recompensa.descripcio?.contains(filtroDesc, ignoreCase = true) == true) &&
+        val estadoCoincide = if (verReservadas) {
+            recompensa.estat == EstatRecompensa.RESERVADES
+        } else {
+            recompensa.estat == EstatRecompensa.DISPONIBLES
+        }
+        estadoCoincide &&
+                (filtroDesc.isEmpty() || recompensa.descripcio?.contains(filtroDesc, ignoreCase = true) == true) &&
                 (filtroObs.isEmpty() || recompensa.observacions?.contains(filtroObs, ignoreCase = true) == true) &&
                 (filtroEstat.isEmpty() || recompensa.estat?.name?.contains(filtroEstat, ignoreCase = true) == true)
     }

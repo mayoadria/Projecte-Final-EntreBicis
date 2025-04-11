@@ -34,4 +34,16 @@ public class ReservaLogic {
         reservaRepository.save(usuariActualitzat);
 
     }
+    public boolean existsById(Long id)
+    {
+        Reserva p = reservaRepository.findById(id).orElse(null);
+
+        return (p != null);
+    }
+
+    public void deleteReservaById(Long id){
+
+        reservaRepository.deleteById(id);
+
+    }
 }
