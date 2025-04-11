@@ -2,6 +2,7 @@ package com.copernic.backend.Backend.logic.web;
 
 import com.copernic.backend.Backend.entity.Recompensas;
 import com.copernic.backend.Backend.entity.Usuari;
+import com.copernic.backend.Backend.entity.enums.Estat;
 import com.copernic.backend.Backend.repository.RecompensasRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class RecompensaLogic {
     public String eliminarRecompensa(Long id) {
         Recompensas recompensas = findById(id);
         try {
-            if (recompensas != null) {
+            if (recompensas != null && recompensas.getEstat() == Estat.DISPONIBLES) {
                 recompensasRepository.delete(recompensas);
             }
         } catch (Exception e) {
