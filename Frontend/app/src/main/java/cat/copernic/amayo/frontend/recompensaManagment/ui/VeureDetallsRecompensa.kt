@@ -1,6 +1,8 @@
 package cat.copernic.amayo.frontend.recompensaManagment.ui
 
 import android.os.Bundle
+import android.widget.Toast
+
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
@@ -19,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -36,7 +39,14 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun detalls(viewmodel: llistaViewmodel, recompensaId: Long, reservaViewmodel: ReservaViewmodel,sessionViewModel: SessionViewModel,modificarViewModel: ModificarViewModel,navController: NavController) {
+fun detalls(
+    viewmodel: llistaViewmodel,
+    recompensaId: Long,
+    reservaViewmodel: ReservaViewmodel,
+    sessionViewModel: SessionViewModel,
+    modificarViewModel: ModificarViewModel,
+    navController: NavController
+) {
     val nom by sessionViewModel.userData.collectAsState()
     val recompensa = viewmodel.recompensaD.value
     val bitmap = remember(recompensa?.foto) {
@@ -46,11 +56,14 @@ fun detalls(viewmodel: llistaViewmodel, recompensaId: Long, reservaViewmodel: Re
         viewmodel.listar(recompensaId)
     }
 
+    val context = LocalContext.current
+    val puedeReservar = nom != null && recompensa != null && nom!!.saldo!! >= recompensa.cost!!
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFE3F2FD)) // Azul claro
-            .padding(16.dp).statusBarsPadding(),
+            .padding(16.dp)
+            .statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -91,12 +104,41 @@ fun detalls(viewmodel: llistaViewmodel, recompensaId: Long, reservaViewmodel: Re
                 Divider()
                 Spacer(modifier = Modifier.height(8.dp))
                 Column {
-                    Text("Punt d'intercanvi:", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color(0xFF0288D1))
-                    recompensa?.puntBescanviId?.nom?.let { Text(it, fontSize = 16.sp, color = Color(0xFF424242)) }
-                    recompensa?.puntBescanviId?.adreca?.let { Text(it, fontSize = 14.sp, color = Color(0xFF757575)) }
+                    Text(
+                        "Punt d'intercanvi:",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        color = Color(0xFF0288D1)
+                    )
+                    recompensa?.puntBescanviId?.nom?.let {
+                        Text(
+                            it,
+                            fontSize = 16.sp,
+                            color = Color(0xFF424242)
+                        )
+                    }
+                    recompensa?.puntBescanviId?.adreca?.let {
+                        Text(
+                            it,
+                            fontSize = 14.sp,
+                            color = Color(0xFF757575)
+                        )
+                    }
                     Spacer(modifier = Modifier.height(4.dp))
-                    recompensa?.puntBescanviId?.personaContacte?.let { Text("Contacto: $it", fontSize = 14.sp, color = Color(0xFF757575)) }
-                    recompensa?.puntBescanviId?.telefon?.let { Text("Tel: $it", fontSize = 14.sp, color = Color(0xFF757575)) }
+                    recompensa?.puntBescanviId?.personaContacte?.let {
+                        Text(
+                            "Contacto: $it",
+                            fontSize = 14.sp,
+                            color = Color(0xFF757575)
+                        )
+                    }
+                    recompensa?.puntBescanviId?.telefon?.let {
+                        Text(
+                            "Tel: $it",
+                            fontSize = 14.sp,
+                            color = Color(0xFF757575)
+                        )
+                    }
                 }
             }
         }
@@ -114,36 +156,45 @@ fun detalls(viewmodel: llistaViewmodel, recompensaId: Long, reservaViewmodel: Re
         }
         Spacer(modifier = Modifier.height(16.dp))
 
+
         Button(
             onClick = {
-                nom?.let { usuario ->
-                    usuario.reserva = true
+                if (puedeReservar) {
+                    // Si se puede reservar, se hace la acción
+                    nom?.let { usuario ->
+                        usuario.reserva = true
 
-                    modificarViewModel.updateClient(
-                        client = usuario,
-                        contentResolver = navController.context.contentResolver
+                        modificarViewModel.updateClient(
+                            client = usuario,
+                            contentResolver = navController.context.contentResolver
+                        )
+                    }
+
+                    recompensa?.let { recompensa ->
+                        recompensa.estat = EstatRecompensa.RESERVADES
+
+                        viewmodel.updateRecompensa(
+                            client = recompensa,
+                            contentResolver = navController.context.contentResolver
+                        )
+                    }
+
+                    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                    val fecha = LocalDate.now().format(formatter)
+                    val nuevaReserva = Reserva(
+                        id = null, // O lo que sea necesario
+                        emailUsuari = nom, // Pasar el email
+                        idRecompensa = recompensa, // Pasar el ID de la recompensa
+                        datareserva = fecha,
+                        estat = EstatReserva.RESERVADA
                     )
+
+                    reservaViewmodel.crearReserva(nuevaReserva)
+                } else {
+                    // Si no puede reservar, se muestra el Toast
+                    Toast.makeText(context, "Saldo insuficiente.", Toast.LENGTH_LONG).show()
                 }
-
-                recompensa?.let { recompensa ->
-                    recompensa.estat = EstatRecompensa.RESERVADES
-
-                    viewmodel.updateRecompensa(
-                        client = recompensa,
-                        contentResolver = navController.context.contentResolver
-                    )
-                }
-                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                val fecha = LocalDate.now().format(formatter)
-                val nuevaReserva = Reserva(
-                id = null, // O lo que sea necesario
-                emailUsuari = nom, // Pasar el email
-                idRecompensa = recompensa, // Pasar el ID de la recompensa
-                datareserva = fecha,
-                estat = EstatReserva.RESERVADA
-            )
-
-                reservaViewmodel.crearReserva(nuevaReserva) },
+            },
             colors = ButtonDefaults.buttonColors(Color(0xFF0288D1)),
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp)
