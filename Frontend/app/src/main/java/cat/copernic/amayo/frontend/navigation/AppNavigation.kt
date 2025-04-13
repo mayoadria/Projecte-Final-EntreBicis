@@ -42,11 +42,25 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
         composable("recompensa") { recompensa(viewLlista,navController,sessionViewModel,false) }
         composable("recompensaPropias") { recompensa(viewLlista,navController,sessionViewModel,true) }
         composable("perfil") { perfil(sessionViewModel,navController) }
-        composable("detalls/{id}") { backStackEntry ->
-            val cartId =
-                backStackEntry.arguments?.getString("id")?.toLong() ?: return@composable
+        composable("detalls/{id}/{mostrarEliminar}") { backStackEntry ->
+            val idParam = backStackEntry.arguments?.getString("id")
+            val eliminarParam = backStackEntry.arguments?.getString("mostrarEliminar")
+
+            val cartId = idParam?.toLongOrNull() ?: return@composable
+            val mostrarEliminar = eliminarParam == "true"
+
             val viewModel: llistaViewmodel = viewModel()
-            detalls(viewModel,cartId,reservaView,sessionViewModel,modificarView,navController) }
+
+            detalls(
+                viewModel,
+                cartId,
+                reservaView,
+                sessionViewModel,
+                modificarView,
+                navController,
+                mostrarEliminar
+            )
+        }
         composable("editar") {
             EditarPerfil(sessionViewModel,modificarView,navController)
         }

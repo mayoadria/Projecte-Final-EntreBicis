@@ -79,7 +79,11 @@ fun recompensa(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(filteredRecompensas) { recompensa ->
-                RecompensaItem(recompensa = recompensa, navController, scale = 1f)
+                if(verReservadas) {
+                    RecompensaItem(recompensa = recompensa, navController, scale = 1f,false)
+                }else{
+                    RecompensaItem(recompensa = recompensa, navController, scale = 1f,true)
+                }
             }
         }
     }

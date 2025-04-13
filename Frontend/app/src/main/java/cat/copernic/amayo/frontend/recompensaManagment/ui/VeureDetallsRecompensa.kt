@@ -45,7 +45,8 @@ fun detalls(
     reservaViewmodel: ReservaViewmodel,
     sessionViewModel: SessionViewModel,
     modificarViewModel: ModificarViewModel,
-    navController: NavController
+    navController: NavController,
+    mostrarEliminar: Boolean
 ) {
     val nom by sessionViewModel.userData.collectAsState()
     val recompensa = viewmodel.recompensaD.value
@@ -159,61 +160,75 @@ fun detalls(
         Spacer(modifier = Modifier.height(16.dp))
 
 
-        Button(
-            onClick = {
-                if (tieneReservas) {
-                    if (puedeReservar) {
+        if (mostrarEliminar) {
+            // BOTÓN DE ELIMINAR
+            Button(
+                onClick = {
+                    recompensa?.let {
+                        //viewmodel.eliminarRecompensa(it)
+                        Toast.makeText(context, "Recompensa eliminada.", Toast.LENGTH_SHORT).show()
+                        navController.popBackStack()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(Color.Red),
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text("Eliminar", color = Color.White, fontSize = 18.sp)
+            }
+        } else {
+            // BOTÓN DE RESERVAR (TU BLOQUE ACTUAL ADAPTADO)
+            Button(
+                onClick = {
+                    if (tieneReservas) {
+                        if (puedeReservar) {
+                            nom?.let { usuario ->
+                                usuario.reserva = true
 
-                        // Si se puede reservar, se hace la acción
-                        nom?.let { usuario ->
-                            usuario.reserva = true
+                                modificarViewModel.updateClient(
+                                    client = usuario,
+                                    contentResolver = navController.context.contentResolver
+                                )
+                            }
 
-                            modificarViewModel.updateClient(
-                                client = usuario,
-                                contentResolver = navController.context.contentResolver
+                            recompensa?.let { recompensa ->
+                                recompensa.estat = EstatRecompensa.RESERVADES
+
+                                viewmodel.updateRecompensa(
+                                    client = recompensa,
+                                    contentResolver = navController.context.contentResolver
+                                )
+                            }
+
+                            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                            val fecha = LocalDate.now().format(formatter)
+                            val nuevaReserva = Reserva(
+                                id = null,
+                                emailUsuari = nom,
+                                idRecompensa = recompensa,
+                                datareserva = fecha,
+                                estat = EstatReserva.RESERVADA
                             )
+
+                            reservaViewmodel.crearReserva(nuevaReserva)
+
+                        } else {
+                            Toast.makeText(context, "Saldo insuficient.", Toast.LENGTH_LONG).show()
                         }
-
-                        recompensa?.let { recompensa ->
-                            recompensa.estat = EstatRecompensa.RESERVADES
-
-                            viewmodel.updateRecompensa(
-                                client = recompensa,
-                                contentResolver = navController.context.contentResolver
-                            )
-                        }
-
-                        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                        val fecha = LocalDate.now().format(formatter)
-                        val nuevaReserva = Reserva(
-                            id = null, // O lo que sea necesario
-                            emailUsuari = nom, // Pasar el email
-                            idRecompensa = recompensa, // Pasar el ID de la recompensa
-                            datareserva = fecha,
-                            estat = EstatReserva.RESERVADA
-                        )
-
-                        reservaViewmodel.crearReserva(nuevaReserva)
-
-
-                } else {
-                    // Si no puede reservar, se muestra el Toast
-                    Toast.makeText(context, "Saldo insuficiente.", Toast.LENGTH_LONG).show()
-                }
-                } else {
-                    // Si no puede reservar, se muestra el Toast
-                    Toast.makeText(
-                        context,
-                        "Limit màxim de reserves obtingut.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            },
-            colors = ButtonDefaults.buttonColors(Color(0xFF0288D1)),
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            Text("Reservar", color = Color.White, fontSize = 18.sp)
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Límit màxim de reserves obtingut.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(Color(0xFF0288D1)),
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text("Reservar", color = Color.White, fontSize = 18.sp)
+            }
         }
     }
 }

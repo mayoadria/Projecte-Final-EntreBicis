@@ -33,14 +33,19 @@ import cat.copernic.amayo.frontend.recompensaManagment.model.Recompensa
 
 
 @Composable
-fun RecompensaItem(recompensa: Recompensa, navController: NavController, scale: Float) {
+fun RecompensaItem(recompensa: Recompensa, navController: NavController, scale: Float,verReservadas: Boolean = false) {
     val bitmap = remember(recompensa.foto) { recompensa.foto?.let { decodeBase64ToBitmap(it) } }
 
     Card(
+
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)
-            .clickable { navController.navigate("detalls/${recompensa.id}") },
+            .clickable { if (verReservadas) {
+                navController.navigate("detalls/${recompensa.id}/false")
+            } else {
+                navController.navigate("detalls/${recompensa.id}/true")
+            }},
         elevation = CardDefaults.cardElevation(scaledDp(1.dp, scale)),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0x9C9CF3FF)) // Azul claro
