@@ -42,7 +42,7 @@ fun recompensa(
     // Filtrar recompensas según el estado: DISPONIBLES o RESERVADAS
     var filteredRecompensas = allRecompensas.filter { recompensa ->
         val estadoCoincide = if (verReservadas) {
-            recompensa.estat == EstatRecompensa.RESERVADES
+            recompensa.estat != EstatRecompensa.DISPONIBLES
         } else {
             recompensa.estat == EstatRecompensa.DISPONIBLES
         }
