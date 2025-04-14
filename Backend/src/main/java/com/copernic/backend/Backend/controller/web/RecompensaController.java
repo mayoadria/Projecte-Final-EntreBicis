@@ -171,6 +171,7 @@ public class RecompensaController {
     @GetMapping("/edit/{id}")
     public String editarUsuario(@PathVariable Long id, Model model) {
         Recompensas recompensas = logic.findById(id);
+        PuntBescanvi bes = puntBescanviLogic.findByID(recompensas.getPuntBescanviId().getId());
         if (recompensas == null) {
             return "redirect:/recompensas/llistar";
         }
@@ -181,6 +182,7 @@ public class RecompensaController {
         model.addAttribute("recompensas", recompensas);
         model.addAttribute("estat", Estat.values());
         model.addAttribute("puntBescanviId", puntBescanviLogic.llistarBescanvi());
+        model.addAttribute("puntBescanvi", bes);
         model.addAttribute("visualizar", false); // Editar => visualizar desactivado
         model.addAttribute("error", false); // Editar => visualizar desactivado
         return "modificarRecompensa";
@@ -268,6 +270,7 @@ public class RecompensaController {
         model.addAttribute("estat", Estat.values());
         model.addAttribute("puntBescanviId", puntBescanviLogic.llistarBescanvi());
         model.addAttribute("visualizar", true); // Visualizar => campos deshabilitados
+
         return "modificarRecompensa";
     }
 

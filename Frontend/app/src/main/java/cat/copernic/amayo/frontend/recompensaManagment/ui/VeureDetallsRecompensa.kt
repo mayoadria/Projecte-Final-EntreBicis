@@ -193,7 +193,7 @@ fun detalls(
 
                             recompensa?.let { recompensa ->
                                 recompensa.estat = EstatRecompensa.RESERVADES
-
+                                recompensa.usuariRecompensa = nom
                                 viewmodel.updateRecompensa(
                                     client = recompensa,
                                     contentResolver = navController.context.contentResolver
