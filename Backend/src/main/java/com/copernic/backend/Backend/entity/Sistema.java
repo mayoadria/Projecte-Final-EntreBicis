@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.Duration;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -26,5 +28,5 @@ public class Sistema {
     private int conversioSaldo;
 
     @Column
-    private String tempsRecollida;
+    private Duration tempsRecollida;
 }

@@ -21,6 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 
+import java.time.Duration;
 import java.util.Optional;
 
 @Configuration
@@ -125,7 +126,7 @@ public class SecurityConfig {
         sistema.setVelMax(20.0);          // Valor por defecto (ajusta según tus necesidades)
         sistema.setTempsMaxAturat(10.0);    // Valor por defecto
         sistema.setConversioSaldo(2);       // Valor por defecto
-        sistema.setTempsRecollida("60");    // Valor por defecto
+        sistema.setTempsRecollida(Duration.ofSeconds(20));    // Valor por defecto
 
         sistemaRepository.save(sistema);
         System.out.println("Sistema por defecto creado con ID=1.");

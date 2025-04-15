@@ -10,6 +10,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -35,7 +37,7 @@ public class Recompensas {
     @Column
     private String dataCreacio;
     @Column
-    private String DataAsignacio;
+    private LocalDateTime DataAsignacio;
 
     @ManyToOne
     @JoinColumn(name = "usuari_email", nullable = true)

@@ -19,6 +19,9 @@ public class Reserva {
     private Long id;
 
     @Column
+    private Boolean caducada;
+
+    @Column
     private String datareserva;
 
     @Column

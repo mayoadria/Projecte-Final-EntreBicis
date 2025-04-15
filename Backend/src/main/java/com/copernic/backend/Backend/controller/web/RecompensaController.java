@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -145,9 +146,9 @@ public class RecompensaController {
             recompensa.setPuntBescanviId(bescanvi);
             recompensa.setDataCreacio(LocalDate.now().toString());
             if (recompensa.getEstat() == Estat.ASSIGNADES) {
-                recompensa.setDataAsignacio(LocalDate.now().toString());
+                recompensa.setDataAsignacio(LocalDateTime.now());
             }else{
-                recompensa.setDataAsignacio("");
+                recompensa.setDataAsignacio(null);
             }
 
             // Guardar la recompensa
@@ -209,7 +210,7 @@ public class RecompensaController {
                 recompensaExiste.setCost(recompensa.getCost());
                 recompensaExiste.setObservacions(recompensa.getObservacions());
                 if (recompensa.getEstat().equals(Estat.ASSIGNADES) && !recompensaExiste.getEstat().equals(Estat.ASSIGNADES)) {
-                    recompensaExiste.setDataAsignacio(LocalDate.now().toString()); // Asignar la fecha de asignación
+                    recompensaExiste.setDataAsignacio(LocalDateTime.now()); // Asignar la fecha de asignación
                     System.out.println("✅ Fecha de asignación establecida: " + recompensaExiste.getDataAsignacio());
                 }
                 recompensaExiste.setEstat(recompensa.getEstat());

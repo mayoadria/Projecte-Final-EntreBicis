@@ -8,6 +8,7 @@ import com.copernic.backend.Backend.entity.enums.EstatReserva;
 import com.copernic.backend.Backend.entity.enums.Rol;
 import com.copernic.backend.Backend.logic.web.RecompensaLogic;
 import com.copernic.backend.Backend.logic.web.ReservaLogic;
+import com.copernic.backend.Backend.logic.web.SistemaLogic;
 import com.copernic.backend.Backend.repository.ReservaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +34,9 @@ public class ReservaController {
     private ReservaLogic reservaLogic;
     @Autowired
     private RecompensaLogic recompensaLogic;
+
+    @Autowired
+    private SistemaLogic sistemaLogic;
 
     @GetMapping("/listar")
     public String showUsuaris(Model model) {
@@ -87,7 +93,7 @@ public class ReservaController {
     private void assignarReserva(Reserva reserva) {
         reserva.setEstat(EstatReserva.ASSIGNADA);
         reserva.getIdRecompensa().setEstat(Estat.ASSIGNADES);
-        reserva.getIdRecompensa().setDataAsignacio(LocalDate.now().toString());
+        reserva.getIdRecompensa().setDataAsignacio(LocalDateTime.now());
 
         double saldoActual = reserva.getEmailUsuari().getSaldo();
         double cost = reserva.getIdRecompensa().getCost();
@@ -100,7 +106,7 @@ public class ReservaController {
     private void desassignarReserva(Reserva reserva) {
         reserva.setEstat(EstatReserva.DESASSIGNADA);
         reserva.getIdRecompensa().setEstat(Estat.DISPONIBLES);
-        reserva.getIdRecompensa().setDataAsignacio("");
+        reserva.getIdRecompensa().setDataAsignacio(null);
 
         double saldoActual = reserva.getEmailUsuari().getSaldo();
         double cost = reserva.getIdRecompensa().getCost();
@@ -108,5 +114,33 @@ public class ReservaController {
 
         reservaLogic.updateReserva(reserva);
         recompensaLogic.modificarRecompensa(reserva.getIdRecompensa());
+    }
+
+    public boolean haCaducat(Reserva reserva, Duration tempsPermes) {
+        LocalDateTime data = reserva.getIdRecompensa().getDataAsignacio();
+        if (data == null) return false;
+        return data.plus(tempsPermes).isBefore(LocalDateTime.now());
+    }
+
+    public void comprovarICaducarReserves() {
+        List<Reserva> reserves = reservaLogic.llistarReserva();
+        Duration tempsRecollida = sistemaLogic.getSistema().getTempsRecollida();
+
+        for (Reserva reserva : reserves) {
+            if (reserva.getEstat() == EstatReserva.ASSIGNADA &&
+                    haCaducat(reserva, tempsRecollida)) {
+
+                reserva.setEstat(EstatReserva.DESASSIGNADA);
+                reserva.getIdRecompensa().setEstat(Estat.DISPONIBLES);
+                reserva.getIdRecompensa().setDataAsignacio(null);
+                reserva.setCaducada(true);
+//                // Recuperar saldo
+//                double saldo = reserva.getEmailUsuari().getSaldo() + reserva.getIdRecompensa().getCost();
+//                reserva.getEmailUsuari().setSaldo(saldo);
+
+                reservaLogic.updateReserva(reserva);
+                recompensaLogic.modificarRecompensa(reserva.getIdRecompensa());
+            }
+        }
     }
 }
