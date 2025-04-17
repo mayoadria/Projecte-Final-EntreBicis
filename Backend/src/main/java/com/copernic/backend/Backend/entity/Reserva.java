@@ -33,8 +33,8 @@ public class Reserva {
     @JsonBackReference
     private Usuari emailUsuari;
 
-    @OneToOne
-    @JoinColumn(name = "idRecompensa",unique = true)
+    @ManyToOne
+    @JoinColumn(name = "idRecompensa")
     private Recompensas idRecompensa;
 
 }

@@ -49,7 +49,7 @@ public class Recompensas {
     @JsonIgnoreProperties({"puntBescanviID"})
     private PuntBescanvi puntBescanviId;
 
-    @OneToOne(mappedBy = "idRecompensa")
+    @OneToMany(mappedBy = "idRecompensa")
     @JsonIgnore
-    private Reserva idReserva;
+    private List<Reserva> reservas;
 }

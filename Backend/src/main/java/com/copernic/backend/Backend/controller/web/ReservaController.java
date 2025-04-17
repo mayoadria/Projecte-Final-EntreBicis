@@ -9,6 +9,7 @@ import com.copernic.backend.Backend.entity.enums.Rol;
 import com.copernic.backend.Backend.logic.web.RecompensaLogic;
 import com.copernic.backend.Backend.logic.web.ReservaLogic;
 import com.copernic.backend.Backend.logic.web.SistemaLogic;
+import com.copernic.backend.Backend.logic.web.UsuariLogic;
 import com.copernic.backend.Backend.repository.ReservaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,9 @@ public class ReservaController {
     private ReservaLogic reservaLogic;
     @Autowired
     private RecompensaLogic recompensaLogic;
+
+    @Autowired
+    private UsuariLogic usuariLogic;
 
     @Autowired
     private SistemaLogic sistemaLogic;
@@ -134,12 +138,11 @@ public class ReservaController {
                 reserva.getIdRecompensa().setEstat(Estat.DISPONIBLES);
                 reserva.getIdRecompensa().setDataAsignacio(null);
                 reserva.setCaducada(true);
-//                // Recuperar saldo
-//                double saldo = reserva.getEmailUsuari().getSaldo() + reserva.getIdRecompensa().getCost();
-//                reserva.getEmailUsuari().setSaldo(saldo);
-
+                reserva.setEstat(EstatReserva.CADUCADA);
+                reserva.getEmailUsuari().setReserva(false);
                 reservaLogic.updateReserva(reserva);
                 recompensaLogic.modificarRecompensa(reserva.getIdRecompensa());
+                usuariLogic.savePerfil(reserva.getEmailUsuari());
             }
         }
     }

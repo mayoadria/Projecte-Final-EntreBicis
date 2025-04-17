@@ -5,5 +5,6 @@ public enum EstatReserva {
     RECOLLIDA,
     CANCELADA,
     ASSIGNADA,
-    DESASSIGNADA
+    DESASSIGNADA,
+    CADUCADA,
 }
