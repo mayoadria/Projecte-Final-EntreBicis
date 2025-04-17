@@ -3,6 +3,7 @@
     import com.copernic.backend.Backend.entity.enums.Estat;
     import com.copernic.backend.Backend.entity.enums.EstatUsuari;
     import com.copernic.backend.Backend.entity.enums.Rol;
+    import com.fasterxml.jackson.annotation.JsonIgnore;
     import com.fasterxml.jackson.annotation.JsonManagedReference;
     import jakarta.persistence.*;
     import lombok.AllArgsConstructor;
@@ -74,9 +75,9 @@
         @ToString.Exclude
         private List<Recompensas> recompensas;
 
-        @OneToMany(mappedBy = "emailUsuari")
+        @OneToMany(mappedBy = "emailUsuari", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
         @ToString.Exclude
-        @JsonManagedReference
+        @JsonIgnore
         private List<Reserva> reservas;
 
 

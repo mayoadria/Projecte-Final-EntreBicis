@@ -11,6 +11,8 @@ import cat.copernic.mycards.mycards_frontend.user_management.data.repositories.R
 import cat.copernic.mycards.mycards_frontend.user_management.data.repositories.ReservaRetrofitInstance
 import cat.copernic.mycards.mycards_frontend.user_management.data.sources.remote.RecompensasApiRest
 import cat.copernic.mycards.mycards_frontend.user_management.data.sources.remote.ReservaApiRest
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class ReservaViewmodel : ViewModel(){
@@ -18,8 +20,15 @@ class ReservaViewmodel : ViewModel(){
         ReservaApiRest::class.java
     )
 
+    private val _reservaD = mutableStateOf<Reserva?>(null)
+    val reservaD: State<Reserva?> = _reservaD
+    private val _reserva = MutableStateFlow<List<Reserva>>(emptyList())
+    val reserva: StateFlow<List<Reserva>> = _reserva
 
 
+    init {
+        LlistarReservas()
+    }
     fun crearReserva(reserva: Reserva){
         viewModelScope.launch {
             val response = recompensaApi.save(reserva)
@@ -31,4 +40,36 @@ class ReservaViewmodel : ViewModel(){
             }
         }
     }
+
+    fun listar(id: Long) {
+        viewModelScope.launch {
+            try {
+                val response = recompensaApi.getById(id)
+                if (response.isSuccessful) {
+                    _reservaD.value = response.body()
+                } else {
+                    println("Error: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                println("Error: ${e.message}")
+            }
+        }
+    }
+    fun LlistarReservas() {
+        viewModelScope.launch {
+            try {
+                val response = recompensaApi.findAll()
+                if (response.isSuccessful) {
+                    _reserva.value = response.body() ?: emptyList()
+                } else {
+                    println("Error!!")
+                }
+
+            } catch (e: Exception) {
+                println("Error: ${e.message}")
+            }
+        }
+    }
+
+
 }

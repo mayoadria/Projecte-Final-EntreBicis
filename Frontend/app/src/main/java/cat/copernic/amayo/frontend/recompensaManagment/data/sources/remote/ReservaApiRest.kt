@@ -13,5 +13,9 @@ interface ReservaApiRest {
     @POST("crear")
     suspend fun save(@Body reserva: Reserva): Response<Long>
 
+    @GET("all")
+    suspend fun findAll(): Response<List<Reserva>>
+    @GET("byId/{id}")
+    suspend fun getById(@Path("id") id : Long ): Response<Reserva>
 
 }

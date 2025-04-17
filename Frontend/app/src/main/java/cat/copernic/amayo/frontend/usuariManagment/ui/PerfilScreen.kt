@@ -117,7 +117,7 @@ fun perfil(sessionViewModel: SessionViewModel,navController: NavController) {
             Row(horizontalArrangement = Arrangement.spacedBy(32.dp)) {
                 IconButtonWithText(
                     icon = Icons.Default.ShoppingCart,
-                    text = "Recompenses",
+                    text = "Reserves",
                     iconColor = iconColor,
                     onClick = {
                         navController.navigate("recompensaPropias")

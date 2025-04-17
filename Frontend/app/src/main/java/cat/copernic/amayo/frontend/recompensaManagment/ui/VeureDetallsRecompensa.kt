@@ -46,7 +46,6 @@ fun detalls(
     sessionViewModel: SessionViewModel,
     modificarViewModel: ModificarViewModel,
     navController: NavController,
-    mostrarEliminar: Boolean
 ) {
     val nom by sessionViewModel.userData.collectAsState()
     val recompensa = viewmodel.recompensaD.value
@@ -160,23 +159,7 @@ fun detalls(
         Spacer(modifier = Modifier.height(16.dp))
 
 
-        if (mostrarEliminar) {
-            // BOTÓN DE ELIMINAR
-            Button(
-                onClick = {
-                    recompensa?.let {
-                        //viewmodel.eliminarRecompensa(it)
-                        Toast.makeText(context, "Recompensa eliminada.", Toast.LENGTH_SHORT).show()
-                        navController.popBackStack()
-                    }
-                },
-                colors = ButtonDefaults.buttonColors(Color.Red),
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text("Eliminar", color = Color.White, fontSize = 18.sp)
-            }
-        } else {
+
             // BOTÓN DE RESERVAR (TU BLOQUE ACTUAL ADAPTADO)
             Button(
                 onClick = {
@@ -229,6 +212,6 @@ fun detalls(
             ) {
                 Text("Reservar", color = Color.White, fontSize = 18.sp)
             }
-        }
+
     }
 }

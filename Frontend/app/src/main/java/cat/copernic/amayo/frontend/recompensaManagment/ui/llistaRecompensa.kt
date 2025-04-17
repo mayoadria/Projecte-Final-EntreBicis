@@ -27,8 +27,7 @@ import cat.copernic.amayo.frontend.recompensaManagment.model.EstatRecompensa
 fun recompensa(
     llistaViewmodel: llistaViewmodel,
     navController: NavController,
-    sessionViewModel: SessionViewModel,
-    verReservadas: Boolean = false // Parámetro para ver recompensas reservadas
+    sessionViewModel: SessionViewModel
 ) {
     var filtroDesc by remember { mutableStateOf("") }
     var filtroObs by remember { mutableStateOf("") }
@@ -41,15 +40,22 @@ fun recompensa(
 
     // Filtrar recompensas según el estado: DISPONIBLES o RESERVADAS
     var filteredRecompensas = allRecompensas.filter { recompensa ->
-        val estadoCoincide = if (verReservadas) {
-            recompensa.estat != EstatRecompensa.DISPONIBLES
-        } else {
-            recompensa.estat == EstatRecompensa.DISPONIBLES
-        }
-        estadoCoincide &&
-                (filtroDesc.isEmpty() || recompensa.descripcio?.contains(filtroDesc, ignoreCase = true) == true) &&
-                (filtroObs.isEmpty() || recompensa.observacions?.contains(filtroObs, ignoreCase = true) == true) &&
-                (filtroEstat.isEmpty() || recompensa.estat?.name?.contains(filtroEstat, ignoreCase = true) == true)
+
+        recompensa.estat == EstatRecompensa.DISPONIBLES
+
+                &&
+                (filtroDesc.isEmpty() || recompensa.descripcio?.contains(
+                    filtroDesc,
+                    ignoreCase = true
+                ) == true) &&
+                (filtroObs.isEmpty() || recompensa.observacions?.contains(
+                    filtroObs,
+                    ignoreCase = true
+                ) == true) &&
+                (filtroEstat.isEmpty() || recompensa.estat?.name?.contains(
+                    filtroEstat,
+                    ignoreCase = true
+                ) == true)
     }
 
     // Aplicar ordenación
@@ -59,7 +65,12 @@ fun recompensa(
         else -> filteredRecompensas
     }
 
-    Column(modifier = Modifier.fillMaxSize().background(Color(0x9C9CF3FF)).statusBarsPadding()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0x9C9CF3FF))
+            .statusBarsPadding()
+    ) {
         Header(
             onFilterApplied = { desc, obs, estat ->
                 filtroDesc = desc
@@ -79,18 +90,20 @@ fun recompensa(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(filteredRecompensas) { recompensa ->
-                if(verReservadas) {
-                    RecompensaItem(recompensa = recompensa, navController, scale = 1f,false)
-                }else{
-                    RecompensaItem(recompensa = recompensa, navController, scale = 1f,true)
-                }
+
+                RecompensaItem(recompensa = recompensa, navController, scale = 1f)
+
             }
         }
     }
 }
 
 @Composable
-fun Header(onFilterApplied: (String, String, String) -> Unit, onSortSelected: (String, Boolean) -> Unit,sessionViewModel: SessionViewModel) {
+fun Header(
+    onFilterApplied: (String, String, String) -> Unit,
+    onSortSelected: (String, Boolean) -> Unit,
+    sessionViewModel: SessionViewModel
+) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     var showFilterDialog by rememberSaveable { mutableStateOf(false) }
     var showSortDialog by rememberSaveable { mutableStateOf(false) }
@@ -234,6 +247,7 @@ fun FilterDialog(
         }
     )
 }
+
 @Composable
 fun SortDialog(
     onSortSelected: (String, Boolean) -> Unit,

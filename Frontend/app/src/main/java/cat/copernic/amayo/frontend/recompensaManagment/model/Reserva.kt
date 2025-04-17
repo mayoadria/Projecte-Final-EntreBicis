@@ -4,7 +4,7 @@ import cat.copernic.amayo.frontend.usuariManagment.model.Usuari
 
 data class Reserva(
     var id: Long? = null,
-    var caduca: Boolean? = null,
+    var caducada: Boolean? = null,
     var datareserva: String? = null,
     var estat: EstatReserva? = null,
     var emailUsuari: Usuari? = null,

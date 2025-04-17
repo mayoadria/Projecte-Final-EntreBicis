@@ -9,7 +9,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,42 +29,61 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import cat.copernic.amayo.frontend.recompensaManagment.model.Recompensa
-
+import cat.copernic.amayo.frontend.recompensaManagment.model.Reserva
 
 @Composable
-fun RecompensaItem(recompensa: Recompensa, navController: NavController, scale: Float) {
-    val bitmap = remember(recompensa.foto) { recompensa.foto?.let { decodeBase64ToBitmap(it) } }
+fun ReservaItem(
+    reserva: Reserva,
+    navController: NavController,
+    scale: Float,
+    verReservadas: Boolean = false
+) {
+    val recompensa = reserva.idRecompensa
+    val bitmap = remember(recompensa?.foto) {
+        recompensa?.foto?.let { decodeBase64ToBitmap(it) }
+    }
 
     Card(
-
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)
             .clickable {
-                navController.navigate("detalls/${recompensa.id}")
+                // Aquí podrías navegar a una pantalla de detalles si quieres
+                 navController.navigate("detallsReserva/${reserva.id}")
             },
         elevation = CardDefaults.cardElevation(scaledDp(1.dp, scale)),
         shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0x9C9CF3FF)) // Azul claro
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
+
+            // Estado y puntos
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xCE4E98DE), shape = RoundedCornerShape(8.dp))
+                    .background(Color(0xFF4E98DE), shape = RoundedCornerShape(8.dp))
                     .padding(12.dp)
             ) {
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    recompensa.descripcio?.let {
-                        Text(text = it, fontWeight = FontWeight.Bold, fontSize = 20.sp, color = Color.White)
+                    reserva.estat?.let {
+                        Text(
+                            text = "Estat: ${it.name}",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp,
+                            color = Color.White
+                        )
                     }
-                    recompensa.observacions?.let {
-                        Text(text = it, fontSize = 14.sp, color = Color.White.copy(alpha = 0.8f))
+                    recompensa?.observacions?.let {
+                        Text(
+                            text = "Observacions: $it",
+                            fontSize = 14.sp,
+                            color = Color.White.copy(alpha = 0.9f)
+                        )
                     }
                 }
-                recompensa.cost?.let {
+                recompensa?.cost?.let {
                     Text(
-                        text = "$it Puntos",
+                        text = "$it Punts",
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,
                         color = Color.White,
@@ -73,33 +91,36 @@ fun RecompensaItem(recompensa: Recompensa, navController: NavController, scale: 
                     )
                 }
             }
+
             Spacer(modifier = Modifier.height(12.dp))
+
+            // Imagen
             bitmap?.let {
                 Image(
                     bitmap = it.asImageBitmap(),
-                    contentDescription = "Imagen de la recompensa",
+                    contentDescription = "Imatge de la recompensa",
                     modifier = Modifier
-                        .fillMaxWidth() // Ajusta el ancho al contenedor
-                        .height(200.dp) // Cambia el alto de la imagen
-                        .background(Color(0x009CF3FF), shape = RoundedCornerShape(8.dp))
+                        .fillMaxWidth()
+                        .height(180.dp)
+                        .background(Color.LightGray, shape = RoundedCornerShape(8.dp))
                 )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Otros detalles
+            reserva.datareserva?.let {
+                Text("Data reserva: $it", fontSize = 14.sp)
+            }
+            Text("Caduca: ${if (reserva.caducada == true) "Sí" else "No"}", fontSize = 14.sp)
+            reserva.emailUsuari?.email?.let {
+                Text("Reservat per: $it", fontSize = 14.sp)
+            }
+            recompensa?.descripcio?.let {
+                Text("Recompensa: $it", fontSize = 14.sp, fontWeight = FontWeight.Medium)
             }
         }
     }
 }
 
-@Composable
-fun scaledDp(value: Dp, scale: Float): Dp {
-    val density = LocalDensity.current
-    return with(density) { (value.toPx() * scale).toDp() }
-}
 
-fun decodeBase64ToBitmap(base64String: String): Bitmap? {
-    return try {
-        val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
-        BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
-    }
-}
