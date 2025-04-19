@@ -22,6 +22,8 @@ import cat.copernic.amayo.frontend.recompensaManagment.model.EstatReserva
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.ReservaViewmodel
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmodel
 import cat.copernic.amayo.frontend.usuariManagment.viewmodels.ModificarViewModel
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Composable
 fun DetallsReserva(
@@ -140,6 +142,7 @@ fun DetallsReserva(
                     reserva?.let {
                         reserva.estat = EstatReserva.PER_RECOLLIR
                         recompensa.estat = Estat.PER_RECOLLIR
+                        recompensa.usuariRecompensa = nom
 
                         llistaViewmodel.updateRecompensa(
                             recompensa,
@@ -168,6 +171,9 @@ fun DetallsReserva(
                     reserva?.let {
                         reserva.estat = EstatReserva.RECOLLIDA
                         recompensa.estat = Estat.RECOLLIDA
+                        val fecha = LocalDateTime.now().toString()
+                        recompensa.dataEntrega = fecha
+                        recompensa.usuariRecompensa = nom
 
                         llistaViewmodel.updateRecompensa(
                             recompensa,

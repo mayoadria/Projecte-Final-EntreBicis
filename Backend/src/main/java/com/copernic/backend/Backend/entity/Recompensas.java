@@ -39,6 +39,9 @@ public class Recompensas {
     @Column
     private LocalDateTime DataAsignacio;
 
+    @Column
+    private String dataEntrega;
+
     @ManyToOne
     @JoinColumn(name = "usuari_email", nullable = true)
     @JsonBackReference
