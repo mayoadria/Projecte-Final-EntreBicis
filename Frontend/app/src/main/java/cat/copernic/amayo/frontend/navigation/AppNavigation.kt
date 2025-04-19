@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import cat.copernic.amayo.frontend.core.auth.SessionViewModel
 import cat.copernic.amayo.frontend.core.auth.SplashScreen
 import cat.copernic.amayo.frontend.recompensaManagment.ui.DetallsReserva
+import cat.copernic.amayo.frontend.recompensaManagment.ui.RecompensaEntregadaScreen
 import cat.copernic.amayo.frontend.sistemaManagment.ui.BottomNav
 import cat.copernic.amayo.frontend.recompensaManagment.ui.detalls
 import cat.copernic.amayo.frontend.recompensaManagment.ui.recompensa
@@ -76,6 +77,9 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
         }
         composable("editar") {
             EditarPerfil(sessionViewModel,modificarView,navController)
+        }
+        composable("check"){
+            RecompensaEntregadaScreen(navController)
         }
     }
 }

@@ -1,12 +1,7 @@
 package cat.copernic.amayo.frontend.recompensaManagment.ui
 
-import android.os.Bundle
 import android.widget.Toast
 
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.LocalActivity
-import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -22,14 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import cat.copernic.amayo.frontend.R
 import cat.copernic.amayo.frontend.core.auth.SessionViewModel
-import cat.copernic.amayo.frontend.recompensaManagment.model.EstatRecompensa
+import cat.copernic.amayo.frontend.recompensaManagment.model.Estat
 import cat.copernic.amayo.frontend.recompensaManagment.model.EstatReserva
 import cat.copernic.amayo.frontend.recompensaManagment.model.Reserva
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.ReservaViewmodel
@@ -175,7 +168,7 @@ fun detalls(
                             }
 
                             recompensa?.let { recompensa ->
-                                recompensa.estat = EstatRecompensa.RESERVADES
+                                recompensa.estat = Estat.RESERVADES
                                 recompensa.usuariRecompensa = nom
                                 viewmodel.updateRecompensa(
                                     client = recompensa,

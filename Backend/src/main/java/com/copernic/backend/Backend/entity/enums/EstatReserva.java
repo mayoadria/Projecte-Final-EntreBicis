@@ -7,4 +7,5 @@ public enum EstatReserva {
     ASSIGNADA,
     DESASSIGNADA,
     CADUCADA,
+    PER_RECOLLIR
 }

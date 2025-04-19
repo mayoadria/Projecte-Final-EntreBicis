@@ -4,5 +4,8 @@ enum class EstatReserva {
     RESERVADA,
     RECOLLIDA,
     CANCELADA,
-    CADUCADA
+    ASSIGNADA,
+    DESASSIGNADA,
+    CADUCADA,
+    PER_RECOLLIR
 }

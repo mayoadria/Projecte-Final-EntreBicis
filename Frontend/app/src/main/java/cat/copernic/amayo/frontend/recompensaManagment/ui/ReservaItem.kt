@@ -112,7 +112,7 @@ fun ReservaItem(
             reserva.datareserva?.let {
                 Text("Data reserva: $it", fontSize = 14.sp)
             }
-            Text("Caduca: ${if (reserva.caducada == true) "Sí" else "No"}", fontSize = 14.sp)
+            Text("Caducada: ${if (reserva.caducada == true) "Sí" else "No"}", fontSize = 14.sp)
             reserva.emailUsuari?.email?.let {
                 Text("Reservat per: $it", fontSize = 14.sp)
             }

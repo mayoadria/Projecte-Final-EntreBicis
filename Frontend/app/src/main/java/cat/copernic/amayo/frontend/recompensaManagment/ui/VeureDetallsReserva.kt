@@ -1,42 +1,27 @@
 package cat.copernic.amayo.frontend.recompensaManagment.ui
 
-import android.os.Bundle
 import android.widget.Toast
-
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.LocalActivity
-import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import cat.copernic.amayo.frontend.R
 import cat.copernic.amayo.frontend.core.auth.SessionViewModel
-import cat.copernic.amayo.frontend.recompensaManagment.model.EstatRecompensa
+import cat.copernic.amayo.frontend.recompensaManagment.model.Estat
 import cat.copernic.amayo.frontend.recompensaManagment.model.EstatReserva
-import cat.copernic.amayo.frontend.recompensaManagment.model.Reserva
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.ReservaViewmodel
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmodel
 import cat.copernic.amayo.frontend.usuariManagment.viewmodels.ModificarViewModel
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun DetallsReserva(
@@ -84,7 +69,7 @@ fun DetallsReserva(
             Column(modifier = Modifier.padding(16.dp)) {
                 Text("Estat: ${reserva?.estat?.name ?: "Desconegut"}", fontSize = 18.sp)
                 Text("Data reserva: ${reserva?.datareserva ?: "No disponible"}", fontSize = 16.sp)
-                Text("Caduca: ${if (reserva?.caducada == true) "Sí" else "No"}", fontSize = 16.sp)
+                Text("Caducada: ${if (reserva?.caducada == true) "Sí" else "No"}", fontSize = 16.sp)
                 reserva?.emailUsuari?.email?.let {
                     Text("Reservat per: $it", fontSize = 16.sp)
                 }
@@ -141,33 +126,66 @@ fun DetallsReserva(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
-            onClick = {
-                nom?.let { usuario ->
-                    usuario.reserva = false
-
-                    modificarViewModel.updateClient(
-                        client = usuario,
-                        contentResolver = navController.context.contentResolver
-                    )
-                }
-                reserva?.let {
-
-                    reserva.estat = EstatReserva.RECOLLIDA
-                    recompensa?.estat = EstatRecompensa.RECOLLIDA
-                    if (recompensa != null) {
-                        llistaViewmodel.updateRecompensa(recompensa,contentResolver = navController.context.contentResolver)
+        // Botón para pasar de ASSIGNADES a PER_RECOLLIR
+        if (recompensa?.estat == Estat.ASSIGNADES) {
+            Button(
+                onClick = {
+                    nom?.let { usuario ->
+                        usuario.reserva = false
+                        modificarViewModel.updateClient(
+                            client = usuario,
+                            contentResolver = navController.context.contentResolver
+                        )
                     }
-                    reservaViewmodel.updateReserva(reserva)
+                    reserva?.let {
+                        reserva.estat = EstatReserva.PER_RECOLLIR
+                        recompensa.estat = Estat.PER_RECOLLIR
 
-                    Toast.makeText(context, "Recompensa recollida!", Toast.LENGTH_SHORT).show()
-                    navController.popBackStack() // O navega a donde quieras
-                }
-            },
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0288D1))
-        ) {
-            Text("Recollir Recompensa", color = Color.White)
+                        llistaViewmodel.updateRecompensa(
+                            recompensa,
+                            contentResolver = navController.context.contentResolver
+                        )
+                        reservaViewmodel.updateReserva(reserva)
+
+                        Toast.makeText(context, "Recompensa per Recollir!", Toast.LENGTH_SHORT).show()
+                        navController.popBackStack()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0288D1)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+            ) {
+                Text("Passar a Per Recollir", color = Color.White, fontSize = 16.sp)
+            }
+        }
+
+        // Botón para pasar de PER_RECOLLIR a RECOLLIDA
+        if (recompensa?.estat == Estat.PER_RECOLLIR) {
+            Spacer(modifier = Modifier.height(12.dp))
+            Button(
+                onClick = {
+                    reserva?.let {
+                        reserva.estat = EstatReserva.RECOLLIDA
+                        recompensa.estat = Estat.RECOLLIDA
+
+                        llistaViewmodel.updateRecompensa(
+                            recompensa,
+                            contentResolver = navController.context.contentResolver
+                        )
+                        reservaViewmodel.updateReserva(reserva)
+
+                        Toast.makeText(context, "Recompensa recollida!", Toast.LENGTH_SHORT).show()
+                        navController.navigate("check")
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0288D1)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+            ) {
+                Text("Recollir Recompensa", color = Color.White, fontSize = 16.sp)
+            }
         }
     }
 }
-

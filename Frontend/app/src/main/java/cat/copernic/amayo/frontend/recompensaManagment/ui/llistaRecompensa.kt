@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import cat.copernic.amayo.frontend.core.auth.SessionViewModel
-import cat.copernic.amayo.frontend.recompensaManagment.model.EstatRecompensa
+import cat.copernic.amayo.frontend.recompensaManagment.model.Estat
 
 @Composable
 fun recompensa(
@@ -41,7 +40,7 @@ fun recompensa(
     // Filtrar recompensas según el estado: DISPONIBLES o RESERVADAS
     var filteredRecompensas = allRecompensas.filter { recompensa ->
 
-        recompensa.estat == EstatRecompensa.DISPONIBLES
+        recompensa.estat == Estat.DISPONIBLES
 
                 &&
                 (filtroDesc.isEmpty() || recompensa.descripcio?.contains(
