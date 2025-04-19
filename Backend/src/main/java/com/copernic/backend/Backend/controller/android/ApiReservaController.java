@@ -115,6 +115,29 @@ public class ApiReservaController {
         return response;
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<Void> updateReserva(@RequestBody Reserva reserva) {
+
+        ResponseEntity<Void> resposta;
+
+        try {
+            if (reserva != null) {
+
+                if (reservaLogic.existsById(reserva.getId())) {
+
+                    reservaLogic.updateReserva(reserva);
+                    resposta = ResponseEntity.ok().build();
+                } else {
+                    resposta = ResponseEntity.notFound().build();
+                }
+            } else {
+                resposta = ResponseEntity.badRequest().build();
+            }
+        } catch (Exception e) {
+            resposta = ResponseEntity.internalServerError().build();
+        }
+        return resposta;
+    }
 
 
 }

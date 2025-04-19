@@ -1,5 +1,6 @@
 package cat.copernic.amayo.frontend.recompensaManagment.viewmodels
 
+import android.content.ContentResolver
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -16,7 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class ReservaViewmodel : ViewModel(){
-    private val recompensaApi: ReservaApiRest = ReservaRetrofitInstance.retrofitInstance.create(
+    private val reservaApi: ReservaApiRest = ReservaRetrofitInstance.retrofitInstance.create(
         ReservaApiRest::class.java
     )
 
@@ -31,7 +32,7 @@ class ReservaViewmodel : ViewModel(){
     }
     fun crearReserva(reserva: Reserva){
         viewModelScope.launch {
-            val response = recompensaApi.save(reserva)
+            val response = reservaApi.save(reserva)
             if (response.isSuccessful) {
                 val savedCarta = response.body()
                 Log.d("CrearReservaViewModel", "Reserva guardada con éxito: $savedCarta")
@@ -44,7 +45,7 @@ class ReservaViewmodel : ViewModel(){
     fun listar(id: Long) {
         viewModelScope.launch {
             try {
-                val response = recompensaApi.getById(id)
+                val response = reservaApi.getById(id)
                 if (response.isSuccessful) {
                     _reservaD.value = response.body()
                 } else {
@@ -58,7 +59,7 @@ class ReservaViewmodel : ViewModel(){
     fun LlistarReservas() {
         viewModelScope.launch {
             try {
-                val response = recompensaApi.findAll()
+                val response = reservaApi.findAll()
                 if (response.isSuccessful) {
                     _reserva.value = response.body() ?: emptyList()
                 } else {
@@ -67,6 +68,26 @@ class ReservaViewmodel : ViewModel(){
 
             } catch (e: Exception) {
                 println("Error: ${e.message}")
+            }
+        }
+    }
+
+    fun updateReserva(client: Reserva) {
+        viewModelScope.launch {
+            try {
+
+                // Llamada al nuevo endpoint sin clientId separado
+                val response = reservaApi.update(client)
+                if (response.isSuccessful) {
+                    Log.d("ModificarViewModel", "Reserva actualizada con éxito")
+                } else {
+                    Log.e(
+                        "ModificarViewModel",
+                        "Error al actualizar la Reserva: ${response.errorBody()?.string()}"
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("ModificarViewModel", "Excepción al actualizar la Reserva: ${e.message}")
             }
         }
     }

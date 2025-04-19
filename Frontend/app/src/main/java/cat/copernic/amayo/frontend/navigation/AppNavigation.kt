@@ -68,7 +68,9 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
             DetallsReserva(
                 cartId,
                 reservaView,
+                viewLlista,
                 sessionViewModel,
+                modificarView,
                 navController
             )
         }

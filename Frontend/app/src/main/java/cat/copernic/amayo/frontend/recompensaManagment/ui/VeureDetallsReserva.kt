@@ -42,9 +42,12 @@ import java.time.format.DateTimeFormatter
 fun DetallsReserva(
     reservaId: Long,
     reservaViewmodel: ReservaViewmodel,
+    llistaViewmodel: llistaViewmodel,
     sessionViewModel: SessionViewModel,
+    modificarViewModel: ModificarViewModel,
     navController: NavController
 ) {
+    val nom by sessionViewModel.userData.collectAsState()
     val context = LocalContext.current
     val reserva = reservaViewmodel.reservaD.value
     val recompensa = reserva?.idRecompensa
@@ -134,6 +137,36 @@ fun DetallsReserva(
                     .height(220.dp)
                     .background(Color.Gray, shape = RoundedCornerShape(12.dp))
             )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = {
+                nom?.let { usuario ->
+                    usuario.reserva = false
+
+                    modificarViewModel.updateClient(
+                        client = usuario,
+                        contentResolver = navController.context.contentResolver
+                    )
+                }
+                reserva?.let {
+
+                    reserva.estat = EstatReserva.RECOLLIDA
+                    recompensa?.estat = EstatRecompensa.RECOLLIDA
+                    if (recompensa != null) {
+                        llistaViewmodel.updateRecompensa(recompensa,contentResolver = navController.context.contentResolver)
+                    }
+                    reservaViewmodel.updateReserva(reserva)
+
+                    Toast.makeText(context, "Recompensa recollida!", Toast.LENGTH_SHORT).show()
+                    navController.popBackStack() // O navega a donde quieras
+                }
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0288D1))
+        ) {
+            Text("Recollir Recompensa", color = Color.White)
         }
     }
 }
