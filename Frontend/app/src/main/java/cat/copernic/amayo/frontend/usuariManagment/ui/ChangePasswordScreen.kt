@@ -246,7 +246,7 @@ fun ChangePasswordScreen(viewModel: ChangePasswordViewModel, navController: NavC
                                     .align(Alignment.CenterHorizontally)
                                     .padding(top = 16.dp),
                                 onClick = {
-                                    //viewModel.changePassword()
+                                    viewModel.changePass()
                                 }
                             ) {
                                 Text("Canviar contrasenya")

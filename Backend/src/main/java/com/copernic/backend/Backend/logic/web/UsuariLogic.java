@@ -66,6 +66,7 @@ public class UsuariLogic {
 
     public String savePerfil(Usuari usu){
 
+        usu.setContra(passwordEncoder.encode(usu.getContra()));
         Usuari ret = userRepository.save(usu);
 
         return ret.getEmail();

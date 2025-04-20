@@ -141,90 +141,88 @@ class ChangePasswordViewModel : ViewModel() {
     }
 
 
-//    fun changePass() {
-//        viewModelScope.launch {
-//            try {
-//
-//                val isValid = comprovarDades()
-//
-//                if (isValid) {
-//
-//                    val codeValidate = loginApi.validateToken(codeAuth.value, email.value)
-//
-//                    if (codeValidate.isSuccessful) {
-//
-//                        val user = usuariApi.getByEmail(email.value).body()
-//
-//                        if (user != null) {
-//                            val hashedContra = hashPasswordPBKDF2(user.email, newContra.value)
-//
-//                            user.contra = hashedContra
-//
-//                            val response = user.id?.let { usuariApi.updateUserPerId(it, user) }
-//
-//                            if (response != null) {
-//                                if (response.isSuccessful) {
-//                                    val savedUser = response.body()
-//                                    Log.d("ChangePasswordViewModel", "Client modificat amb éxit:  $savedUser")
-//                                    _isUserPassUpdated.value = true
-//                                } else {
-//                                    Log.e(
-//                                        "ChangePasswordViewModel",
-//                                        "Error al modificar el Client: ${response.errorBody()?.string()} "
-//                                    )
-//                                    _isUserPassUpdated.value = false
-//                                }
-//                            }
-//                        }
-//                    }else if (codeValidate.code() == 404) {
-//                        Log.e(
-//                            "ChangePasswordViewModel",
-//                            "No s'ha trobat el token: ${codeValidate.errorBody()?.string()} "
-//                        )
-//                        _codeError.value = "Codi de verificació incorrecte!"
-//                        _isUserPassUpdated.value = false
-//                    } else if (codeValidate.code() == 400) {
-//                        Log.e(
-//                            "ChangePasswordViewModel",
-//                            "No s'ha trobat el correu: ${codeValidate.errorBody()?.string()} "
-//                        )
-//                        _emailError.value = "Correu de verificació incorrecte!"
-//                        _isUserPassUpdated.value = false
-//                    } else if (codeValidate.code() == 401) {
-//                        Log.e(
-//                            "ChangePasswordViewModel",
-//                            "Codi caducat: ${codeValidate.errorBody()?.toString()}"
-//                        )
-//                        _codeError.value = "Codi de verificació caducat!"
-//                        _isUserPassUpdated.value = false
-//                    }
-//                    else {
-//                        Log.e("CrearClientViewModel", "Error al verificar el token!")
-//                        _codeError.value = "Codi de verificació incorrecte!"
-//                        _isUserPassUpdated.value = false
-//                    }
-//                } else {
-//                    Log.e("CrearClientViewModel", "Error al modificar el Client, Camps Buits!")
-//                    _isUserPassUpdated.value = false
-//                }
-//            } catch (e: Exception) {
-//                Log.e("CrearCartaViewModel", "Exepció al crear el Client: ${e.message}")
-//                _isUserPassUpdated.value = false
-//            }
-//        }
-//    }
+    fun changePass() {
+        viewModelScope.launch {
+            try {
 
-    private fun hashPasswordPBKDF2(nomUsuari: String, contra: String): String {
-        val iterations = 10000
-        val keyLength = 256
-        val salt = nomUsuari.toByteArray()
+                val isValid = comprovarDades()
 
-        val spec = PBEKeySpec(contra.toCharArray(), salt, iterations, keyLength)
-        val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
-        val hash = factory.generateSecret(spec).encoded
+                if (isValid) {
 
-        return Base64.encodeToString(hash, Base64.NO_WRAP)
+                    val codeValidate = usuariApi.validateToken(codeAuth.value, email.value)
+
+                    if (codeValidate.isSuccessful) {
+
+                        val user = usuariApi.getByEmail(email.value).body()
+
+                        if (user != null) {
+
+                            user.contra = newContra.value
+                            val response = user.email?.let { usuariApi.update(user) }
+
+                            if (response != null) {
+                                if (response.isSuccessful) {
+                                    val savedUser = response.body()
+                                    Log.d("ChangePasswordViewModel", "Client modificat amb éxit:  $savedUser")
+                                    _isUserPassUpdated.value = true
+                                } else {
+                                    Log.e(
+                                        "ChangePasswordViewModel",
+                                        "Error al modificar el Client: ${response.errorBody()?.string()} "
+                                    )
+                                    _isUserPassUpdated.value = false
+                                }
+                            }
+                        }
+                    }else if (codeValidate.code() == 404) {
+                        Log.e(
+                            "ChangePasswordViewModel",
+                            "No s'ha trobat el token: ${codeValidate.errorBody()?.string()} "
+                        )
+                        _codeError.value = "Codi de verificació incorrecte!"
+                        _isUserPassUpdated.value = false
+                    } else if (codeValidate.code() == 400) {
+                        Log.e(
+                            "ChangePasswordViewModel",
+                            "No s'ha trobat el correu: ${codeValidate.errorBody()?.string()} "
+                        )
+                        _emailError.value = "Correu de verificació incorrecte!"
+                        _isUserPassUpdated.value = false
+                    } else if (codeValidate.code() == 401) {
+                        Log.e(
+                            "ChangePasswordViewModel",
+                            "Codi caducat: ${codeValidate.errorBody()?.toString()}"
+                        )
+                        _codeError.value = "Codi de verificació caducat!"
+                        _isUserPassUpdated.value = false
+                    }
+                    else {
+                        Log.e("CrearClientViewModel", "Error al verificar el token!")
+                        _codeError.value = "Codi de verificació incorrecte!"
+                        _isUserPassUpdated.value = false
+                    }
+                } else {
+                    Log.e("CrearClientViewModel", "Error al modificar el Client, Camps Buits!")
+                    _isUserPassUpdated.value = false
+                }
+            } catch (e: Exception) {
+                Log.e("CrearCartaViewModel", "Exepció al crear el Client: ${e.message}")
+                _isUserPassUpdated.value = false
+            }
+        }
     }
+
+//    private fun hashPasswordPBKDF2(nomUsuari: String, contra: String): String {
+//        val iterations = 10000
+//        val keyLength = 256
+//        val salt = nomUsuari.toByteArray()
+//
+//        val spec = PBEKeySpec(contra.toCharArray(), salt, iterations, keyLength)
+//        val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
+//        val hash = factory.generateSecret(spec).encoded
+//
+//        return Base64.encodeToString(hash, Base64.NO_WRAP)
+//    }
 
     private fun comprovarEmail(): Boolean {
         var valid = true
