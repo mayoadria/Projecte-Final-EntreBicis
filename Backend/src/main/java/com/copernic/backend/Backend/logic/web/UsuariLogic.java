@@ -39,6 +39,11 @@ public class UsuariLogic {
         return userRepository.findById(email);
     }
 
+    public Usuari getUsuariByEmaiL(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+
     // Actualiza la entidad existente sin modificar el identificador (email)
     public void updateUsuari(Usuari usuariActualitzat) {
         // No se toca el campo "email" ya que es el identificador

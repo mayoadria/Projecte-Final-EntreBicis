@@ -20,9 +20,11 @@ import cat.copernic.amayo.frontend.recompensaManagment.ui.reservesPropies
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.ReservaViewmodel
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmodel
 import cat.copernic.amayo.frontend.rutaManagment.ui.RutaScreen
+import cat.copernic.amayo.frontend.usuariManagment.ui.ChangePasswordScreen
 import cat.copernic.amayo.frontend.usuariManagment.ui.EditarPerfil
 import cat.copernic.amayo.frontend.usuariManagment.ui.LoginScreen
 import cat.copernic.amayo.frontend.usuariManagment.ui.perfil
+import cat.copernic.amayo.frontend.usuariManagment.viewmodels.ChangePasswordViewModel
 import cat.copernic.amayo.frontend.usuariManagment.viewmodels.LoginViewModel
 import cat.copernic.amayo.frontend.usuariManagment.viewmodels.ModificarViewModel
 
@@ -35,7 +37,7 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
     val reservaView: ReservaViewmodel = viewModel()
     NavHost(
         navController = navController,
-        startDestination = "splash",
+        startDestination = "changePass",
         modifier = Modifier.fillMaxSize()
     ) {
         composable("splash") { SplashScreen(navController, sessionViewModel) }
@@ -81,5 +83,7 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
         composable("check"){
             RecompensaEntregadaScreen(navController)
         }
+
+        composable("changePass") { ChangePasswordScreen(ChangePasswordViewModel(), navController) }
     }
 }
