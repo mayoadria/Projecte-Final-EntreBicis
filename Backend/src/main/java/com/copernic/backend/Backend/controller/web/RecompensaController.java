@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -275,6 +276,24 @@ public class RecompensaController {
         return "modificarRecompensa";
     }
 
+    @GetMapping("/punt/{puntId}")
+    public String llistarPerPunt(
+            @PathVariable("puntId") Long puntId,
+            Model model,
+            RedirectAttributes redirectAttributes
+    ) {
+        PuntBescanvi punt = puntBescanviLogic.findByID(puntId);
+        if (punt == null) {
+            redirectAttributes.addFlashAttribute("error", "El punt de bescanvi no existe.");
+            return "redirect:/bescanvi/llistar";
+        }
 
+        // Recupera sólo las recompensas de este punto
+        List<Recompensas> recompensas = logic.llistarPerPunt(puntId);
+
+        model.addAttribute("recompensas", recompensas);
+        model.addAttribute("estats", Estat.values());
+        return "llistarRecompensas";
+    }
 
 }

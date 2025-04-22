@@ -60,4 +60,8 @@ public class RecompensaLogic {
         return usu != null;
     }
 
+    public List<Recompensas> llistarPerPunt(Long puntId) {
+        return recompensasRepository.findByPuntBescanviId_Id(puntId);
+    }
+
 }

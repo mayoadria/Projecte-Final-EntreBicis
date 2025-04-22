@@ -25,12 +25,14 @@
         <div class="filter-content">
             <div class="filtre">
                 <label for="nomRecompensa" class="filt-txt">Descripció:</label>
-                <input type="text" id="nomRecompensa" name="nomRecompensa" th:value="${param.nomRecompensa}" class="filt-input">
+                <input type="text" id="nomRecompensa" name="nomRecompensa" th:value="${param.nomRecompensa}"
+                       class="filt-input">
             </div>
 
             <div class="filtre">
                 <label for="puntBescanvi" class="filt-txt">Punt de Bescanvi:</label>
-                <input type="text" id="puntBescanvi" name="puntBescanvi" th:value="${param.puntBescanvi}" class="filt-input">
+                <input type="text" id="puntBescanvi" name="puntBescanvi" th:value="${param.puntBescanvi}"
+                       class="filt-input">
             </div>
 
             <div class="filtre">
@@ -56,8 +58,11 @@
                 <label for="ordenarPor" class="filt-txt">Ordenar por:</label>
                 <select name="ordenarPor" id="ordenarPor" class="filt-input">
                     <option value="cost" th:selected="${param.ordenarPor == 'cost'}">Costo</option>
-                    <option value="dataAsignacio" th:selected="${param.ordenarPor == 'dataAsignacio'}">Fecha de Asignación</option>
-                    <option value="dataCreacio" th:selected="${param.ordenarPor == 'dataCreacio'}">Fecha de Creación</option>
+                    <option value="dataAsignacio" th:selected="${param.ordenarPor == 'dataAsignacio'}">Fecha de
+                        Asignación
+                    </option>
+                    <option value="dataCreacio" th:selected="${param.ordenarPor == 'dataCreacio'}">Fecha de Creación
+                    </option>
                 </select>
             </div>
 
@@ -83,6 +88,7 @@
             <th>Punt de Bescanvi</th>
             <th>Cost</th>
             <th>Estat</th>
+            <th>Email Usuari</th>
             <th>Accions</th>
         </tr>
         </thead>
@@ -94,6 +100,10 @@
             <td th:text="${recompensa.puntBescanviId?.nom}"></td>
             <td th:text="${recompensa.cost}"></td>
             <td th:text="${recompensa.estat}"></td>
+            <td th:text="${recompensa.usuariRecompensa != null
+              ? recompensa.usuariRecompensa.nom
+              : ''}"></td>
+
             <td>
                 <a class="btn-view" th:href="@{/recompensas/visualizar/{id}(id=${recompensa.id})}">👁️</a>
                 <a class="btn-edit" th:href="@{/recompensas/edit/{id}(id=${recompensa.id})}">✏️</a>
@@ -110,7 +120,7 @@
     const filterContent = document.querySelector('.filter-content');
 
     // Evitar que el filtro se abra/cierre inmediatamente
-    filterToggle.addEventListener('click', function(event) {
+    filterToggle.addEventListener('click', function (event) {
         event.preventDefault(); // Evita que se ejecute por defecto cualquier otro comportamiento
         filterContent.classList.toggle('active');
     });

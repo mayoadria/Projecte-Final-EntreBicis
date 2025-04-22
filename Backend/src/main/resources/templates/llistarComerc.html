@@ -3,19 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Recompensas</title>
+    <title>Llista Punts Bescanvi</title>
     <link rel="stylesheet" href="/styles/tablas.css">
     <link rel="stylesheet" href="/styles/barraLateral.css">
 </head>
 <body>
-    <!-- Barra lateral -->
-    <div th:replace="barraLateral :: barralateral"></div>
-
+<!-- Barra lateral -->
+<div th:replace="barraLateral :: barralateral"></div>
 
 <div class="main-content">
     <h1>Llista Punts Bescanvi</h1>
+    <!-- 1) Flash messages: error / success -->
+    <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+    <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}"></div>
+
+
+
+    <!-- 2) Botón “Crear” -->
     <a class="btn-crear"
-       th:href="@{/bescanvi/crear}">Crear</a>
+       th:href="@{/bescanvi/crear}">
+        Crear
+    </a>
+
+    <!-- 3) Tabla de puntos -->
     <table class="users-table">
         <thead>
         <tr>
@@ -29,24 +39,30 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="bescanvis : ${bescanvi}">
-            <td th:text="${bescanvis.id}"></td>
-            <td th:text="${bescanvis.nom}"></td>
-            <td th:text="${bescanvis.adreca}"></td>
-            <td th:text="${bescanvis.observacions}"></td>
-            <td th:text="${bescanvis.codiPostal}"></td>
-            <td th:text="${bescanvis.email}"></td>
+        <tr th:each="punt : ${bescanvi}">
+            <td th:text="${punt.id}"></td>
+            <td th:text="${punt.nom}"></td>
+            <td th:text="${punt.adreca}"></td>
+            <td th:text="${punt.observacions}"></td>
+            <td th:text="${punt.codiPostal}"></td>
+            <td th:text="${punt.email}"></td>
             <td>
-                <a class="btn-view" th:href="@{/bescanvi/visualizar/{id}(id=${bescanvis.id})}">👁️</a>
+                <a class="btn-view"
+                   th:href="@{/bescanvi/visualizar/{id}(id=${punt.id})}"
+                   title="Visualitzar">👁️</a>
                 <a class="btn-edit"
-                   th:href="@{/bescanvi/edit/{id}(id=${bescanvis.id})}"
-                >✏️</a>
-                <a class="btn-delete" th:href="@{/bescanvi/delete/{id}(id=${bescanvis.id})}">🗑️</a>
+                   th:href="@{/bescanvi/edit/{id}(id=${punt.id})}"
+                   title="Editar">✏️</a>
+                <a class="btn-delete"
+                   th:href="@{/bescanvi/delete/{id}(id=${punt.id})}"
+                   title="Eliminar"
+                   onclick="return confirm('Estàs segur que vols eliminar aquest punt de bescanvi?');">
+                    🗑️
+                </a>
             </td>
         </tr>
         </tbody>
     </table>
 </div>
-
 </body>
 </html>

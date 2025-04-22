@@ -41,7 +41,7 @@ public class PuntBescanvi {
     @Lob
     private String foto;
 
-    @OneToMany(mappedBy = "puntBescanviId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "puntBescanviId")
     @ToString.Exclude
     @JsonIgnore
     private List<Recompensas> puntBescanviID;
