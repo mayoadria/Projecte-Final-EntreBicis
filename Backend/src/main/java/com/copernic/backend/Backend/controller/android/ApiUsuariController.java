@@ -2,6 +2,7 @@ package com.copernic.backend.Backend.controller.android;
 
 import com.copernic.backend.Backend.entity.Token;
 import com.copernic.backend.Backend.entity.Usuari;
+import com.copernic.backend.Backend.entity.enums.EstatUsuari;
 import com.copernic.backend.Backend.logic.web.SendEmailLogic;
 import com.copernic.backend.Backend.logic.web.TokenService;
 import com.copernic.backend.Backend.logic.web.UsuariLogic;
@@ -32,6 +33,7 @@ public class ApiUsuariController {
 
     @Autowired
     private SendEmailLogic sendEmailLogic;
+
     @PostConstruct
     private void init() {
         // Inicialización si es necesaria
@@ -50,11 +52,15 @@ public class ApiUsuariController {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
-            Usuari usuari = optionalUsuari.get();
 
-            if (passwordEncoder.matches(contra, usuari.getContra())) {
-                return new ResponseEntity<>(usuari, headers, HttpStatus.OK);
-            } else {
+            Usuari usuari = optionalUsuari.get();
+            if (usuari.getEstat() != EstatUsuari.INACTIU) {
+                if (passwordEncoder.matches(contra, usuari.getContra())) {
+                    return new ResponseEntity<>(usuari, headers, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            }else {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
 
@@ -65,7 +71,7 @@ public class ApiUsuariController {
 
 
     @GetMapping("/read/all")
-    public ResponseEntity<List<Usuari>> findAll(){
+    public ResponseEntity<List<Usuari>> findAll() {
 
         List<Usuari> llista;
 
@@ -89,6 +95,7 @@ public class ApiUsuariController {
 
         return response;
     }
+
     @PutMapping("/update")
     public ResponseEntity<Void> updateUserById(@RequestBody Usuari client) {
 
@@ -149,7 +156,7 @@ public class ApiUsuariController {
 
                 deleteToken(client);
 
-                String token = UUID.randomUUID().toString().replace("-","").substring(0, 8);
+                String token = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
 
                 Token resetToken = new Token(token, client);
 
@@ -165,6 +172,7 @@ public class ApiUsuariController {
         }
         return resposta;
     }
+
     @GetMapping("/validateToken/{token}/{email}")
     public ResponseEntity<Boolean> validateToken(@PathVariable String token, @PathVariable String email) {
         ResponseEntity<Boolean> resposta = null;
@@ -185,8 +193,7 @@ public class ApiUsuariController {
                     } else {
                         resposta = new ResponseEntity<>(isValid, headers, HttpStatus.UNAUTHORIZED);
                     }
-                }
-                else {
+                } else {
                     resposta = new ResponseEntity<>(isValid, headers, HttpStatus.BAD_REQUEST);
                 }
             } else {
@@ -197,6 +204,7 @@ public class ApiUsuariController {
         }
         return resposta;
     }
+
     @Transactional
     public void deleteToken(Usuari client) {
         Optional<Token> token = tokenLogic.getByClient(client);

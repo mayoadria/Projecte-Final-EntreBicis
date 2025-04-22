@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.*;
@@ -35,12 +36,18 @@ public class UsuarisWebController {
     // Listar usuarios, excluyendo administradores
     @GetMapping
     public String showUsuaris(Model model) {
+        if (!model.containsAttribute("error")) {
+            model.addAttribute("error", null);
+        }
+
         List<Usuari> usuaris = usuariLogic.getAllUsuaris().stream()
                 .filter(u -> u.getRol() != null && !u.getRol().equals(Rol.ADMINISTRADOR))
                 .collect(Collectors.toList());
+
         model.addAttribute("usuaris", usuaris);
         return "usuaris";
     }
+
 
     // Mostrar la página para crear un usuario
     @GetMapping("/crear")
@@ -131,27 +138,25 @@ public class UsuarisWebController {
         return "redirect:/usuaris";
     }
 
-    @PostMapping("/toggleActivation/{email:.+}")
-    @ResponseBody
-    public ResponseEntity<Map<String, String>> toggleActivation(
-            @PathVariable String email,
-            @RequestBody Map<String, String> payload) {
-
+    @GetMapping("/toggleEstat/{email}")
+    public String toggleEstatUsuari(@PathVariable String email, RedirectAttributes redirectAttributes) {
         Optional<Usuari> usuariOpt = usuariLogic.getUsuariByEmail(email);
         if (usuariOpt.isPresent()) {
             Usuari usuari = usuariOpt.get();
-            try {
-                EstatUsuari nouEstat = EstatUsuari.valueOf(payload.get("estat"));
-                usuari.setEstat(nouEstat);
-                usuariLogic.updateUsuari(usuari);
-                return ResponseEntity.ok(Collections.singletonMap("estat", nouEstat.name()));
-            } catch (IllegalArgumentException e) {
-                return ResponseEntity.badRequest().body(Collections.singletonMap("error", "Estat no vàlid"));
+            if (usuari.getEstat() == EstatUsuari.ACTIU) {
+                if (usuari.getReserva() == true) {
+                    redirectAttributes.addFlashAttribute("error", "No es pot desactivar un usuari amb una reserva activa.");
+                    return "redirect:/usuaris";
+                }
+                usuari.setEstat(EstatUsuari.INACTIU);
+            } else {
+                usuari.setEstat(EstatUsuari.ACTIU);
             }
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "Usuari no trobat"));
+            usuariLogic.updateUsuari(usuari);
         }
+        return "redirect:/usuaris";
     }
+
 
     @InitBinder("usuari")
     public void initBinder(WebDataBinder binder) {

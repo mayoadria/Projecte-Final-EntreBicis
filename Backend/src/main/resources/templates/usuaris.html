@@ -13,6 +13,8 @@
 <!-- Contenido principal: tabla de usuarios -->
 <div class="main-content">
     <h1>Usuaris</h1>
+    <div th:if="${error}" class="alert-error" th:text="${error}"></div>
+
     <a href="/usuaris/crear" class="btn-crear">Crear</a>
 
     <table class="users-table">
@@ -43,6 +45,7 @@
                            onchange="toggleUserActivation(this)">
                     <span class="slider round"></span>
                 </label>
+
             </td>
             <td>
                 <a th:href="@{/usuaris/editar/{email}(email=${usuari.email})}" class="btn-edit">✏️</a>
@@ -61,46 +64,14 @@
         var email = row.dataset.userEmail;
 
         var isActive = checkbox.checked;
-        var newEstat = isActive ? "ACTIU" : "INACTIU";
 
-        // Si se está desactivando el usuario, solicitamos confirmación
-        if (!isActive) {
-            if (!confirm("¿Está seguro de desactivar este usuario?")) {
-                checkbox.checked = true;
-                return;
-            }
+        if (!isActive && !confirm("¿Está seguro de desactivar este usuario?")) {
+            checkbox.checked = true;
+            return;
         }
 
-        var csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-        var csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-
-        var headers = {
-            'Content-Type': 'application/json'
-        };
-        headers[csrfHeader] = csrfToken;
-
-        fetch('/usuaris/toggleActivation/' + encodeURIComponent(email), {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify({ estat: newEstat })
-        })
-            .then(response => {
-                if (!response.ok) {
-                    return response.text().then(text => {
-                        console.error("Error response:", text);
-                        throw new Error(text);
-                    });
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log("Estado actualizado con éxito:", data);
-            })
-            .catch(error => {
-                console.error("Error al actualizar estado:", error);
-                // Revertir el cambio en caso de error
-                checkbox.checked = !isActive;
-            });
+        // Redirigir directamente al backend con GET
+        window.location.href = '/usuaris/toggleEstat/' + encodeURIComponent(email);
     }
 </script>
 
