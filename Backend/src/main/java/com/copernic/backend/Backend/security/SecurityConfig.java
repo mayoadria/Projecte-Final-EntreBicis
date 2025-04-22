@@ -124,9 +124,9 @@ public class SecurityConfig {
         Sistema sistema = new Sistema();
         sistema.setId(1L); // Forzamos el ID=1
         sistema.setVelMax(20.0);          // Valor por defecto (ajusta según tus necesidades)
-        sistema.setTempsMaxAturat(10.0);    // Valor por defecto
+        sistema.setTempsMaxAturat(Duration.ofMinutes(5));    // Valor por defecto
         sistema.setConversioSaldo(2);       // Valor por defecto
-        sistema.setTempsRecollida(Duration.ofSeconds(20));    // Valor por defecto
+        sistema.setTempsRecollida(Duration.ofHours(72));    // Valor por defecto
 
         sistemaRepository.save(sistema);
         System.out.println("Sistema por defecto creado con ID=1.");

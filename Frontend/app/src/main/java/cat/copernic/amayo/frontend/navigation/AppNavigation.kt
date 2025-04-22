@@ -37,7 +37,7 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
     val reservaView: ReservaViewmodel = viewModel()
     NavHost(
         navController = navController,
-        startDestination = "changePass",
+        startDestination = "splash",
         modifier = Modifier.fillMaxSize()
     ) {
         composable("splash") { SplashScreen(navController, sessionViewModel) }

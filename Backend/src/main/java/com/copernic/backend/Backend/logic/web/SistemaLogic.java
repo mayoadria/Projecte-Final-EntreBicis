@@ -16,7 +16,7 @@ public class SistemaLogic {
     // Método para obtener el sistema
     public Sistema getSistema() {
         return sistemaRepository.findById(1L)
-                .orElse(new Sistema(1L, 0.0, 0.0, 0, Duration.ZERO));
+                .orElse(new Sistema(1L, 0.0, Duration.ZERO, 0, Duration.ZERO));
     }
 
     // Método para guardar un sistema
