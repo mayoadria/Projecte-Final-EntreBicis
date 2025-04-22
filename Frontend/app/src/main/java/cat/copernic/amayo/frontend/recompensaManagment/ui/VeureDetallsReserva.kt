@@ -193,5 +193,38 @@ fun DetallsReserva(
                 Text("Recollir Recompensa", color = Color.White, fontSize = 16.sp)
             }
         }
+
+        if (recompensa?.estat == Estat.RESERVADES) {
+            Spacer(modifier = Modifier.height(12.dp))
+            Button(
+                onClick = {
+                    nom?.let { usuario ->
+                        usuario.reserva = false
+                        modificarViewModel.updateClient(
+                            client = usuario,
+                            contentResolver = navController.context.contentResolver
+                        )
+                    }
+                    reserva?.let {
+                        recompensa.estat = Estat.DISPONIBLES
+
+                        llistaViewmodel.updateRecompensa(
+                            recompensa,
+                            contentResolver = navController.context.contentResolver
+                        )
+                        reservaViewmodel.borrar(reservaId)
+
+                        Toast.makeText(context, "Recompensa Cancelada!", Toast.LENGTH_SHORT).show()
+                        navController.navigate("recompensaPropias")
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0288D1)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+            ) {
+                Text("Cancelar Recompensa", color = Color.White, fontSize = 16.sp)
+            }
+        }
     }
 }

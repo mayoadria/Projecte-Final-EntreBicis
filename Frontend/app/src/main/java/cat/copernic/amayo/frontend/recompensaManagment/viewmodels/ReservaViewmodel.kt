@@ -25,7 +25,8 @@ class ReservaViewmodel : ViewModel(){
     val reservaD: State<Reserva?> = _reservaD
     private val _reserva = MutableStateFlow<List<Reserva>>(emptyList())
     val reserva: StateFlow<List<Reserva>> = _reserva
-
+    private val _deleteSuccess = mutableStateOf(false) // Estado para controlar la eliminación
+    val deleteSuccess: State<Boolean> = _deleteSuccess
 
     init {
         LlistarReservas()
@@ -88,6 +89,22 @@ class ReservaViewmodel : ViewModel(){
                 }
             } catch (e: Exception) {
                 Log.e("ModificarViewModel", "Excepción al actualizar la Reserva: ${e.message}")
+            }
+        }
+    }
+
+    fun borrar(cartaId: Long) {
+        viewModelScope.launch {
+            try {
+                val response = reservaApi.deleteById(cartaId)
+                if (response.isSuccessful) {
+                    _deleteSuccess.value = true
+                    LlistarReservas()// Marcamos como exitosa la eliminación
+                } else {
+                    println("Error: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                println("Error: ${e.message}")
             }
         }
     }
