@@ -6,6 +6,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cat.copernic.amayo.frontend.recompensaManagment.data.repositories.ReservaRetrofitTLSInstance
 import cat.copernic.amayo.frontend.recompensaManagment.model.Recompensa
 import cat.copernic.amayo.frontend.recompensaManagment.model.Reserva
 import cat.copernic.mycards.mycards_frontend.user_management.data.repositories.RecompensaRetrofitInstance
@@ -17,7 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class ReservaViewmodel : ViewModel(){
-    private val reservaApi: ReservaApiRest = ReservaRetrofitInstance.retrofitInstance.create(
+    private val reservaApi: ReservaApiRest = ReservaRetrofitTLSInstance.retrofitTLSInstance.create(
         ReservaApiRest::class.java
     )
 

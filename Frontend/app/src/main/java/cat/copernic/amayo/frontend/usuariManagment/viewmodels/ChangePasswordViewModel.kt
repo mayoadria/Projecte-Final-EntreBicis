@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cat.copernic.amayo.frontend.usuariManagment.data.remote.UsuariApi
 import cat.copernic.amayo.frontend.usuariManagment.data.repositories.UsuariRetrofitInstance
+import cat.copernic.amayo.frontend.usuariManagment.data.repositories.UsuariRetrofitTLSInstance
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -105,7 +106,7 @@ class ChangePasswordViewModel : ViewModel() {
     }
 
     // Instanciar la Api
-    private val usuariApi: UsuariApi = UsuariRetrofitInstance.retrofitInstance.create(
+    private val usuariApi: UsuariApi = UsuariRetrofitTLSInstance.retrofitTLSInstance.create(
         UsuariApi::class.java
     )
 
