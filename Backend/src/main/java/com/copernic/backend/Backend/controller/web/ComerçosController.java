@@ -13,6 +13,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/bescanvi")
@@ -25,9 +27,16 @@ public class ComerçosController {
     public String llistarComerc(
             Model model,
             @ModelAttribute("error")   String error,
-            @ModelAttribute("success") String success
+            @ModelAttribute("success") String success,
+            @RequestParam(name = "nomPunt", required = false) String nomPunt
     ) {
-        model.addAttribute("bescanvi", puntBescanviLogic.llistarBescanvi());
+        List<PuntBescanvi> bescanvis = puntBescanviLogic.llistarBescanvi();
+        if (nomPunt != null && !nomPunt.isEmpty()) {
+            bescanvis = bescanvis.stream()
+                    .filter(r -> r.getNom().toLowerCase().contains(nomPunt.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+        model.addAttribute("bescanvi", bescanvis);
         // Nota: no hace falta hacer nada con `error` y `success`; Thymeleaf
         // ya los podrá resolver (aunque vengan a null).
         return "llistarComerc";

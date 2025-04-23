@@ -35,10 +35,18 @@
             <td th:text="${reserva.idRecompensa.descripcio}"></td>
             <td th:text="${reserva.datareserva}"></td>
             <td>
-                <form th:action="@{/reserva/canviarEstat}" method="post">
+                <form th:action="@{/reserva/canviarEstat}" method="post" class="acciones">
                     <input type="hidden" name="reservaId" th:value="${reserva.id}" />
-                    <!-- Botón para cambiar el estado -->
-                    <button type="submit" th:text="${reserva.estat == 'ASSIGNADA' ? 'Canviar a DESASSIGNADA' : 'Canviar a ASSIGNADA'}"></button>
+
+                    <!-- Botón de cambio de estado -->
+                    <button type="submit"
+                            class="btn-accion"
+                            th:text="${reserva.estat == 'ASSIGNADA' ?'Canviar a DESASSIGNADA' :
+                         'Canviar a ASSIGNADA'}"></button>
+
+                    <!-- Botón de borrado -->
+                    <a class="btn-accion btn-delete"
+                       th:href="@{/reserva/delete/{id}(id=${reserva.id})}">🗑️</a>
                 </form>
             </td>
         </tr>

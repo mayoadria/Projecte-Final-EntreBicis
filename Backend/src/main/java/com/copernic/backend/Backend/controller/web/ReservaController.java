@@ -45,7 +45,13 @@ public class ReservaController {
         model.addAttribute("reservas", reserva);
         return "llistarReserva";
     }
+    @GetMapping("/delete/{id}")
+    public String deleteReserva(@PathVariable Long id) {
+        reservaLogic.deleteReservaById(id);
 
+        return "redirect:/reserva/listar";
+
+    }
     @PostMapping("/canviarEstat")
     public String canviarEstatReserva(@RequestParam Long reservaId, RedirectAttributes redirectAttributes, Model model) {
         Reserva reserva = reservaLogic.findById(reservaId);
@@ -102,6 +108,7 @@ public class ReservaController {
 
         reservaLogic.updateReserva(reserva);
         recompensaLogic.modificarRecompensa(reserva.getIdRecompensa());
+        usuariLogic.savePerfil(reserva.getEmailUsuari());
     }
 
     private void desassignarReserva(Reserva reserva) {
@@ -115,6 +122,7 @@ public class ReservaController {
 
         reservaLogic.updateReserva(reserva);
         recompensaLogic.modificarRecompensa(reserva.getIdRecompensa());
+        usuariLogic.savePerfil(reserva.getEmailUsuari());
     }
 
     public boolean haCaducat(Reserva reserva, Duration tempsPermes) {
