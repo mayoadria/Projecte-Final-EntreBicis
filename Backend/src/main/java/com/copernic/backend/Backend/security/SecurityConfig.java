@@ -81,6 +81,8 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/home", true))
                 .logout(l -> l.logoutUrl("/logout")
                         .logoutSuccessUrl("/login"));
+        crearAdminSiNoExiste();
+        crearSistemaSiNoExiste();
         return http.build();
     }
 
