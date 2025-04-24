@@ -55,10 +55,10 @@
         @Column
         private Double saldo;
 
-        @Column
+        @Column(nullable = true)
         private Boolean reserva;
 
-        @Column
+        @Column(nullable = true)
         private Boolean ruta;
         @Lob
         private String foto; // Se guardará la cadena Base64

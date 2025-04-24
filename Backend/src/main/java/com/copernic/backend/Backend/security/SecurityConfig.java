@@ -94,7 +94,7 @@ public class SecurityConfig {
     }
 
     private void crearAdminSiNoExiste() {
-        Optional<Usuari> adminExistente = usuariLogic.getUsuariByEmail("admin2@entrebicis.com");
+        Optional<Usuari> adminExistente = usuariLogic.getUsuariByEmail("admin@entrebicis.com");
         if (adminExistente.isPresent()) {
             System.out.println("El administrador ya existe.");
             return;
@@ -106,9 +106,9 @@ public class SecurityConfig {
         admin.setNom("admin");
         admin.setPoblacio("admin");
         admin.setSaldo(20.0);
-        admin.setEmail("admin2@entrebicis.com");
+        admin.setEmail("admin@entrebicis.com");
         admin.setTelefon("000000000");
-        admin.setRol(Rol.CICLISTA);
+        admin.setRol(Rol.ADMINISTRADOR);
         admin.setEstat(EstatUsuari.ACTIU);
         admin.setReserva(false);
         admin.setRuta(true);

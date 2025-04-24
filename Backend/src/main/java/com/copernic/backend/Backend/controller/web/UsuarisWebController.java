@@ -145,21 +145,31 @@ public class UsuarisWebController {
     }
 
     @GetMapping("/toggleEstat/{email}")
-    public String toggleEstatUsuari(@PathVariable String email, RedirectAttributes redirectAttributes) {
-        Optional<Usuari> usuariOpt = usuariLogic.getUsuariByEmail(email);
-        if (usuariOpt.isPresent()) {
-            Usuari usuari = usuariOpt.get();
+    public String toggleEstatUsuari(@PathVariable String email,
+                                    RedirectAttributes redirectAttributes) {
+
+        usuariLogic.getUsuariByEmail(email).ifPresent(usuari -> {
+
+            boolean reservaActiva = Boolean.TRUE.equals(usuari.getReserva()); // evita NPE
+
             if (usuari.getEstat() == EstatUsuari.ACTIU) {
-                if (usuari.getReserva() == true) {
-                    redirectAttributes.addFlashAttribute("error", "No es pot desactivar un usuari amb una reserva activa.");
-                    return "redirect:/usuaris";
+
+                if (reservaActiva) {
+                    redirectAttributes.addFlashAttribute(
+                            "error",
+                            "No es pot desactivar un usuari amb una reserva activa."
+                    );
+                    return;                         // aborta sin modificar el usuari
                 }
                 usuari.setEstat(EstatUsuari.INACTIU);
+
             } else {
                 usuari.setEstat(EstatUsuari.ACTIU);
             }
-            usuariLogic.updateUsuari(usuari);
-        }
+
+            usuariLogic.updateUsuari(usuari);      // solo se llama si hay cambio válido
+        });
+
         return "redirect:/usuaris";
     }
 

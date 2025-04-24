@@ -53,6 +53,6 @@ public class Recompensas {
     private PuntBescanvi puntBescanviId;
 
     @OneToMany(mappedBy = "idRecompensa")
-    @JsonIgnore
+    @JsonIgnoreProperties({"emailUsuari","idRecompensa"})
     private List<Reserva> reservas;
 }
