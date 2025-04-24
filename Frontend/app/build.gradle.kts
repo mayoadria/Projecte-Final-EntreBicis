@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+
+    id("kotlin-kapt")
 }
 
 android {
@@ -54,6 +56,8 @@ dependencies {
     implementation(libs.androidx.datastore.core.android)
     implementation(libs.androidx.storage)
     implementation(libs.androidx.foundation.layout.android)
+    implementation(libs.androidx.room.common.jvm)
+    implementation(libs.androidx.room.runtime.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -79,6 +83,15 @@ dependencies {
     implementation (libs.play.services.location)
     implementation (libs.play.services.location.v2101)
 
+
+    // Room core
+    implementation (libs.androidx.room.runtime)
+// Para usar corrutinas / Kotlin extensions
+    implementation (libs.androidx.room.ktx)
+// Procesador de anotaciones de Room
+    kapt (libs.androidx.room.compiler)
+
+    implementation (libs.converter.scalars)
 
 
 
