@@ -23,6 +23,8 @@ import cat.copernic.amayo.frontend.core.auth.ViewModelFactory
 import cat.copernic.amayo.frontend.navigation.AppNavigation
 import cat.copernic.amayo.frontend.ui.theme.FrontendTheme
 import cat.copernic.amayo.frontend.usuariManagment.ui.LoginScreen
+import org.osmdroid.config.Configuration
+import org.osmdroid.library.BuildConfig
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "session")
 class MainActivity : ComponentActivity() {
@@ -39,5 +41,7 @@ class MainActivity : ComponentActivity() {
                 .get(SessionViewModel::class.java)
             AppNavigation(sessionViewModel)
         }
+
+        Configuration.getInstance().userAgentValue = BuildConfig.APPLICATION_ID
     }
 }

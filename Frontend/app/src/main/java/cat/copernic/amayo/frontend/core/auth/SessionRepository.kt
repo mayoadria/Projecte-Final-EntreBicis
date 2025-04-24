@@ -3,6 +3,7 @@ package cat.copernic.amayo.frontend.core.auth
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class SessionRepository(private val dataStore: DataStore<Preferences>) {
@@ -27,4 +28,11 @@ class SessionRepository(private val dataStore: DataStore<Preferences>) {
             SessionUser(email, isConnected)
         }
     }
+
+    /**
+     * Devuelve el e-mail almacenado actualmente (o "" si no hay sesión).
+     * Es `suspend` para poder llamarse dentro de corutinas.
+     */
+    suspend fun getCurrentEmail(): String =
+        dataStore.data.first()[USER_UNAME_KEY] ?: ""
 }

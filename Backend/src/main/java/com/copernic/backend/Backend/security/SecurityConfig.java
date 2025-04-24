@@ -7,13 +7,17 @@ import com.copernic.backend.Backend.entity.enums.EstatUsuari;
 import com.copernic.backend.Backend.entity.enums.Rol;
 import com.copernic.backend.Backend.logic.web.UsuariLogic;
 import com.copernic.backend.Backend.repository.SistemaRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,39 +44,51 @@ public class SecurityConfig {
         this.sistemaRepository = sistemaRepository;
     }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+    /* 1.  Cadena exclusiva API – stateless, sin redirecciones */
+    @Bean @Order(1)
+    public SecurityFilterChain apiChain(HttpSecurity http) throws Exception {
+        http.securityMatcher("/api/**")
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(sm ->
+                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth ->
+                        auth.anyRequest().permitAll())      // o authenticated()
+                /* Evita redirigir a /login cuando falte auth:
+                   responde 401 / 403 en crudo  */
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((req,res,e) ->
+                                res.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                        .accessDeniedHandler((req,res,e) ->
+                                res.sendError(HttpServletResponse.SC_FORBIDDEN)))
+                .httpBasic(Customizer.withDefaults());
+        return http.build();
+    }
+
+    /* 2.  Cadena web (formularios) */
+    @Bean @Order(2)
+    public SecurityFilterChain webChain(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.PUT, "/api/usuari/update").permitAll()
-                        .requestMatchers("/login", "/logout", "/styles/**", "/images/**","/api/**").permitAll()
-                        .requestMatchers("/home/**").hasRole("ADMINISTRADOR") // Solo admins
-                        .requestMatchers("/recompensas/**").hasRole("ADMINISTRADOR") // Solo admins
-                        .requestMatchers("/bescanvi/**").hasRole("ADMINISTRADOR") // Solo admins
-                        .requestMatchers("/usuaris/**").hasRole("ADMINISTRADOR") // Solo admins
-                        // Usuarios y admins
-                        .anyRequest().authenticated()
-                )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login")
+                        .requestMatchers("/login", "/logout",
+                                "/styles/**", "/images/**",
+                                "/error"              //  ←  nuevo
+                        ).permitAll()
+                        .anyRequest().authenticated())
+                .formLogin(f -> f.loginPage("/login")
                         .usernameParameter("email")
                         .passwordParameter("contra")
-                        .defaultSuccessUrl("/home", true)
-                        .failureUrl("/login?error=true")
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login")
-                        .invalidateHttpSession(true)
-                        .clearAuthentication(true)
-                )
-                .userDetailsService(validadorUsuaris);
-
-        crearAdminSiNoExiste();
-        crearSistemaSiNoExiste();
-
+                        .defaultSuccessUrl("/home", true))
+                .logout(l -> l.logoutUrl("/logout")
+                        .logoutSuccessUrl("/login"));
         return http.build();
+    }
+
+    /* 3.  Permitir ‘;’ en la URL  */
+    @Bean
+    public HttpFirewall allowSemicolonFirewall() {
+        StrictHttpFirewall fw = new StrictHttpFirewall();
+        fw.setAllowSemicolon(true);
+        return fw;
     }
 
 

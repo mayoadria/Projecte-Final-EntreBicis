@@ -3,15 +3,11 @@ package cat.copernic.amayo.frontend.rutaManagment.data.remote
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
-import retrofit2.http.Path
 
 interface RutaApi {
 
-    @POST("ruta/{rutaId}/posicions")
-    suspend fun savePosicio(
-        @Path("rutaId") rutaId: Long,
-        @Body posicioDto: PosicioDto
-    ): Response<PosicioGpsResponse>
+    @POST("ruta")
+    suspend fun saveRuta(@Body rutaDto: RutaDto): Response<RutaDto>
 
     data class PosicioDto(
         val latitud: Double,
@@ -19,10 +15,17 @@ interface RutaApi {
         val temps: Int
     )
 
-    data class PosicioGpsResponse(
-        val id: Long,
-        val latitud: Double,
-        val longitud: Double,
-        val temps: Int
+    // DTO principal con admin + ciclo + posiciones
+    enum class EstatRutes { VALIDA, INVALIDA }
+    enum class CicloRuta  { INICIADA, PAUSADA, FINALITZADA }
+
+    data class RutaDto(
+        val id: Long? = null,
+        val nom: String,
+        val descripcio: String,
+        val estat: EstatRutes,
+        val cicloRuta: CicloRuta,
+        val posicions: List<PosicioDto>,
+        val emailUsuari: String
     )
 }
