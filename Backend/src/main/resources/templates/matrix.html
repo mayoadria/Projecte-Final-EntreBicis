@@ -23,7 +23,7 @@
                 <div class="form-field">
                     <label for="tempsMaxAturat">Tiempo Máx. Parado</label>
                     <input type="text" id="tempsMaxAturat" name="tempsMaxAturat"
-                           th:value="${sistema.tempsMaxAturat != null ? sistema.tempsMaxAturat.toMinutes() + ' Minuts' : ''}" readonly />
+                           th:value="${sistema.tempsMaxAturat != null ? sistema.tempsMaxAturat.toMinutes() + ' Minuts' : ''}" />
                 </div>
 
                 <div class="form-field">
@@ -34,7 +34,7 @@
                 <div class="form-field">
                     <label for="tempsRecollida">Tiempo Recogida</label>
                     <input type="text" id="tempsRecollida" name="tempsRecollida"
-                           th:value="${sistema.tempsRecollida != null ? sistema.tempsRecollida.toHours() + ' hores' : ''}" readonly />
+                           th:value="${sistema.tempsRecollida != null ? sistema.tempsRecollida.toHours() + ' hores' : ''}" />
                 </div>
 
                 <button type="submit" class="btn-crear">Guardar</button>

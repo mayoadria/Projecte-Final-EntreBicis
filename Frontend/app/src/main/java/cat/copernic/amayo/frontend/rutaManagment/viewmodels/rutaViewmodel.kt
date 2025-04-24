@@ -15,6 +15,7 @@ import cat.copernic.amayo.frontend.rutaManagment.data.local.RouteEntity
 import cat.copernic.amayo.frontend.rutaManagment.data.local.RouteDao
 import cat.copernic.amayo.frontend.rutaManagment.data.remote.RutaApi
 import cat.copernic.amayo.frontend.rutaManagment.data.repositories.RutaRetrofitInstance
+import cat.copernic.amayo.frontend.rutaManagment.data.repositories.RutaRetrofitTLSInstance
 import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
 
@@ -29,6 +30,10 @@ class RutaViewModel(
     )
 
     private val dao: RouteDao = AppDatabase.getInstance(app).routeDao()
+
+    private val rutaApi: RutaApi = RutaRetrofitTLSInstance.retrofitTLSInstance.create(
+        RutaApi::class.java
+    )
 
     // Lista de segmentos para dibujar en la UI
     private val _routeSegments = mutableStateListOf<MutableList<GeoPoint>>()
@@ -156,7 +161,7 @@ class RutaViewModel(
 
                 // 4) Llamar a la API con manejo de errores
                 try {
-                    val resp = RutaRetrofitInstance.api.saveRuta(dto)
+                    val resp = rutaApi.saveRuta(dto)
                     if (resp.isSuccessful) {
                         println("Ruta subida: ${resp.body()}")
                     } else {

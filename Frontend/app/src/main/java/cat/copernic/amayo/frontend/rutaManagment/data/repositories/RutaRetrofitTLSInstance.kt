@@ -12,7 +12,7 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 object RutaRetrofitTLSInstance {
-    private const val BASE_URL = "https://10.0.2.2:8443/api/usuari/"
+    private const val BASE_URL = "https://10.0.2.2:8443/api/"
 
     val retrofitTLSInstance: Retrofit by lazy {
 
