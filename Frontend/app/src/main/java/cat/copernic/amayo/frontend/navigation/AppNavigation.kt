@@ -11,15 +11,20 @@ import androidx.navigation.compose.rememberNavController
 //import cat.copernic.amayo.frontend.sistemaManagment.ui.inici
 import cat.copernic.amayo.frontend.core.auth.SessionViewModel
 import cat.copernic.amayo.frontend.core.auth.SplashScreen
+import cat.copernic.amayo.frontend.recompensaManagment.ui.DetallsReserva
+import cat.copernic.amayo.frontend.recompensaManagment.ui.RecompensaEntregadaScreen
 import cat.copernic.amayo.frontend.sistemaManagment.ui.BottomNav
 import cat.copernic.amayo.frontend.recompensaManagment.ui.detalls
 import cat.copernic.amayo.frontend.recompensaManagment.ui.recompensa
+import cat.copernic.amayo.frontend.recompensaManagment.ui.reservesPropies
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.ReservaViewmodel
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmodel
 import cat.copernic.amayo.frontend.rutaManagment.ui.RutaScreen
+import cat.copernic.amayo.frontend.usuariManagment.ui.ChangePasswordScreen
 import cat.copernic.amayo.frontend.usuariManagment.ui.EditarPerfil
 import cat.copernic.amayo.frontend.usuariManagment.ui.LoginScreen
 import cat.copernic.amayo.frontend.usuariManagment.ui.perfil
+import cat.copernic.amayo.frontend.usuariManagment.viewmodels.ChangePasswordViewModel
 import cat.copernic.amayo.frontend.usuariManagment.viewmodels.LoginViewModel
 import cat.copernic.amayo.frontend.usuariManagment.viewmodels.ModificarViewModel
 
@@ -40,14 +45,45 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
         composable("inici") { BottomNav(navController,sessionViewModel) }
         composable("rutas") { RutaScreen(navController) }
         composable("recompensa") { recompensa(viewLlista,navController,sessionViewModel) }
+        composable("recompensaPropias") { reservesPropies(reservaView,navController,sessionViewModel) }
         composable("perfil") { perfil(sessionViewModel,navController) }
         composable("detalls/{id}") { backStackEntry ->
-            val cartId =
-                backStackEntry.arguments?.getString("id")?.toLong() ?: return@composable
+            val idParam = backStackEntry.arguments?.getString("id")
+            val cartId = idParam?.toLongOrNull() ?: return@composable
+
             val viewModel: llistaViewmodel = viewModel()
-            detalls(viewModel,cartId,reservaView,sessionViewModel,modificarView,navController) }
+
+            detalls(
+                viewModel,
+                cartId,
+                reservaView,
+                sessionViewModel,
+                modificarView,
+                navController
+            )
+        }
+
+        composable("detallsReserva/{id}") { backStackEntry ->
+            val idParam = backStackEntry.arguments?.getString("id")
+            val cartId = idParam?.toLongOrNull() ?: return@composable
+
+
+            DetallsReserva(
+                cartId,
+                reservaView,
+                viewLlista,
+                sessionViewModel,
+                modificarView,
+                navController
+            )
+        }
         composable("editar") {
             EditarPerfil(sessionViewModel,modificarView,navController)
         }
+        composable("check"){
+            RecompensaEntregadaScreen(navController)
+        }
+
+        composable("changePass") { ChangePasswordScreen(ChangePasswordViewModel(), navController) }
     }
 }

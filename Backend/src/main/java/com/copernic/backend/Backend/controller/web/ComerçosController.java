@@ -9,9 +9,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/bescanvi")
@@ -19,94 +22,137 @@ public class ComerçosController {
     @Autowired
     private PuntBescanviLogic puntBescanviLogic;
 
+
     @GetMapping("/llistar")
-    public String LlistarComerc(Model model) {
-        model.addAttribute("bescanvi", puntBescanviLogic.llistarBescanvi());
+    public String llistarComerc(
+            Model model,
+            @ModelAttribute("error")   String error,
+            @ModelAttribute("success") String success,
+            @RequestParam(name = "nomPunt", required = false) String nomPunt
+    ) {
+        List<PuntBescanvi> bescanvis = puntBescanviLogic.llistarBescanvi();
+        if (nomPunt != null && !nomPunt.isEmpty()) {
+            bescanvis = bescanvis.stream()
+                    .filter(r -> r.getNom().toLowerCase().contains(nomPunt.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+        model.addAttribute("bescanvi", bescanvis);
+        // Nota: no hace falta hacer nada con `error` y `success`; Thymeleaf
+        // ya los podrá resolver (aunque vengan a null).
         return "llistarComerc";
     }
+
 
     @GetMapping("/crear")
     public String crear(Model model) {
         model.addAttribute("bescanvis", new PuntBescanvi());
-        return "crearComerc"; // Vista "Registre"
+        return "crearComerc";
     }
+
     @PostMapping("/guardar")
-    public String guardarComerc(@ModelAttribute("bescanvis") PuntBescanvi puntBescanvi ,Model model,
-                                @RequestParam(value = "fileFoto", required = false) MultipartFile fileFoto) {
+    public String guardarComerc(
+            @ModelAttribute("bescanvis") PuntBescanvi puntBescanvi,
+            Model model,
+            RedirectAttributes redirectAttributes,
+            @RequestParam(value = "fileFoto", required = false) MultipartFile fileFoto) {
+
         try {
             if (fileFoto != null && !fileFoto.isEmpty()) {
                 String base64Foto = Base64.getEncoder().encodeToString(fileFoto.getBytes());
                 puntBescanvi.setFoto(base64Foto);
             }
-            // Guardar la recompensa
             puntBescanviLogic.guardarComerc(puntBescanvi);
-
+            redirectAttributes.addFlashAttribute("success", "Punto de bescanvi creado correctamente.");
             return "redirect:/bescanvi/llistar";
+
         } catch (Exception e) {
-            e.printStackTrace();
-            return "error";
+            // Se queda en la misma vista de creación con un error
+            model.addAttribute("error", "Error al guardar: " + e.getMessage());
+            return "crearComerc";
         }
     }
+
     @GetMapping("/delete/{id}")
-    public String deleteBescanvi(@PathVariable Long id) {
-        puntBescanviLogic.eliminarBescanvi(id);
+    public String deleteBescanvi(
+            @PathVariable Long id,
+            RedirectAttributes redirectAttributes) {
 
+        try {
+            puntBescanviLogic.eliminarBescanvi(id);
+            redirectAttributes.addFlashAttribute("success", "Punto de bescanvi eliminado correctamente.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al eliminar, el punt de bescanvi te recompenses assignades");
+        }
         return "redirect:/bescanvi/llistar";
-
     }
 
     @GetMapping("/edit/{id}")
     public String editarPuntBescanvi(@PathVariable Long id, Model model) {
-        PuntBescanvi puntBescanvi = puntBescanviLogic.findByID(id);
-        if (puntBescanvi == null) {
-            return "redirect:/bescanvi/llistar"; // Redirigir si no existe el usuario
+        PuntBescanvi punt = puntBescanviLogic.findByID(id);
+        if (punt == null) {
+            model.addAttribute("error", "El punto de bescanvi no existe.");
+            return "redirect:/bescanvi/llistar";
         }
-        if (puntBescanvi.getFoto() != null && !puntBescanvi.getFoto().isEmpty()) {
-            String fotoDataUrl = "data:image/jpeg;base64," + puntBescanvi.getFoto();
-            model.addAttribute("fotoDataUrl", fotoDataUrl);
+        if (punt.getFoto() != null && !punt.getFoto().isEmpty()) {
+            model.addAttribute("fotoDataUrl", "data:image/jpeg;base64," + punt.getFoto());
         }
-        model.addAttribute("bescanvi", puntBescanvi);
+        model.addAttribute("bescanvi", punt);
         model.addAttribute("visualizar", false);
-        return "modificarComerc"; // Cargar la vista para editar
+        return "modificarComerc";
     }
 
     @PostMapping("/editar")
-    public String guardarCambios(@ModelAttribute PuntBescanvi bescanvi,Model model,@RequestParam(value = "fileFoto", required = false) MultipartFile fileFoto) throws IOException {
-        // Lógica de actualización de recompensa
-        PuntBescanvi puntBescanviExistent = puntBescanviLogic.findByID(bescanvi.getId());
+    public String guardarCambios(
+            @ModelAttribute("bescanvi") PuntBescanvi form,
+            Model model,
+            RedirectAttributes redirectAttributes,
+            @RequestParam(value = "fileFoto", required = false) MultipartFile fileFoto) {
 
+        PuntBescanvi existente = puntBescanviLogic.findByID(form.getId());
+        if (existente == null) {
+            model.addAttribute("error", "El punto de bescanvi no existe o no es válido.");
+            return "modificarComerc";
+        }
 
-        if (puntBescanviExistent != null) {
-            puntBescanviExistent.setAdreca(bescanvi.getAdreca());
-            puntBescanviExistent.setNom(bescanvi.getNom());
-            puntBescanviExistent.setObservacions(bescanvi.getObservacions());
-            puntBescanviExistent.setEmail(bescanvi.getEmail());
-            puntBescanviExistent.setTelefon(bescanvi.getTelefon());
-            puntBescanviExistent.setCodiPostal(bescanvi.getCodiPostal());
-            puntBescanviExistent.setPersonaContacte(bescanvi.getPersonaContacte());
+        try {
+            existente.setNom(form.getNom());
+            existente.setAdreca(form.getAdreca());
+            existente.setCodiPostal(form.getCodiPostal());
+            existente.setTelefon(form.getTelefon());
+            existente.setEmail(form.getEmail());
+            existente.setPersonaContacte(form.getPersonaContacte());
+            existente.setObservacions(form.getObservacions());
             if (fileFoto != null && !fileFoto.isEmpty()) {
-                String base64Foto = Base64.getEncoder().encodeToString(fileFoto.getBytes());
-                puntBescanviExistent.setFoto(base64Foto);
+                existente.setFoto(Base64.getEncoder().encodeToString(fileFoto.getBytes()));
             }
-            puntBescanviLogic.modificarRecompensa(puntBescanviExistent);
-            return "redirect:/bescanvi/llistar";  // Redirigir al listado
-        } else {
-            model.addAttribute("error", "La recompensa no existe o no es válida.");
-            return "modificarRecompensa";  // Mostrar error en la vista
+            puntBescanviLogic.modificarRecompensa(existente);
+
+            redirectAttributes.addFlashAttribute("success", "Punto de bescanvi actualizado correctamente.");
+            return "redirect:/bescanvi/llistar";
+
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al actualizar: " + e.getMessage());
+            // volver a cargar la foto previa si la hubiera
+            if (existente.getFoto() != null) {
+                model.addAttribute("fotoDataUrl", "data:image/jpeg;base64," + existente.getFoto());
+            }
+            return "modificarComerc";
         }
     }
+
     @GetMapping("/visualizar/{id}")
-    public String VisualizarPuntBescanvi(@PathVariable Long id, Model model) {
-        PuntBescanvi puntBescanvi = puntBescanviLogic.findByID(id);
-        if (puntBescanvi == null) {
-            return "redirect:/bescanvi/llistar"; // Redirigir si no existe el usuario
+    public String visualizar(@PathVariable Long id, Model model) {
+        PuntBescanvi punt = puntBescanviLogic.findByID(id);
+        if (punt == null) {
+            model.addAttribute("error", "El punto de bescanvi no existe.");
+            return "redirect:/bescanvi/llistar";
         }
-        if (puntBescanvi.getFoto() != null && !puntBescanvi.getFoto().isEmpty()) {
-            String fotoDataUrl = "data:image/jpeg;base64," + puntBescanvi.getFoto();
-            model.addAttribute("fotoDataUrl", fotoDataUrl);
+        if (punt.getFoto() != null) {
+            model.addAttribute("fotoDataUrl", "data:image/jpeg;base64," + punt.getFoto());
         }
-        model.addAttribute("bescanvi", puntBescanvi);
+        model.addAttribute("bescanvi", punt);
         model.addAttribute("visualizar", true);
-        return "modificarComerc"; // Cargar la vista para editar
+        return "modificarComerc";
     }
 }
+

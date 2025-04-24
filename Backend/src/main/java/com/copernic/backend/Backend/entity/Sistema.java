@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.Duration;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -20,11 +22,22 @@ public class Sistema {
     private Double velMax;
 
     @Column
-    private Double tempsMaxAturat;
+    private Duration tempsMaxAturat;
 
     @Column
     private int conversioSaldo;
 
     @Column
-    private String tempsRecollida;
+    private Duration tempsRecollida;
+
+    @Override
+    public String toString() {
+        return "Sistema{" +
+                "id=" + id +
+                ", velMax=" + velMax +
+                ", tempsMaxAturat=" + tempsMaxAturat +
+                ", conversioSaldo=" + conversioSaldo +
+                ", tempsRecollida=" + (tempsRecollida != null ? tempsRecollida.toHours() + " hores" : "null") +
+                '}';
+    }
 }

@@ -1,10 +1,7 @@
 package cat.copernic.amayo.frontend.recompensaManagment.ui
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.LocalActivity
-import androidx.activity.compose.setContent
-import androidx.activity.viewModels
+import android.widget.Toast
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,14 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import cat.copernic.amayo.frontend.R
 import cat.copernic.amayo.frontend.core.auth.SessionViewModel
-import cat.copernic.amayo.frontend.recompensaManagment.model.EstatRecompensa
+import cat.copernic.amayo.frontend.recompensaManagment.model.Estat
 import cat.copernic.amayo.frontend.recompensaManagment.model.EstatReserva
 import cat.copernic.amayo.frontend.recompensaManagment.model.Reserva
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.ReservaViewmodel
@@ -36,7 +32,14 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun detalls(viewmodel: llistaViewmodel, recompensaId: Long, reservaViewmodel: ReservaViewmodel,sessionViewModel: SessionViewModel,modificarViewModel: ModificarViewModel,navController: NavController) {
+fun detalls(
+    viewmodel: llistaViewmodel,
+    recompensaId: Long,
+    reservaViewmodel: ReservaViewmodel,
+    sessionViewModel: SessionViewModel,
+    modificarViewModel: ModificarViewModel,
+    navController: NavController,
+) {
     val nom by sessionViewModel.userData.collectAsState()
     val recompensa = viewmodel.recompensaD.value
     val bitmap = remember(recompensa?.foto) {
@@ -46,11 +49,16 @@ fun detalls(viewmodel: llistaViewmodel, recompensaId: Long, reservaViewmodel: Re
         viewmodel.listar(recompensaId)
     }
 
+    val context = LocalContext.current
+    val puedeReservar =
+        nom != null && recompensa != null && nom!!.saldo!! >= recompensa.cost!! && !nom!!.reserva
+    val tieneReservas = nom != null && recompensa != null && !nom!!.reserva
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFE3F2FD)) // Azul claro
-            .padding(16.dp).statusBarsPadding(),
+            .padding(16.dp)
+            .statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -91,12 +99,41 @@ fun detalls(viewmodel: llistaViewmodel, recompensaId: Long, reservaViewmodel: Re
                 Divider()
                 Spacer(modifier = Modifier.height(8.dp))
                 Column {
-                    Text("Punt d'intercanvi:", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color(0xFF0288D1))
-                    recompensa?.puntBescanviId?.nom?.let { Text(it, fontSize = 16.sp, color = Color(0xFF424242)) }
-                    recompensa?.puntBescanviId?.adreca?.let { Text(it, fontSize = 14.sp, color = Color(0xFF757575)) }
+                    Text(
+                        "Punt d'intercanvi:",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        color = Color(0xFF0288D1)
+                    )
+                    recompensa?.puntBescanviId?.nom?.let {
+                        Text(
+                            it,
+                            fontSize = 16.sp,
+                            color = Color(0xFF424242)
+                        )
+                    }
+                    recompensa?.puntBescanviId?.adreca?.let {
+                        Text(
+                            it,
+                            fontSize = 14.sp,
+                            color = Color(0xFF757575)
+                        )
+                    }
                     Spacer(modifier = Modifier.height(4.dp))
-                    recompensa?.puntBescanviId?.personaContacte?.let { Text("Contacto: $it", fontSize = 14.sp, color = Color(0xFF757575)) }
-                    recompensa?.puntBescanviId?.telefon?.let { Text("Tel: $it", fontSize = 14.sp, color = Color(0xFF757575)) }
+                    recompensa?.puntBescanviId?.personaContacte?.let {
+                        Text(
+                            "Contacto: $it",
+                            fontSize = 14.sp,
+                            color = Color(0xFF757575)
+                        )
+                    }
+                    recompensa?.puntBescanviId?.telefon?.let {
+                        Text(
+                            "Tel: $it",
+                            fontSize = 14.sp,
+                            color = Color(0xFF757575)
+                        )
+                    }
                 }
             }
         }
@@ -114,41 +151,60 @@ fun detalls(viewmodel: llistaViewmodel, recompensaId: Long, reservaViewmodel: Re
         }
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
-            onClick = {
-                nom?.let { usuario ->
-                    usuario.reserva = true
 
-                    modificarViewModel.updateClient(
-                        client = usuario,
-                        contentResolver = navController.context.contentResolver
-                    )
-                }
 
-                recompensa?.let { recompensa ->
-                    recompensa.estat = EstatRecompensa.RESERVADES
+            // BOTÓN DE RESERVAR (TU BLOQUE ACTUAL ADAPTADO)
+            Button(
+                onClick = {
+                    if (tieneReservas) {
+                        if (puedeReservar) {
+                            nom?.let { usuario ->
+                                usuario.reserva = true
 
-                    viewmodel.updateRecompensa(
-                        client = recompensa,
-                        contentResolver = navController.context.contentResolver
-                    )
-                }
-                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                val fecha = LocalDate.now().format(formatter)
-                val nuevaReserva = Reserva(
-                id = null, // O lo que sea necesario
-                emailUsuari = nom, // Pasar el email
-                idRecompensa = recompensa, // Pasar el ID de la recompensa
-                datareserva = fecha,
-                estat = EstatReserva.RESERVADA
-            )
+                                modificarViewModel.updateClient(
+                                    client = usuario,
+                                    contentResolver = navController.context.contentResolver
+                                )
+                            }
 
-                reservaViewmodel.crearReserva(nuevaReserva) },
-            colors = ButtonDefaults.buttonColors(Color(0xFF0288D1)),
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            Text("Reservar", color = Color.White, fontSize = 18.sp)
-        }
+                            recompensa?.let { recompensa ->
+                                recompensa.estat = Estat.RESERVADES
+                                recompensa.usuariRecompensa = nom
+                                viewmodel.updateRecompensa(
+                                    client = recompensa,
+                                    contentResolver = navController.context.contentResolver
+                                )
+                            }
+
+                            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                            val fecha = LocalDate.now().format(formatter)
+                            val nuevaReserva = Reserva(
+                                id = null,
+                                emailUsuari = nom,
+                                idRecompensa = recompensa,
+                                datareserva = fecha,
+                                estat = EstatReserva.RESERVADA
+                            )
+
+                            reservaViewmodel.crearReserva(nuevaReserva)
+
+                        } else {
+                            Toast.makeText(context, "Saldo insuficient.", Toast.LENGTH_LONG).show()
+                        }
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Límit màxim de reserves obtingut.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(Color(0xFF0288D1)),
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text("Reservar", color = Color.White, fontSize = 18.sp)
+            }
+
     }
 }

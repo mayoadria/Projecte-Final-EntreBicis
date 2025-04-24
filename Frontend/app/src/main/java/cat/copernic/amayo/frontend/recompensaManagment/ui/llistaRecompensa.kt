@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,24 +20,41 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import cat.copernic.amayo.frontend.core.auth.SessionViewModel
-import cat.copernic.amayo.frontend.recompensaManagment.model.EstatRecompensa
+import cat.copernic.amayo.frontend.recompensaManagment.model.Estat
 
 @Composable
-fun recompensa(llistaViewmodel: llistaViewmodel,navController: NavController,sessionViewModel: SessionViewModel) {
+fun recompensa(
+    llistaViewmodel: llistaViewmodel,
+    navController: NavController,
+    sessionViewModel: SessionViewModel
+) {
     var filtroDesc by remember { mutableStateOf("") }
     var filtroObs by remember { mutableStateOf("") }
     var filtroEstat by remember { mutableStateOf("") }
     var ordenarPor by remember { mutableStateOf("") }
     var ascendente by remember { mutableStateOf(true) }
 
+    // Obtener las recompensas desde el ViewModel
     val allRecompensas by llistaViewmodel.recompesa.collectAsState()
 
-    // Aplicar filtros a la lista de recompensas
+    // Filtrar recompensas según el estado: DISPONIBLES o RESERVADAS
     var filteredRecompensas = allRecompensas.filter { recompensa ->
-        recompensa.estat == EstatRecompensa.DISPONIBLES &&
-        (filtroDesc.isEmpty() || recompensa.descripcio?.contains(filtroDesc, ignoreCase = true) == true) &&
-                (filtroObs.isEmpty() || recompensa.observacions?.contains(filtroObs, ignoreCase = true) == true) &&
-                (filtroEstat.isEmpty() || recompensa.estat?.name?.contains(filtroEstat, ignoreCase = true) == true)
+
+        recompensa.estat == Estat.DISPONIBLES
+
+                &&
+                (filtroDesc.isEmpty() || recompensa.descripcio?.contains(
+                    filtroDesc,
+                    ignoreCase = true
+                ) == true) &&
+                (filtroObs.isEmpty() || recompensa.observacions?.contains(
+                    filtroObs,
+                    ignoreCase = true
+                ) == true) &&
+                (filtroEstat.isEmpty() || recompensa.estat?.name?.contains(
+                    filtroEstat,
+                    ignoreCase = true
+                ) == true)
     }
 
     // Aplicar ordenación
@@ -48,7 +64,12 @@ fun recompensa(llistaViewmodel: llistaViewmodel,navController: NavController,ses
         else -> filteredRecompensas
     }
 
-    Column(modifier = Modifier.fillMaxSize().background(Color(0x9C9CF3FF)).statusBarsPadding()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0x9C9CF3FF))
+            .statusBarsPadding()
+    ) {
         Header(
             onFilterApplied = { desc, obs, estat ->
                 filtroDesc = desc
@@ -68,14 +89,20 @@ fun recompensa(llistaViewmodel: llistaViewmodel,navController: NavController,ses
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(filteredRecompensas) { recompensa ->
+
                 RecompensaItem(recompensa = recompensa, navController, scale = 1f)
+
             }
         }
     }
 }
 
 @Composable
-fun Header(onFilterApplied: (String, String, String) -> Unit, onSortSelected: (String, Boolean) -> Unit,sessionViewModel: SessionViewModel) {
+fun Header(
+    onFilterApplied: (String, String, String) -> Unit,
+    onSortSelected: (String, Boolean) -> Unit,
+    sessionViewModel: SessionViewModel
+) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     var showFilterDialog by rememberSaveable { mutableStateOf(false) }
     var showSortDialog by rememberSaveable { mutableStateOf(false) }
@@ -219,6 +246,7 @@ fun FilterDialog(
         }
     )
 }
+
 @Composable
 fun SortDialog(
     onSortSelected: (String, Boolean) -> Unit,

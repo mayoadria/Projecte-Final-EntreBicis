@@ -25,6 +25,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 
+import java.time.Duration;
 import java.util.Optional;
 
 @Configuration
@@ -109,7 +110,7 @@ public class SecurityConfig {
     }
 
     private void crearAdminSiNoExiste() {
-        Optional<Usuari> adminExistente = usuariLogic.getUsuariByEmail("admin@entrebicis.com");
+        Optional<Usuari> adminExistente = usuariLogic.getUsuariByEmail("admin2@entrebicis.com");
         if (adminExistente.isPresent()) {
             System.out.println("El administrador ya existe.");
             return;
@@ -121,10 +122,12 @@ public class SecurityConfig {
         admin.setNom("admin");
         admin.setPoblacio("admin");
         admin.setSaldo(20.0);
-        admin.setEmail("admin@entrebicis.com");
+        admin.setEmail("admin2@entrebicis.com");
         admin.setTelefon("000000000");
-        admin.setRol(Rol.ADMINISTRADOR);
+        admin.setRol(Rol.CICLISTA);
         admin.setEstat(EstatUsuari.ACTIU);
+        admin.setReserva(false);
+        admin.setRuta(true);
 
         usuariLogic.createUsuari(admin);
     }
@@ -139,9 +142,9 @@ public class SecurityConfig {
         Sistema sistema = new Sistema();
         sistema.setId(1L); // Forzamos el ID=1
         sistema.setVelMax(20.0);          // Valor por defecto (ajusta según tus necesidades)
-        sistema.setTempsMaxAturat(10.0);    // Valor por defecto
+        sistema.setTempsMaxAturat(Duration.ofMinutes(5));    // Valor por defecto
         sistema.setConversioSaldo(2);       // Valor por defecto
-        sistema.setTempsRecollida("60");    // Valor por defecto
+        sistema.setTempsRecollida(Duration.ofHours(72));    // Valor por defecto
 
         sistemaRepository.save(sistema);
         System.out.println("Sistema por defecto creado con ID=1.");

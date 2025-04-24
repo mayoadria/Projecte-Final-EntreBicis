@@ -1,5 +1,6 @@
 package com.copernic.backend.Backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -40,8 +41,8 @@ public class PuntBescanvi {
     @Lob
     private String foto;
 
-    @OneToMany(mappedBy = "puntBescanviId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "puntBescanviId")
     @ToString.Exclude
-    @JsonManagedReference("recompensa-puntBescanvi")
+    @JsonIgnore
     private List<Recompensas> puntBescanviID;
 }

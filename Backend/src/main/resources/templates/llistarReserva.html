@@ -13,6 +13,9 @@
 
 <div class="main-content">
     <h1>Llista Reservas</h1>
+    <div th:if="${errorS}" style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #f5c6cb;">
+        <span th:text="${errorS}"></span>
+    </div>
     <table class="users-table">
         <thead>
         <tr>
@@ -32,10 +35,18 @@
             <td th:text="${reserva.idRecompensa.descripcio}"></td>
             <td th:text="${reserva.datareserva}"></td>
             <td>
-                <form th:action="@{/reserva/canviarEstat}" method="post">
+                <form th:action="@{/reserva/canviarEstat}" method="post" class="acciones">
                     <input type="hidden" name="reservaId" th:value="${reserva.id}" />
-                    <!-- Botón para cambiar el estado -->
-                    <button type="submit" th:text="${reserva.estat == 'ASSIGNADA' ? 'Canviar a DESASSIGNADA' : 'Canviar a ASSIGNADA'}"></button>
+
+                    <!-- Botón de cambio de estado -->
+                    <button type="submit"
+                            class="btn-accion"
+                            th:text="${reserva.estat == 'ASSIGNADA' ?'Canviar a DESASSIGNADA' :
+                         'Canviar a ASSIGNADA'}"></button>
+
+                    <!-- Botón de borrado -->
+                    <a class="btn-accion btn-delete"
+                       th:href="@{/reserva/delete/{id}(id=${reserva.id})}">🗑️</a>
                 </form>
             </td>
         </tr>

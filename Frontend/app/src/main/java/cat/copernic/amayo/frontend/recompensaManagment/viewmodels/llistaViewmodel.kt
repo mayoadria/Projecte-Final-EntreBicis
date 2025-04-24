@@ -7,6 +7,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cat.copernic.amayo.frontend.recompensaManagment.data.repositories.RecompensaRetrofitTLSInstance
 import cat.copernic.amayo.frontend.recompensaManagment.model.Recompensa
 import cat.copernic.amayo.frontend.rutaManagment.model.Estat
 import cat.copernic.amayo.frontend.usuariManagment.model.Usuari
@@ -18,7 +19,7 @@ import kotlinx.coroutines.launch
 
 class llistaViewmodel : ViewModel() {
 
-    private val recompensaApi: RecompensasApiRest = RecompensaRetrofitInstance.retrofitInstance.create(
+    private val recompensaApi: RecompensasApiRest = RecompensaRetrofitTLSInstance.retrofitTLSInstance.create(
         RecompensasApiRest::class.java
     )
 

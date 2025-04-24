@@ -17,4 +17,10 @@ interface UsuariApi {
 
     @PUT("update")
     suspend fun update(@Body product: Usuari): Response<Void>
+
+    @POST("sendEmail/{email}")
+    suspend fun sendEmail(@Path("email") email : String): Response<Void>
+
+    @GET("validateToken/{token}/{email}")
+    suspend fun validateToken(@Path("token") token : String, @Path("email") email : String ): Response<Boolean>
 }
