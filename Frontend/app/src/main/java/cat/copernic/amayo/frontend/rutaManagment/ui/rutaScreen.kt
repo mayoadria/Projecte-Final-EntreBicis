@@ -1,6 +1,7 @@
 package cat.copernic.amayo.frontend.rutaManagment.ui
 
 import android.Manifest
+import android.app.Application
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Looper
@@ -10,16 +11,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.Color  // Compose Color
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Unspecified
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
@@ -29,13 +27,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import cat.copernic.amayo.frontend.R
 import cat.copernic.amayo.frontend.navigation.BottomNavigationBar
+import cat.copernic.amayo.frontend.rutaManagment.viewmodels.RutaViewModel
 import com.google.android.gms.location.*
-import kotlinx.coroutines.delay
 import org.osmdroid.config.Configuration
-import org.osmdroid.tileprovider.cachemanager.CacheManager
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
@@ -47,82 +47,54 @@ import android.graphics.Color as AndroidColor
 @Composable
 fun RutaScreen(navController: NavController) {
     val context = LocalContext.current
-
-    // Configuración de OSMDroid (idealmente en la Application)
-    Configuration.getInstance().load(context, context.getSharedPreferences("osmdroid", 0))
-
-    // Estados del mapa y de la ubicación
-    var mapView by remember { mutableStateOf<MapView?>(null) }
-    var userLocation by remember { mutableStateOf<GeoPoint?>(null) }
-
-    // Estados para la ruta
-    var isRouting by remember { mutableStateOf(false) }
-    var isPaused by remember { mutableStateOf(false) }
-    // Usamos una lista de segmentos para separar los puntos registrados durante la ruta
-    val routeSegments = remember { mutableStateListOf<MutableList<GeoPoint>>() }
-    var autoCenter by remember { mutableStateOf(true) }
-
-    // Estado para mostrar el texto "Cargando mapa..."
-    var showLoadingText by remember { mutableStateOf(true) }
-
-    // Animación de parpadeo para el texto "Cargando mapa..."
-    val infiniteTransition = rememberInfiniteTransition()
-    val alphaAnim by infiniteTransition.animateFloat(
-        initialValue = 0.5f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            tween(durationMillis = 500),
-            repeatMode = RepeatMode.Reverse
-        )
+    val application = context.applicationContext as Application
+    val rutaVM: RutaViewModel = viewModel(
+        factory = ViewModelProvider.AndroidViewModelFactory(application),
+        modelClass = RutaViewModel::class.java
     )
 
-    // Cliente de localización
-    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+    // Observamos los estados del ViewModel
+    val isRouting by remember { derivedStateOf { rutaVM.isRouting } }
+    val isPaused  by remember { derivedStateOf { rutaVM.isPaused  } }
+    val routeSegments by remember { derivedStateOf { rutaVM.routeSegments } }
 
-    // Solicitar permiso de ubicación
-    val requestPermissionLauncher = rememberLauncherForActivityResult(
+    // Estados de la UI
+    var mapView by remember { mutableStateOf<MapView?>(null) }
+    var userLocation by remember { mutableStateOf<GeoPoint?>(null) }
+    var autoCenter by remember { mutableStateOf(true) }
+    var showLoadingText by remember { mutableStateOf(true) }
+
+    // Cliente de localización y permiso
+    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+    val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        if (granted) {
-            startLocationUpdates(fusedLocationClient) { newLocation ->
-                userLocation = newLocation
-            }
-        }
+        if (granted) startLocationUpdates(fusedLocationClient) { userLocation = it }
     }
-
     LaunchedEffect(Unit) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED
         ) {
-            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         } else {
-            startLocationUpdates(fusedLocationClient) { newLocation ->
-                userLocation = newLocation
-            }
+            startLocationUpdates(fusedLocationClient) { userLocation = it }
         }
     }
 
-    // Actualizar mapa y segmentos de la ruta en cada cambio de ubicación;
-    // cuando se reciba la primera ubicación se oculta el texto "Cargando mapa..."
+    // Cada vez que cambia la ubicación
     LaunchedEffect(userLocation) {
         userLocation?.let { loc ->
-            if (showLoadingText) {
-                showLoadingText = false
-            }
-            val currentZoom = mapView?.zoomLevelDouble ?: 15.0
+            if (showLoadingText) showLoadingText = false
             if (autoCenter) {
                 mapView?.controller?.setCenter(loc)
-                mapView?.controller?.setZoom(currentZoom)
+                mapView?.controller?.setZoom(mapView?.zoomLevelDouble ?: 15.0)
             }
-            // Actualizar marcador "Ubicación actual"
             mapView?.overlays?.removeAll { it is Marker && it.title == "Ubicación actual" }
-            mapView?.let { mv -> addMarker(mv, loc, "Ubicación actual", context) }
-            // Si se está grabando la ruta y no está en pausa, agregar el punto al segmento actual
+            mapView?.let { addMarker(it, loc, "Ubicación actual", context) }
+
+            // Si está grabando y no en pausa, persistimos y dibujamos
             if (isRouting && !isPaused) {
-                // Agregamos el punto al último segmento
-                routeSegments.last().add(loc)
-                // Limpiamos las líneas anteriores y dibujamos cada segmento como una polyline independiente,
-                // insertándolas al inicio de la lista de overlays para que queden debajo de los markers
+                rutaVM.addPoint(loc)
                 mapView?.overlays?.removeAll { it is Polyline }
                 routeSegments.forEach { segment ->
                     if (segment.size > 1) {
@@ -130,9 +102,7 @@ fun RutaScreen(navController: NavController) {
                             setPoints(segment)
                             outlinePaint.color = AndroidColor.BLUE
                             outlinePaint.strokeWidth = 5f
-                        }.also { polyline ->
-                            mapView?.overlays?.add(0, polyline)
-                        }
+                        }.also { mapView?.overlays?.add(0, it) }
                     }
                 }
             }
@@ -140,62 +110,56 @@ fun RutaScreen(navController: NavController) {
         }
     }
 
-    Scaffold(
-        bottomBar = { BottomNavigationBar(navController) } // Barra de navegación global
-    ) { innerPadding ->
-        // Box para apilar el mapa (de fondo), los controles y el texto de carga
+    // Animación de “Cargando mapa…”
+    val alphaAnim = rememberInfiniteTransition().animateFloat(
+        initialValue = 0.5f,
+        targetValue  = 1f,
+        animationSpec = infiniteRepeatable(tween(500), RepeatMode.Reverse)
+    )
+
+    Scaffold(bottomBar = { BottomNavigationBar(navController) }) { padding ->
         Box(
-            modifier = Modifier
+            Modifier
                 .fillMaxSize()
-                .background(Color(0xFF9CF3FF)) // Fondo azul opaco, igual que recompensas
-                .padding(innerPadding)
+                .background(Color(0xFF9CF3FF))
+                .padding(padding)
         ) {
-            // Contenedor con clipToBounds para recortar el mapa al tamaño de pantalla
-            Box(
+            // Mapa
+            AndroidView(
                 modifier = Modifier
                     .fillMaxSize()
                     .clipToBounds()
-            ) {
-                // Mapa ocupando toda la pantalla, escalado un 10% extra para precargar tiles
-                AndroidView(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .graphicsLayer {
-                            scaleX = 1.1f
-                            scaleY = 1.1f
-                        },
-                    factory = { ctx ->
-                        MapView(ctx).apply {
-                            setTileSource(org.osmdroid.tileprovider.tilesource.TileSourceFactory.MAPNIK)
-                            setMultiTouchControls(true)
-                            controller.setZoom(15.0)
-                            zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
-                            setOnTouchListener { _, event ->
-                                if (event.action == MotionEvent.ACTION_DOWN) {
-                                    autoCenter = false
-                                }
-                                false
-                            }
-                        }.also { mapView = it }
-                    }
-                )
-            }
-            // Overlay inferior para los controles de ruta con fondo azul opaco
+                    .graphicsLayer { scaleX = 1.1f; scaleY = 1.1f },
+                factory = { ctx ->
+                    MapView(ctx).apply {
+                        setTileSource(TileSourceFactory.MAPNIK)
+                        setMultiTouchControls(true)
+                        controller.setZoom(15.0)
+                        zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
+                        setOnTouchListener { _, ev ->
+                            if (ev.action == MotionEvent.ACTION_DOWN) autoCenter = false
+                            false
+                        }
+                    }.also { mapView = it }
+                }
+            )
+
+            // Controles Play / Pause / Stop
             Box(
-                modifier = Modifier
+                Modifier
                     .fillMaxWidth()
                     .height(80.dp)
                     .background(Color(0xFF9CF3FF))
                     .align(Alignment.BottomCenter)
             ) {
                 Row(
-                    modifier = Modifier
+                    Modifier
                         .fillMaxSize()
                         .padding(horizontal = 8.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Botón Recenter (📍)
+                    // Recentrar
                     IconButton(onClick = {
                         userLocation?.let {
                             autoCenter = true
@@ -205,42 +169,31 @@ fun RutaScreen(navController: NavController) {
                     }) {
                         Text("📍", fontSize = 30.sp, fontWeight = FontWeight.Bold)
                     }
+
                     if (!isRouting) {
-                        // Botón para iniciar la ruta (Play)
-                        IconButton(
-                            onClick = {
-                                isRouting = true
-                                isPaused = false
-                                routeSegments.clear()
-                                // Iniciamos con el primer segmento
-                                routeSegments.add(mutableListOf())
-                            }
-                        ) {
+                        // ▶️ Play
+                        IconButton(onClick = {
+                            rutaVM.startRoute("Mi ruta", "Salida en bici", userLocation)
+                        }) {
                             Icon(
-                                painter = painterResource(id = R.drawable.ic_play),
+                                painter = painterResource(R.drawable.ic_play),
                                 contentDescription = "Iniciar ruta",
                                 modifier = Modifier.size(64.dp),
                                 tint = Unspecified
                             )
                         }
-                        // Botón Stop (desactivado)
+                        // ■ Stop (deshabilitado)
                         IconButton(onClick = { }, enabled = false) {
                             Icon(
-                                painter = painterResource(id = R.drawable.ic_stop),
+                                painter = painterResource(R.drawable.ic_stop),
                                 contentDescription = "Detener ruta",
                                 modifier = Modifier.size(64.dp),
                                 tint = Unspecified
                             )
                         }
                     } else {
-                        // Botón para pausar / reanudar (Pause/Play)
-                        IconButton(onClick = {
-                            // Al reanudar, se crea un nuevo segmento para evitar conectar el último punto antes de pausar con el primero tras reanudar
-                            if (isPaused) {
-                                routeSegments.add(mutableListOf())
-                            }
-                            isPaused = !isPaused
-                        }) {
+                        // ⏸️ / ▶️ Pause / Resume
+                        IconButton(onClick = { rutaVM.togglePause() }) {
                             Icon(
                                 painter = painterResource(
                                     if (isPaused) R.drawable.ic_play else R.drawable.ic_pause
@@ -250,13 +203,10 @@ fun RutaScreen(navController: NavController) {
                                 tint = Unspecified
                             )
                         }
-                        // Botón para detener la ruta (Stop)
-                        IconButton(onClick = {
-                            isRouting = false
-                            isPaused = false
-                        }) {
+                        // ■ Stop
+                        IconButton(onClick = { rutaVM.stopRoute() }) {
                             Icon(
-                                painter = painterResource(id = R.drawable.ic_stop),
+                                painter = painterResource(R.drawable.ic_stop),
                                 contentDescription = "Detener ruta",
                                 modifier = Modifier.size(64.dp),
                                 tint = Unspecified
@@ -265,20 +215,21 @@ fun RutaScreen(navController: NavController) {
                     }
                 }
             }
-            // Overlay para el texto "Cargando mapa..." con parpadeo; se muestra mientras no se reciba la primera ubicación
+
+            // Texto “Cargando mapa…”
             if (showLoadingText) {
                 Box(
-                    modifier = Modifier
+                    Modifier
                         .fillMaxSize()
-                        .background(Color(0x99000000)), // Fondo negro semitransparente para resaltar
+                        .background(Color(0x99000000)),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Cargando mapa...",
+                        "Cargando mapa…",
                         color = Color.White,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.alpha(alphaAnim)  // Aplica la animación de parpadeo
+                        modifier = Modifier.alpha(alphaAnim.value)
                     )
                 }
             }
@@ -286,31 +237,27 @@ fun RutaScreen(navController: NavController) {
     }
 }
 
+// Funciones auxiliares
 @SuppressLint("MissingPermission")
 private fun startLocationUpdates(
-    fusedLocationClient: FusedLocationProviderClient,
+    fused: FusedLocationProviderClient,
     onLocationChanged: (GeoPoint) -> Unit
 ) {
-    val locationRequest = LocationRequest.Builder(
-        Priority.PRIORITY_HIGH_ACCURACY,
-        1000L
+    val req = LocationRequest.Builder(
+        Priority.PRIORITY_HIGH_ACCURACY, 1000L
     ).apply {
         setMinUpdateIntervalMillis(2000L)
         setMinUpdateDistanceMeters(5f)
         setWaitForAccurateLocation(false)
     }.build()
-    val locationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            locationResult.lastLocation?.let { loc ->
+    val cb = object : LocationCallback() {
+        override fun onLocationResult(res: LocationResult) {
+            res.lastLocation?.let { loc ->
                 onLocationChanged(GeoPoint(loc.latitude, loc.longitude))
             }
         }
     }
-    fusedLocationClient.requestLocationUpdates(
-        locationRequest,
-        locationCallback,
-        Looper.getMainLooper()
-    )
+    fused.requestLocationUpdates(req, cb, Looper.getMainLooper())
 }
 
 private fun addMarker(

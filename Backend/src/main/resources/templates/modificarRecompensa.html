@@ -14,8 +14,12 @@
 <div class="main-content">
     <h1 th:text="${visualizar} ? 'Detalls de la Recompensa' : 'Modificar Recompensa'"></h1>
     <div class="create-user-container">
+
         <div class="profile-picture" id="profilePicture">
             <img id="fotoPreview" th:src="${fotoDataUrl != null ? fotoDataUrl : 'https://via.placeholder.com/150'}" alt="Foto usuario" />
+        </div>
+        <div th:if="${error}" class="alert-error">
+            <p th:text="${error}"></p>
         </div>
         <form class="user-form" th:action="@{/recompensas/editar}" th:object="${recompensas}" method="post"
               enctype="multipart/form-data">
@@ -33,13 +37,23 @@
                 <label for="cost">Cost</label>
                 <input type="number" id="cost" th:field="*{cost}" min="1" th:readonly="${visualizar}">
             </div>
+            <div class="form-field" th:if="${visualizar}">
+                <label for="nomU">Nom Usuari</label>
+                <input type="text" id="nomU" th:field="*{usuariRecompensa}" th:readonly="${visualizar}">
+            </div>
             <div class="form-group">
                 <label for="besanvi-select">Punt de Bescanvi:</label>
-                <select id="besanvi-select" th:field="*{puntBescanviId}" th:disabled="${visualizar}">
-                    <option value="" disabled selected hidden>Seleccionar una opción</option>
-                    <option th:each="bescanvis : ${puntBescanviId}" th:value="${bescanvis.id}"
-                            th:text="${bescanvis.nom}"></option>
-                </select>
+                <div style="display: flex; align-items: center;">
+                    <select id="besanvi-select" th:field="*{puntBescanviId}" th:disabled="${visualizar}">
+                        <option value="" disabled selected hidden>Seleccionar una opción</option>
+                        <option th:each="bescanvis : ${puntBescanviId}" th:value="${bescanvis.id}"
+                                th:text="${bescanvis.nom}"></option>
+                    </select>
+                    <!-- Botón para ver detalles -->
+                    <a class="btn-view"
+                       th:if="${visualizar and recompensas.puntBescanviId != null}"
+                       th:href="@{/bescanvi/visualizar/{id}(id=${recompensas.puntBescanviId.id})}">👁️</a>
+                </div>
             </div>
             <div class="form-field full-width">
                 <select class="input" th:field="*{estat}" id="pais" th:disabled="${visualizar}">

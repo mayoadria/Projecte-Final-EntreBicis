@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cat.copernic.amayo.frontend.usuariManagment.data.remote.UsuariApi
 import cat.copernic.amayo.frontend.usuariManagment.data.repositories.UsuariRetrofitInstance
+import cat.copernic.amayo.frontend.usuariManagment.data.repositories.UsuariRetrofitTLSInstance
 import cat.copernic.amayo.frontend.usuariManagment.model.Usuari
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +19,7 @@ class SessionViewModel(private val sessionRepository: SessionRepository) : ViewM
     private val _userData = MutableStateFlow<Usuari?>(null)
     val userData: StateFlow<Usuari?> get() = _userData
 
-    private val userApi: UsuariApi = UsuariRetrofitInstance.retrofitInstance.create(
+    private val userApi: UsuariApi = UsuariRetrofitTLSInstance.retrofitTLSInstance.create(
         UsuariApi::class.java
     )
 

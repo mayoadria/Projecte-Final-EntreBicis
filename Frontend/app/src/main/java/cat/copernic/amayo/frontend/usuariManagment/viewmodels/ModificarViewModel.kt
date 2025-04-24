@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cat.copernic.amayo.frontend.usuariManagment.data.remote.UsuariApi
 import cat.copernic.amayo.frontend.usuariManagment.data.repositories.UsuariRetrofitInstance
+import cat.copernic.amayo.frontend.usuariManagment.data.repositories.UsuariRetrofitTLSInstance
 import cat.copernic.amayo.frontend.usuariManagment.model.Usuari
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +20,7 @@ import java.io.InputStream
 
 class ModificarViewModel :ViewModel() {
 
-    private val UserApi: UsuariApi = UsuariRetrofitInstance.retrofitInstance.create(
+    private val UserApi: UsuariApi = UsuariRetrofitTLSInstance.retrofitTLSInstance.create(
         UsuariApi::class.java)
 
     private val _selectedImageUri = MutableStateFlow<Uri?>(null)

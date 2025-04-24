@@ -99,7 +99,6 @@ fun perfil(sessionViewModel: SessionViewModel,navController: NavController) {
                     iconColor = iconColor,
                     onClick = {
                         navController.navigate("editar") {
-                            popUpTo(0) { inclusive = true }
                         }
                     }
                 )
@@ -110,7 +109,6 @@ fun perfil(sessionViewModel: SessionViewModel,navController: NavController) {
                     iconColor = iconColor,
                             onClick = {
                         navController.navigate("inici") {
-                            popUpTo(0) { inclusive = true }
                         }
                     }
                 )
@@ -119,12 +117,12 @@ fun perfil(sessionViewModel: SessionViewModel,navController: NavController) {
             Row(horizontalArrangement = Arrangement.spacedBy(32.dp)) {
                 IconButtonWithText(
                     icon = Icons.Default.ShoppingCart,
-                    text = "Recompenses",
-                    iconColor = iconColor
-                ) {
-                    // Acción ver recompensas
-                    println("Recompenses pulsado")
-                }
+                    text = "Reserves",
+                    iconColor = iconColor,
+                    onClick = {
+                        navController.navigate("recompensaPropias")
+                    }
+                )
 
                 IconButtonWithText(
                     icon = Icons.Default.ExitToApp,

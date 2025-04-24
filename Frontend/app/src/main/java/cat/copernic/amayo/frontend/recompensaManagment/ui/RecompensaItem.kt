@@ -37,10 +37,13 @@ fun RecompensaItem(recompensa: Recompensa, navController: NavController, scale: 
     val bitmap = remember(recompensa.foto) { recompensa.foto?.let { decodeBase64ToBitmap(it) } }
 
     Card(
+
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)
-            .clickable { navController.navigate("detalls/${recompensa.id}") },
+            .clickable {
+                navController.navigate("detalls/${recompensa.id}")
+            },
         elevation = CardDefaults.cardElevation(scaledDp(1.dp, scale)),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0x9C9CF3FF)) // Azul claro

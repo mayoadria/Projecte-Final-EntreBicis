@@ -1,30 +1,39 @@
 package com.copernic.backend.Backend.controller.web;
 
 import com.copernic.backend.Backend.entity.Sistema;
+import com.copernic.backend.Backend.logic.web.SistemaLogic;
 import com.copernic.backend.Backend.repository.SistemaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/sistema")
 public class MatrixController {
 
-    private final SistemaRepository sistemaRepository;
+    private final SistemaLogic sistemaService;
 
     @GetMapping
     public String mostrarSistema(Model model) {
-        Sistema sistema = sistemaRepository.findById(1L).orElse(new Sistema(1L, 0.0, 0.0, 0, "0"));
+        // Obtener el sistema desde el servicio
+        Sistema sistema = sistemaService.getSistema();
         model.addAttribute("sistema", sistema);
-        return "matrix";
+        return "matrix"; // Devolver la vista "matrix" con el objeto Sistema
     }
 
     @PostMapping("/actualizar")
     public String actualizarSistema(@ModelAttribute Sistema sistema) {
-        sistema.setId(1L); // aseguramos que siempre sea ID 1
-        sistemaRepository.save(sistema);
+        // Aseguramos que el ID sea 1 al actualizar el sistema
+        sistema.setId(1L);
+
+        // Guardamos el sistema usando el servicio
+        sistemaService.guardarSistema(sistema);
+
+        // Redirigimos al home
         return "redirect:/home";
     }
 }

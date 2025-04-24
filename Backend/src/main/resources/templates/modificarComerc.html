@@ -51,6 +51,13 @@
             <div class="form-actions" th:if="${!visualizar}">
                 <button type="submit">Guardar</button>
             </div>
+
+            <div class="form-actions" th:if="${visualizar}">
+                <a class="btn-crear"
+                   th:href="@{/recompensas/punt/{puntId}(puntId=${bescanvi.id})}">
+                    Veure Recompenses
+                </a>
+            </div>
         </form>
     </div>
 </div>

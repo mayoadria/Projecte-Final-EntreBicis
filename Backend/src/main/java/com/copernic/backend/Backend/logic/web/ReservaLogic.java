@@ -7,6 +7,7 @@ import com.copernic.backend.Backend.repository.ReservaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,6 +33,18 @@ public class ReservaLogic {
     public void updateReserva(Reserva usuariActualitzat) {
         // No se toca el campo "email" ya que es el identificador
         reservaRepository.save(usuariActualitzat);
+
+    }
+    public boolean existsById(Long id)
+    {
+        Reserva p = reservaRepository.findById(id).orElse(null);
+
+        return (p != null);
+    }
+
+    public void deleteReservaById(Long id){
+
+        reservaRepository.deleteById(id);
 
     }
 }

@@ -8,6 +8,7 @@ import cat.copernic.amayo.frontend.core.auth.SessionUser
 import cat.copernic.amayo.frontend.usuariManagment.data.remote.UsuariApi
 import cat.copernic.amayo.frontend.usuariManagment.model.Usuari
 import cat.copernic.amayo.frontend.usuariManagment.data.repositories.UsuariRetrofitInstance
+import cat.copernic.amayo.frontend.usuariManagment.data.repositories.UsuariRetrofitTLSInstance
 import cat.copernic.mycards.mycards_frontend.user_management.data.repositories.RecompensaRetrofitInstance
 import cat.copernic.mycards.mycards_frontend.user_management.data.sources.remote.RecompensasApiRest
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +34,7 @@ class LoginViewModel : ViewModel() {
     private val _isUserLoged = MutableStateFlow(false)
     val isUserLoged: StateFlow<Boolean> = _isUserLoged
 
-    private val loginApi: UsuariApi = UsuariRetrofitInstance.retrofitInstance.create(
+    private val loginApi: UsuariApi = UsuariRetrofitTLSInstance.retrofitTLSInstance.create(
         UsuariApi::class.java
     )
     fun updateEmail(text: String) {
