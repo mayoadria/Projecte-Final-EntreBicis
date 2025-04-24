@@ -58,8 +58,8 @@
         @Column(nullable = true)
         private Boolean reserva;
 
-        @Column(nullable = true)
-        private Boolean ruta;
+//        @Column(nullable = true)
+//        private Boolean ruta;
         @Lob
         private String foto; // Se guardará la cadena Base64
         @Enumerated(EnumType.STRING)

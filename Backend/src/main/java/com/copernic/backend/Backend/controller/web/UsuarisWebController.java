@@ -135,7 +135,7 @@ public class UsuarisWebController {
     @GetMapping("/delete/{email:.+}")
     public String deleteUsuari(@PathVariable String email,RedirectAttributes redirectAttributes) {
         Usuari usu = usuariLogic.findByEmail(email);
-        if(usu.getRuta() || usu.getReserva()){
+        if( usu.getReserva()){
             redirectAttributes.addFlashAttribute("error", "No es pot eliminar un usuari amb una reserva activa o una ruta activa.");
         }else{
             usuariLogic.deleteUsuari(email);

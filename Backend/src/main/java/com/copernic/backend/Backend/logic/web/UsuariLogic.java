@@ -81,7 +81,7 @@ public class UsuariLogic {
         db.setTelefon(dto.getTelefon());
         db.setPoblacio(dto.getPoblacio());
         db.setReserva(dto.getReserva());
-        db.setRuta(dto.getRuta());
+        //db.setRuta(dto.getRuta());
         // …cualquier otro campo editable…
 
         String nuevaPwd = dto.getContra();
