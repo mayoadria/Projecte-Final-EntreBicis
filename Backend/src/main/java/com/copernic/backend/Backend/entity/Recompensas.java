@@ -10,6 +10,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -35,7 +37,10 @@ public class Recompensas {
     @Column
     private String dataCreacio;
     @Column
-    private String DataAsignacio;
+    private LocalDateTime DataAsignacio;
+
+    @Column
+    private String dataEntrega;
 
     @ManyToOne
     @JoinColumn(name = "usuari_email", nullable = true)
@@ -44,10 +49,10 @@ public class Recompensas {
 
     @ManyToOne
     @JoinColumn(name = "puntBescanviID", nullable = true)
-    @JsonBackReference("recompensa-puntBescanvi")
+    @JsonIgnoreProperties({"puntBescanviID"})
     private PuntBescanvi puntBescanviId;
 
-    @OneToOne(mappedBy = "idRecompensa")
-    @JsonIgnore
-    private Reserva idReserva;
+    @OneToMany(mappedBy = "idRecompensa")
+    @JsonIgnoreProperties({"emailUsuari","idRecompensa"})
+    private List<Reserva> reservas;
 }

@@ -2,6 +2,7 @@ package com.copernic.backend.Backend.entity;
 
 import com.copernic.backend.Backend.entity.enums.EstatReserva;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +20,9 @@ public class Reserva {
     private Long id;
 
     @Column
+    private Boolean caducada;
+
+    @Column
     private String datareserva;
 
     @Column
@@ -27,11 +31,10 @@ public class Reserva {
 
     @ManyToOne
     @JoinColumn(name = "userID")
-    @JsonBackReference
     private Usuari emailUsuari;
 
-    @OneToOne
-    @JoinColumn(name = "idRecompensa",unique = true)
+    @ManyToOne
+    @JoinColumn(name = "idRecompensa")
     private Recompensas idRecompensa;
 
 }

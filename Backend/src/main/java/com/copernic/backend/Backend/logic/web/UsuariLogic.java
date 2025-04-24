@@ -1,8 +1,13 @@
 package com.copernic.backend.Backend.logic.web;
 
 import com.copernic.backend.Backend.Excepciones.ExcepcionEmailDuplicado;
+import com.copernic.backend.Backend.controller.web.UsuariController;
 import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +19,7 @@ import java.util.Optional;
 @Service
 public class UsuariLogic {
 
+    private static final Logger log = LoggerFactory.getLogger(UsuariLogic.class);
     @Autowired
     private UserRepository userRepository;
 
@@ -39,6 +45,11 @@ public class UsuariLogic {
         return userRepository.findById(email);
     }
 
+    public Usuari getUsuariByEmaiL(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+
     // Actualiza la entidad existente sin modificar el identificador (email)
     public void updateUsuari(Usuari usuariActualitzat) {
         // No se toca el campo "email" ya que es el identificador
@@ -59,10 +70,40 @@ public class UsuariLogic {
         return userRepository.findById(email).orElse(null);
     }
 
-    public String savePerfil(Usuari usu){
+    @Transactional
+    public String savePerfil(Usuari dto) {
 
-        Usuari ret = userRepository.save(usu);
+        Usuari db = userRepository.findById(dto.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException());
 
-        return ret.getEmail();
+        db.setNom(dto.getNom());
+        db.setCognom(dto.getCognom());
+        db.setTelefon(dto.getTelefon());
+        db.setPoblacio(dto.getPoblacio());
+        db.setReserva(dto.getReserva());
+        //db.setRuta(dto.getRuta());
+        // …cualquier otro campo editable…
+
+        String nuevaPwd = dto.getContra();
+
+        if (nuevaPwd != null && !nuevaPwd.isBlank()) {
+
+            boolean mismaClave = nuevaPwd.equals(db.getContra());
+
+            if (!mismaClave) {
+                boolean yaEsHash = nuevaPwd.startsWith("$2");
+
+                if (yaEsHash) {
+                    // Llegó un hash distinto → lo ignoramos (podrías lanzar excepción)
+                    log.warn("Intento de actualizar la contraseña con un hash ya codificado; se ignora");
+                } else {
+                    // Llegó texto plano → codificamos
+                    db.setContra(passwordEncoder.encode(nuevaPwd));
+                }
+            }
+        }
+
+        userRepository.save(db);
+        return db.getEmail();
     }
 }

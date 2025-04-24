@@ -1,42 +1,84 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Parámetros del Sistema</title>
-    <link rel="stylesheet" href="/styles/matrix.css" />
-    <link rel="stylesheet" href="/styles/barraLateral.css" />
+
+    <link rel="stylesheet" href="/styles/matrix.css"/>
+    <link rel="stylesheet" href="/styles/barraLateral.css"/>
 </head>
+
 <body>
 <!-- Barra lateral -->
 <div th:replace="barraLateral :: barralateral"></div>
 
 <div class="main-content">
     <h1>Parámetros del Sistema</h1>
+
     <div class="form-wrapper">
         <div class="form-container">
-            <form class="user-form" th:action="@{/sistema/actualizar}" method="post" th:object="${sistema}">
+
+            <form class="user-form"
+                  th:action="@{/sistema/actualizar}"
+                  th:object="${sistema}"
+                  method="post">
+
+                <!-- --- velMax (Double) --- -->
                 <div class="form-field">
                     <label for="velMax">Velocidad Máxima</label>
-                    <input type="number" step="0.1" id="velMax" name="velMax" th:value="*{velMax}" />
+                    <input type="number"
+                           id="velMax"
+                           step="0.1"
+                           placeholder="km/h"
+                           th:field="*{velMax}"/>
                 </div>
 
+                <!-- --- tempsMaxAturat → minutos --- -->
                 <div class="form-field">
-                    <label for="tempsMaxAturat">Tiempo Máx. Parado</label>
-                    <input type="number" step="0.1" id="tempsMaxAturat" name="tempsMaxAturat" th:value="*{tempsMaxAturat}" />
+                    <label for="tempsMaxAturat">Tiempo Máx. Parado <small>(min)</small></label>
+
+                    <div class="input-unit">           <!-- contenedor relativo -->
+                        <input type="number"
+                               id="tempsMaxAturat"
+                               name="tempsMaxAturat"
+                               min="0" step="1"
+                               th:value="${sistema.tempsMaxAturat != null ? sistema.tempsMaxAturat.toMinutes() : ''}"/>
+
+                    </div>
                 </div>
 
+                <!-- --- conversioSaldo (Integer) --- -->
                 <div class="form-field">
                     <label for="conversioSaldo">Conversión Saldo</label>
-                    <input type="number" id="conversioSaldo" name="conversioSaldo" th:value="*{conversioSaldo}" />
+                    <input type="number"
+                           id="conversioSaldo"
+                           th:field="*{conversioSaldo}"/>
                 </div>
 
+                <!-- --- tempsRecollida → horas (con sufijo “h”) --- -->
                 <div class="form-field">
-                    <label for="tempsRecollida">Tiempo Recogida</label>
-                    <input type="text" id="tempsRecollida" name="tempsRecollida" th:value="*{tempsRecollida}" />
+                    <label for="tempsRecollida">
+                        Tiempo Recogida <small>(h)</small>
+                    </label>
+
+                    <input type="text"
+                           id="tempsRecollida"
+                           name="tempsRecollida"
+                           placeholder="ej.: 72h"
+                           th:value="${sistema.tempsRecollida != null
+                    ? sistema.tempsRecollida.toHours() + 'h'
+                    : ''}" />
+
+                    <!-- Aviso en rojo (versión simple con style) -->
+                    <p style="color:#d9534f; margin-top:4px;">
+                        ¡No borres la <strong>h</strong>!
+                    </p>
                 </div>
 
                 <button type="submit" class="btn-crear">Guardar</button>
             </form>
+
         </div>
     </div>
 </div>
