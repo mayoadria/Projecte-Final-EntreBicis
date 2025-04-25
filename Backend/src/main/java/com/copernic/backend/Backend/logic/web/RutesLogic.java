@@ -3,6 +3,7 @@ package com.copernic.backend.Backend.logic.web;
 
 
 import com.copernic.backend.Backend.entity.Rutes;
+import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.repository.RutesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,5 +55,10 @@ public class RutesLogic {
         Rutes r = rutesRepository.findById(id).orElse(null);
 
         return (r != null);
+    }
+
+    public Rutes findLastByUsuari(Usuari u) {
+        return rutesRepository.findTopByUsuariOrderByIdDesc(u)
+                .orElse(null);
     }
 }

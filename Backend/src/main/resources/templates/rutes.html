@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <title>Rutes</title>
+    <link rel="stylesheet" href="/styles/barraLateral.css"/>
+    <link rel="stylesheet" href="/styles/rutes.css"/>
+</head>
+<body>
+<!-- Barra lateral -->
+<div th:replace="barraLateral :: barralateral"></div>
+
+<div class="main-content">
+    <h1>Rutes</h1>
+
+    <!-- GRID de tarjetas -->
+    <div class="routes-grid">
+        <div class="route-card" th:each="card : ${routeCards}">
+            <!-- Cabecera -->
+            <div class="route-header">
+                <span class="route-title" th:text="${card.title}">Ruta…</span>
+
+                <div class="route-stats">
+                    <div><span th:text="${card.distance}">2,55</span> Km</div>
+                    <div><span th:text="${card.points}">2,5</span> p</div>
+                    <div th:text="${card.time}">10:00</div>
+                    <div><span th:text="${card.avgSpeed}">15</span> km/h</div>
+                </div>
+            </div>
+
+            <!-- Mapa -->
+            <img th:src="@{${card.mapUrl}}" alt="Mapa de la ruta"/>
+
+            <!-- Pie -->
+            <div class="route-footer">
+                <span class="route-user" th:text="${card.userName}">Nom Usuari</span>
+
+                <!-- Interruptor on/off (ej. habilitar ruta pública) -->
+                <label class="switch">
+                    <input type="checkbox" th:checked="${card.active}"/>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
