@@ -1,11 +1,14 @@
 package cat.copernic.amayo.frontend.recompensaManagment.data.repositories
 
+import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.security.SecureRandom
 import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSession
 import javax.net.ssl.TrustManager
@@ -39,10 +42,16 @@ object RecompensaRetrofitTLSInstance {
             .hostnameVerifier { hostname: String?, session: SSLSession? -> true } // Acepta cualquier hostname (no recomendado en producción)
             .build()
 
+         val gson = GsonBuilder()
+            .registerTypeAdapter(
+                LocalDateTime::class.java,
+                LocalDateTimeAdapter(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+            )
+            .create()
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create())  // Convierte JSON a objetos Kotlin
+            .addConverterFactory(GsonConverterFactory.create(gson))  // Convierte JSON a objetos Kotlin
             .build()
     }
 }

@@ -37,7 +37,9 @@ public class Recompensas {
     @Column
     private String dataCreacio;
     @Column
-    private LocalDateTime DataAsignacio;
+    private LocalDateTime dataAsignacio;
+    @Column
+    private String dataReserva;
 
     @Column
     private String dataEntrega;
