@@ -175,6 +175,7 @@ fun DetallsReserva(
                         recompensa.dataEntrega = fecha
                         recompensa.usuariRecompensa = nom
 
+
                         llistaViewmodel.updateRecompensa(
                             recompensa,
                             contentResolver = navController.context.contentResolver
