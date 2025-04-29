@@ -1,49 +1,43 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ca">
 <head>
-    <meta charset="UTF-8">
-    <title>Rutes</title>
+    <meta charset="UTF-8"/>
+    <title th:text="${ruta.nom}">Detalls ruta</title>
 
-    <!-- Barra lateral i estils -->
     <link rel="stylesheet" href="/styles/barraLateral.css"/>
     <link rel="stylesheet" href="/styles/detallsRuta.css"/>
 </head>
 <body>
-<!-- Barra lateral -->
-<div th:replace="barraLateral :: barralateral"></div>
+<!-- barra lateral -->
+<div th:replace="~{barraLateral :: barralateral}"></div>
 
 <div class="main-content">
-    <h1>Rutes</h1>
+    <h1 th:text="${ruta.nom}">Detalls ruta</h1>
 
-    <!-- GRID de targetes -->
-    <div class="routes-grid">
-        <!-- Envoltem cada targeta amb un <a> -->
-        <a  class="route-card"
-            th:each="card : ${routeCards}"
-            th:href="@{/detallsRutes/{id}(id=${card.id})}">
+    <div class="route-card">
+        <!-- capçalera -->
+        <div class="route-header">
+            <span class="route-title" th:text="${ruta.nom}">Nom ruta</span>
 
-            <!-- Capçalera -->
-            <div class="route-header">
-                <span class="route-title" th:text="${card.title}">Ruta…</span>
-
-                <div class="route-stats">
-                    <div><span th:text="${card.distance}">0,00</span> Km</div>
-                    <div><span th:text="${card.points}">0</span> p</div>
-                    <div th:text="${card.time}">00:00</div>
-                    <div><span th:text="${card.avgSpeed}">0</span> km/h</div>
-                </div>
+            <div class="route-stats">
+                <div><strong th:text="${#numbers.formatDecimal(ruta.km,1,1)}">0,0</strong> Km</div>
+                <div><strong th:text="${#numbers.formatDecimal(ruta.km,1,1)}">0,0</strong> p</div>
+                <div th:text="${ruta.temps}">00:00</div>
+                <div><strong th:text="${ruta.velMedia}">0</strong> km/h</div>
             </div>
+        </div>
 
-            <!-- Mapa -->
-            <img class="route-map"
-                 th:src="${card.mapUrl}"
-                 alt="Mapa de la ruta"/>
+        <!-- mapa (placeholder) -->
+        <img class="route-map"
+             src="/styles/images/LogoEntrebicis.png"
+             alt="Mapa de la ruta"/>
 
-            <!-- Peu -->
-            <div class="route-footer">
-                <span th:text="${card.userName}">Nom Usuari</span>
-            </div>
-        </a>
+        <!-- peu -->
+        <div class="route-footer">
+            <span th:text="${ruta.usuari.nom + ' ' + ruta.usuari.cognom}">
+                Nom Usuari
+            </span>
+        </div>
     </div>
 </div>
 </body>
