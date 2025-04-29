@@ -24,6 +24,7 @@ import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmode
 import cat.copernic.amayo.frontend.usuariManagment.viewmodels.ModificarViewModel
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun DetallsReserva(
@@ -171,7 +172,7 @@ fun DetallsReserva(
                     reserva?.let {
                         reserva.estat = EstatReserva.RECOLLIDA
                         recompensa.estat = Estat.RECOLLIDA
-                        val fecha = LocalDateTime.now().toString()
+                        val fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
                         recompensa.dataEntrega = fecha
                         recompensa.usuariRecompensa = nom
 

@@ -107,7 +107,7 @@
               : ''}"></td>
             <td th:text="${recompensa.dataCreacio}"></td>
             <td th:text="${recompensa.dataReserva}"></td>
-            <td th:text="${recompensa.dataAsignacio}"></td>
+            <td class="fecha-formateada" th:text="${recompensa.dataAsignacio}"></td>
             <td th:text="${recompensa.dataEntrega}"></td>
 
 
@@ -133,5 +133,26 @@
     });
 </script>
 
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const celdas = document.querySelectorAll(".fecha-formateada");
+
+        celdas.forEach(celda => {
+            const valorOriginal = celda.textContent.trim();
+            if (!valorOriginal) return;
+
+            // Intenta crear un objeto Date
+            const fecha = new Date(valorOriginal);
+
+            if (!isNaN(fecha)) {
+                const fechaStr = fecha.toISOString().split("T")[0];
+                const horaStr = fecha.toTimeString().split(" ")[0];
+
+                celda.innerHTML = `${fechaStr}<br>${horaStr}`;
+            }
+        });
+    });
+</script>
 </body>
 </html>
