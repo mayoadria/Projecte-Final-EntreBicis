@@ -4,6 +4,9 @@ body{
     height:100vh;
     background:#aeefff;
     font-family:Arial, sans-serif;
+    margin: 0;
+
+    padding: 0;
 }
 .main-content{
     flex:1;
@@ -19,10 +22,10 @@ body{
 
 /* === GRID de tarjetas ================================================= */
 .routes-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(300px,1fr));
-    gap:24px;
-    width:100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* 220 px ≈ 5 col. en 1366 px */
+    gap: 24px;
+    width: 100%;
 }
 
 /* === Tarjeta de ruta =================================================== */
@@ -73,6 +76,12 @@ body{
 }
 .route-user{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 
+.route-card:hover{
+    transform: translateY(-4px);                     /* pequeño “salto” */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.20);         /* sombra más marcada */
+    cursor: pointer;
+}
+
 /* Interruptor */
 .switch{position:relative; width:36px; height:20px;}
 .switch input{opacity:0; width:0; height:0;}
@@ -86,3 +95,4 @@ body{
 }
 input:checked + .slider{background:#00d66d;}
 input:checked + .slider:before{transform:translateX(16px);}
+

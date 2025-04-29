@@ -8,6 +8,7 @@ import lombok.Getter;
 public class RouteCardDTO {
 
     private final String  title;
+    private final String  userEmail;   // ← NUEVO
     private final String  distance;   // 2,55
     private final String  points;     // 2,5
     private final String  time;       // 10:00
@@ -15,10 +16,12 @@ public class RouteCardDTO {
     private final String  mapUrl;     // URL mapa
     private final String  userName;   // “Nom Cognom”
     private final boolean active;     // on/off
+    private final Long    id;         // id de la ruta
 
     public RouteCardDTO(Usuari user, Rutes ruta) {
 
         this.userName = user.getNom() + " " + user.getCognom();
+        this.userEmail = user.getEmail();
 
         /* ───── Usuario sin rutas ─────────────────────────────── */
         if (ruta == null) {
@@ -29,13 +32,14 @@ public class RouteCardDTO {
             this.avgSpeed  = "-";
             this.mapUrl    = "/img/map-placeholder.png";
             this.active    = false;
+            this.id        = null;
             return;
         }
 
         /* ───── Ruta existente ───────────────────────────────── */
         this.title     = ruta.getNom();
 
-        // km es int ⇒ cásting a double para usar %f  (ya no lanza f!=Integer)
+        // km es int ⇒ cásting a double para usar %f
         this.distance  = String.format("%.2f", (double) ruta.getKm());
 
         this.points    = String.format("%.1f", calcularPunts(ruta));
@@ -48,6 +52,7 @@ public class RouteCardDTO {
 
         this.mapUrl    = generaUrlMapa(ruta);
         this.active    = true;
+        this.id        = ruta.getId();
     }
 
     /* -------- helpers ---------------------------------------- */

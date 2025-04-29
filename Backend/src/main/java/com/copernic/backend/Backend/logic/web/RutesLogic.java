@@ -1,7 +1,6 @@
 package com.copernic.backend.Backend.logic.web;
 
 
-
 import com.copernic.backend.Backend.entity.Rutes;
 import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.repository.RutesRepository;
@@ -20,7 +19,7 @@ public class RutesLogic {
         this.rutesRepository = rutesRepository;
     }
 
-    public List<Rutes> findAllProducts(){
+    public List<Rutes> findAllProducts() {
 
         List<Rutes> ret;
 
@@ -30,7 +29,7 @@ public class RutesLogic {
 
     }
 
-    public Long saveRuta(Rutes rutes){
+    public Long saveRuta(Rutes rutes) {
 
         Rutes ret = rutesRepository.save(rutes);
 
@@ -38,20 +37,19 @@ public class RutesLogic {
 
     }
 
-    public Rutes getRutaById(Long id){
+    public Rutes getRutaById(Long id) {
 
         return rutesRepository.findById(id).orElse(null);
 
     }
 
-    public void deleteRutaById(Long id){
+    public void deleteRutaById(Long id) {
 
         rutesRepository.deleteById(id);
 
     }
 
-    public boolean existsById(Long id)
-    {
+    public boolean existsById(Long id) {
         Rutes r = rutesRepository.findById(id).orElse(null);
 
         return (r != null);
@@ -60,5 +58,9 @@ public class RutesLogic {
     public Rutes findLastByUsuari(Usuari u) {
         return rutesRepository.findTopByUsuariOrderByIdDesc(u)
                 .orElse(null);
+    }
+
+    public List<Rutes> findAllByUsuari(Usuari u) {
+        return rutesRepository.findByUsuariOrderByIdDesc(u);
     }
 }

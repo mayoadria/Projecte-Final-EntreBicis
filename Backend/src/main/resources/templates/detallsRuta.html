@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <title>Rutes</title>
+
+    <!-- Barra lateral i estils -->
+    <link rel="stylesheet" href="/styles/barraLateral.css"/>
+    <link rel="stylesheet" href="/styles/detallsRuta.css"/>
+</head>
+<body>
+<!-- Barra lateral -->
+<div th:replace="barraLateral :: barralateral"></div>
+
+<div class="main-content">
+    <h1>Rutes</h1>
+
+    <!-- GRID de targetes -->
+    <div class="routes-grid">
+        <!-- Envoltem cada targeta amb un <a> -->
+        <a  class="route-card"
+            th:each="card : ${routeCards}"
+            th:href="@{/detallsRutes/{id}(id=${card.id})}">
+
+            <!-- Capçalera -->
+            <div class="route-header">
+                <span class="route-title" th:text="${card.title}">Ruta…</span>
+
+                <div class="route-stats">
+                    <div><span th:text="${card.distance}">0,00</span> Km</div>
+                    <div><span th:text="${card.points}">0</span> p</div>
+                    <div th:text="${card.time}">00:00</div>
+                    <div><span th:text="${card.avgSpeed}">0</span> km/h</div>
+                </div>
+            </div>
+
+            <!-- Mapa -->
+            <img class="route-map"
+                 th:src="${card.mapUrl}"
+                 alt="Mapa de la ruta"/>
+
+            <!-- Peu -->
+            <div class="route-footer">
+                <span th:text="${card.userName}">Nom Usuari</span>
+            </div>
+        </a>
+    </div>
+</div>
+</body>
+</html>

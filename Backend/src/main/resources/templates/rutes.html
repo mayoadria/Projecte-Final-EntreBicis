@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Rutes</title>
+
+    <!-- Barra lateral y estilos propios de la página -->
     <link rel="stylesheet" href="/styles/barraLateral.css"/>
     <link rel="stylesheet" href="/styles/rutes.css"/>
 </head>
@@ -15,7 +17,11 @@
 
     <!-- GRID de tarjetas -->
     <div class="routes-grid">
-        <div class="route-card" th:each="card : ${routeCards}">
+        <div class="route-card"
+             th:each="card : ${routeCards}"
+             th:onclick="|window.location.href='@{/ruta/detalls/{id}(id=${card.id})}'|"
+             style="cursor: pointer;">
+
             <!-- Cabecera -->
             <div class="route-header">
                 <span class="route-title" th:text="${card.title}">Ruta…</span>
@@ -29,17 +35,12 @@
             </div>
 
             <!-- Mapa -->
-            <img th:src="@{${card.mapUrl}}" alt="Mapa de la ruta"/>
+            <img src="/styles/images/LogoEntrebicis.png" alt="Logo Entrebicis"/>
 
             <!-- Pie -->
             <div class="route-footer">
-                <span class="route-user" th:text="${card.userName}">Nom Usuari</span>
-
-                <!-- Interruptor on/off (ej. habilitar ruta pública) -->
-                <label class="switch">
-                    <input type="checkbox" th:checked="${card.active}"/>
-                    <span class="slider"></span>
-                </label>
+                <!-- Nombre -->
+                <span th:text="${card.userName}">Nom Usuari</span>
             </div>
         </div>
     </div>

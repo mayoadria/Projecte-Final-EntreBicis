@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,5 +46,24 @@ public class RutesController {
         // 3. Enviamos a la vista Thymeleaf
         model.addAttribute("routeCards", cards);
         return "rutes";   // templates/rutes.html
+    }
+
+
+    /* ================= Detall d’una ruta ================= */
+
+    @GetMapping("/ruta/detalls/{id}")
+    public String detallsRuta(@PathVariable Long id,
+                              Model model,
+                              RedirectAttributes ra) {
+
+        Rutes ruta = rutesLogic.getRutaById(id);
+
+        if (ruta == null) {
+            ra.addFlashAttribute("error", "La ruta seleccionada no existeix.");
+            return "redirect:/admin/rutes";
+        }
+
+        model.addAttribute("ruta", ruta);
+        return "detallsRuta";          // templates/detallsRuta.html
     }
 }

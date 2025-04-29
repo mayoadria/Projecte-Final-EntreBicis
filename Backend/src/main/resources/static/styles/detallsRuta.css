@@ -1,0 +1,112 @@
+/* ========== Reset mínimo ========== */
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
+
+/* ========== Layout general ========== */
+body{
+    display:flex;
+    height:100vh;
+    background:#aeefff;
+}
+.main-content{
+    flex:1;
+    padding:24px 32px;
+    overflow:auto;                       /* scroll vertical si hace falta */
+}
+.main-content h1{
+    margin-bottom:20px;
+    font-size:26px;
+    color:#003550;
+}
+
+/* ========== Lista de rutas ========== */
+.routes-list{
+    display:flex;
+    flex-direction:column;
+    gap:32px;
+}
+
+/* Tarjeta */
+.route-card{
+    background:#85d3f2;
+    border:1px solid #00355030;
+    border-radius:8px;
+    overflow:hidden;
+    transition:transform .2s ease, box-shadow .2s ease;
+}
+.route-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 6px 12px rgba(0,0,0,.20);
+    cursor:pointer;
+}
+
+/* Cabecera */
+.route-header{
+    background:#49c2e6;
+    padding:10px;
+    text-align:center;
+    font-weight:700;
+    color:#fff;
+}
+.route-title{font-size:16px;}
+
+/* Mapa */
+.route-map{
+    width:100%;
+    height:auto;
+    display:block;
+}
+
+/* Datos */
+.route-data{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    text-align:center;
+    gap:12px;
+    padding:14px 12px;
+    background:#6de0ff;
+    font-size:14px;
+    font-weight:600;
+    color:#003550;
+}
+.stat strong{font-size:15px;}
+
+/* Footer */
+.route-footer{
+    padding:10px 12px;
+    display:flex;
+    justify-content:flex-end;
+    background:#00c3ff;
+}
+.btn-details{
+    background:#003550;
+    color:#fff;
+    padding:6px 14px;
+    border-radius:4px;
+    text-decoration:none;
+    font-size:14px;
+    transition:background .2s;
+}
+.btn-details:hover{background:#001e2e;}
+
+/* El <a> que envuelve la tarjeta debe comportarse como bloque flex igual que antes */
+.route-card{
+    display:flex;
+    flex-direction:column;
+    text-decoration:none;   /* quita subrayado */
+    color:inherit;          /* conserva el color de texto */
+}
+
+/* Reaplicamos aquí las transiciones y hover que ya tenías */
+.route-card{
+    background:#6de0ff;
+    border-radius:8px;
+    overflow:hidden;
+    box-shadow:0 2px 4px rgba(0,0,0,.15);
+    transition:transform .2s ease, box-shadow .2s ease;
+}
+
+.route-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 6px 12px rgba(0,0,0,.20);
+    cursor:pointer;
+}
