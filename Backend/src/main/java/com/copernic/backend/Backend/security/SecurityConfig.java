@@ -74,8 +74,8 @@ public class SecurityConfig {
                                 "/styles/**", "/images/**",
                                 "/error"              //  ←  nuevo
                         ).permitAll()
-                        .anyRequest().authenticated())
-                .formLogin(f -> f.loginPage("/login")
+                        .anyRequest().hasRole("ADMINISTRADOR"))
+                        .formLogin(f -> f.loginPage("/login")
                         .usernameParameter("email")
                         .passwordParameter("contra")
                         .defaultSuccessUrl("/home", true))

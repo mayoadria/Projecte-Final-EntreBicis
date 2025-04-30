@@ -6,10 +6,7 @@
     import com.fasterxml.jackson.annotation.JsonIgnore;
     import com.fasterxml.jackson.annotation.JsonManagedReference;
     import jakarta.persistence.*;
-    import lombok.AllArgsConstructor;
-    import lombok.Data;
-    import lombok.NoArgsConstructor;
-    import lombok.ToString;
+    import lombok.*;
     import lombok.experimental.SuperBuilder;
     import org.springframework.security.core.GrantedAuthority;
     import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -55,8 +52,9 @@
         @Column
         private Double saldo;
 
-        @Column(nullable = true)
-        private Boolean reserva;
+        @Builder.Default
+        @Column(nullable = false)
+        private Boolean reserva = false;
 
 //        @Column(nullable = true)
 //        private Boolean ruta;
