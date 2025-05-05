@@ -75,10 +75,16 @@ public class SecurityConfig {
                                 "/error"              //  ←  nuevo
                         ).permitAll()
                         .anyRequest().hasRole("ADMINISTRADOR"))
-                        .formLogin(f -> f.loginPage("/login")
+                .formLogin(f -> f
+                        .loginPage("/login")
+                        .loginProcessingUrl("/user")         //  ← el <form> apuntará a /user
                         .usernameParameter("email")
                         .passwordParameter("contra")
-                        .defaultSuccessUrl("/home", true))
+                        .successHandler((request, response, authentication) -> {
+                            Usuari u = usuariLogic.getUsuariByEmail(authentication.getName()).orElse(null);
+                            request.getSession().setAttribute("usuari", u);   // ← clave que lee Thymeleaf
+                            response.sendRedirect("/home");
+                        }))
                 .logout(l -> l.logoutUrl("/logout")
                         .logoutSuccessUrl("/login"));
         crearAdminSiNoExiste();

@@ -5,6 +5,7 @@ import com.copernic.backend.Backend.entity.enums.Rol;
 import com.copernic.backend.Backend.logic.web.UsuariLogic;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,36 +41,37 @@ public class AuthController {
     }
 
     // Ahora se utiliza "email" para autenticar
-    @PostMapping("/user")
-    public String login(@RequestParam("email") String email,
-                        @RequestParam("contra") String contra) {
-        Optional<Usuari> admin = usuariLogic.getUsuariByEmail(email);
-        if (admin.isPresent() &&
-                passwordEncoder.matches(contra, admin.get().getContra()) &&
-                admin.get().getRol().name().equals("ADMINISTRADOR")) {
-            return "redirect:/home";
-        }
-        return "redirect:/login?error=true";
-    }
+
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
-        // Obtiene la autenticación actual del contexto de seguridad
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // Si el usuario está autenticado, cierra la sesión
-        if (authentication != null) {
-            new SecurityContextLogoutHandler().logout(request, response, authentication);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
         }
-
-        return "redirect:/login"; // Redirige a la página principal
+        return "redirect:/login";
     }
 
     @GetMapping("/home")
-    public String showHome(Model model) {
-        // Recupera el usuario administrador, por ejemplo:
-        Usuari admin = usuariLogic.getUsuariByEmail("admin@entrebicis.com").orElse(null);
-        model.addAttribute("usuari", admin);
+    public String showHome(Model model,
+                           HttpSession session,          // ⬅ traemos la sesión
+                           Authentication auth) {        // ⬅ por si necesitas repoblar
+
+        // 1) Intenta sacar el objeto desde la sesión (lo metiste en /user)
+        Usuari usuari = (Usuari) session.getAttribute("usuari");
+
+        // 2) Si la sesión caducó pero el SecurityContext sigue vivo, repón el atributo
+        if (usuari == null && auth != null) {
+            usuari = usuariLogic.getUsuariByEmail(auth.getName()).orElse(null);
+            session.setAttribute("usuari", usuari);
+        }
+
+        // 3) Sin usuario ⇒ vuelve a /login
+        if (usuari == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("usuari", usuari);   // por si tu plantilla principal lo usa
         return "home";
     }
 
