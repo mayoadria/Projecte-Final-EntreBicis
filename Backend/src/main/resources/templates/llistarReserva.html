@@ -46,7 +46,9 @@
 
                     <!-- Botón de borrado -->
                     <a class="btn-accion btn-delete"
-                       th:href="@{/reserva/delete/{id}(id=${reserva.id})}">🗑️</a>
+                       th:href="@{/reserva/delete/{id}(id=${reserva.id})}"
+                       onclick="return confirm('Estás segur que vols esborrar aquesta reserva?');"
+                    >🗑️</a>
                 </form>
             </td>
         </tr>

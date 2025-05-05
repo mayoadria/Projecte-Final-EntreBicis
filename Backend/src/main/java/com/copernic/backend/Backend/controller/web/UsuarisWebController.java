@@ -1,6 +1,7 @@
 package com.copernic.backend.Backend.controller.web;
 
 import com.copernic.backend.Backend.Excepciones.ExcepcionEmailDuplicado;
+import com.copernic.backend.Backend.entity.PuntBescanvi;
 import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.entity.enums.Estat;
 import com.copernic.backend.Backend.entity.enums.EstatUsuari;
@@ -41,7 +42,7 @@ public class UsuarisWebController {
         }
 
         List<Usuari> usuaris = usuariLogic.getAllUsuaris().stream()
-                .filter(u -> u.getRol() != null && !u.getRol().equals(Rol.ADMINISTRADOR))
+                .filter(u -> u.getRol() != null )
                 .collect(Collectors.toList());
 
         model.addAttribute("usuaris", usuaris);
@@ -96,6 +97,9 @@ public class UsuarisWebController {
                 model.addAttribute("fotoDataUrl", fotoDataUrl);
             }
             model.addAttribute("usuariForm", usuari);
+            model.addAttribute("visualitzar", false);
+            model.addAttribute("estats", EstatUsuari.values());
+            model.addAttribute("rols", Rol.values());
             // En la vista de edición se debe incluir un campo oculto "originalEmail" para evitar modificar el identificador
             return "editarUsuari";
         } else {
@@ -119,9 +123,8 @@ public class UsuarisWebController {
             existing.setTelefon(usuariForm.getTelefon());
             existing.setSaldo(usuariForm.getSaldo());
             existing.setPoblacio(usuariForm.getPoblacio());
-            if (!existing.getRol().equals(Rol.ADMINISTRADOR)) {
-                existing.setRol(Rol.CICLISTA);
-            }
+            existing.setRol(usuariForm.getRol());
+            existing.setEstat(usuariForm.getEstat());
             if (fileFoto != null && !fileFoto.isEmpty()) {
                 String base64Foto = Base64.getEncoder().encodeToString(fileFoto.getBytes());
                 existing.setFoto(base64Foto);
@@ -177,6 +180,38 @@ public class UsuarisWebController {
     @InitBinder("usuari")
     public void initBinder(WebDataBinder binder) {
         binder.setDisallowedFields("email");
+    }
+
+    @GetMapping("/visualitzar/{email:.+}")
+    public String visualitzarUsuari(@PathVariable String email, Model model) {
+
+        // 1. Buscar el usuario
+        Optional<Usuari> usuariOpt = usuariLogic.getUsuariByEmail(email);
+        if (usuariOpt.isEmpty()) {
+            // Si no existe, volvemos a la lista y mostramos error
+            model.addAttribute("error", "L'usuari amb email " + email + " no existeix.");
+            return "redirect:/usuaris";
+        }
+
+        // 2. Añadir información al modelo
+        Usuari usuari = usuariOpt.get();
+
+        // Si tiene foto, construimos el data-URL para mostrarla directamente en <img>
+        if (usuari.getFoto() != null && !usuari.getFoto().isEmpty()) {
+            String fotoDataUrl = "data:image/jpeg;base64," + usuari.getFoto();
+            model.addAttribute("fotoDataUrl", fotoDataUrl);
+        }
+
+        // Reutilizamos el mismo nombre de atributo que en la edición
+        model.addAttribute("usuariForm", usuari);
+
+        // Flag para que la vista sepa que es modo lectura
+        model.addAttribute("visualitzar", true);
+        model.addAttribute("estats", EstatUsuari.values());
+        model.addAttribute("rols", Rol.values());
+
+        // 3. Reutilizamos la vista de edición
+        return "editarUsuari";
     }
 
 }

@@ -48,10 +48,13 @@
 
             </td>
             <td>
+                <a class="btn-view"
+                   th:href="@{/usuaris/visualitzar/{email}(email=${usuari.email})}"
+                   title="Visualitzar">👁️</a>
                 <a th:href="@{/usuaris/editar/{email}(email=${usuari.email})}" class="btn-edit">✏️</a>
                 <a th:href="@{/usuaris/delete/{email}(email=${usuari.email})}"
                    class="btn-delete"
-                   onclick="return confirm('¿Está seguro de borrar este usuario?');">🗑️</a>
+                   onclick="return confirm('Esteu segur d\'esborrar aquest usuari?');">🗑️</a>
             </td>
         </tr>
         </tbody>
@@ -65,7 +68,7 @@
 
         var isActive = checkbox.checked;
 
-        if (!isActive && !confirm("¿Está seguro de desactivar este usuario?")) {
+        if (!isActive && !confirm("Esteu segur de desactivar aquest usuari?")) {
             checkbox.checked = true;
             return;
         }

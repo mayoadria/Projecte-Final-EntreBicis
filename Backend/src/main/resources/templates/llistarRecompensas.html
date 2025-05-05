@@ -114,7 +114,8 @@
             <td>
                 <a class="btn-view" th:href="@{/recompensas/visualizar/{id}(id=${recompensa.id})}">👁️</a>
                 <a class="btn-edit" th:href="@{/recompensas/edit/{id}(id=${recompensa.id})}">✏️</a>
-                <a class="btn-delete" th:href="@{/recompensas/delete/{id}(id=${recompensa.id})}">🗑️</a>
+                <a class="btn-delete" th:href="@{/recompensas/delete/{id}(id=${recompensa.id})}"
+                   onclick="return confirm('Estás segur que vols esborrar aquesta recompensa?');">🗑️</a>
             </td>
         </tr>
         </tbody>
