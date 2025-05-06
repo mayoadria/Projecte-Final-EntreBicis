@@ -36,7 +36,11 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String showLogin() {
+    public String showLogin(@RequestParam(value = "error", required = false) String error,
+                            Model model) {
+        if (error != null) {
+            model.addAttribute("errorMessage", "Usuari o contrasenya incorrectes.");
+        }
         return "login";
     }
 
@@ -74,19 +78,6 @@ public class AuthController {
         model.addAttribute("usuari", usuari);   // por si tu plantilla principal lo usa
         return "home";
     }
-
-
-
-//    @GetMapping("/usuaris")
-//    public String showUsuaris(Model model) {
-//        // Obtiene todos los usuarios y filtra los que no son administradores
-//        List<Usuari> usuaris = usuariLogic.getAllUsuaris().stream()
-//                .filter(u -> !u.getRol().equals(Rol.ADMINISTRADOR)) // Ajusta el valor según tu enum (por ejemplo, ADMIN o ADMINISTRADOR)
-//                .collect(Collectors.toList());
-//        model.addAttribute("usuaris", usuaris);
-//        return "usuaris"; // Se buscará usuaris.html en src/main/resources/templates/
-//    }
-
 
     @GetMapping("/crearUsuaris")
     public String crearUsuariForm() {

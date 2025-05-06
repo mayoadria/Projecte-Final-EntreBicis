@@ -1,63 +1,111 @@
-/* General */
+/* ===============================
+   RESET Y GENERAL
+   =============================== */
+html {
+    font-size: 16px; /* Tamaño base reducido */
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: Arial, sans-serif;
-
 }
 
 body {
-    display: flex; /* Para alinear la barra lateral y el contenido principal */
+    display: flex;
+    flex-direction: row;
     width: 100%;
     height: 100vh;
-    margin: 0;
-    padding: 0;
-    background-color: #aeefff; /* Fondo azul */
+    background-color: #84d0e6;
 }
 
-/* Barra lateral */
-
-nav ul li a:hover {
-    background-color: #72c0de;
-}
-
-/* Main content */
+/* ===============================
+   MAIN CONTENT AREA
+   =============================== */
 .main-content {
     flex: 1;
     padding: 20px;
-    overflow-x: auto; /* Asegura que si hay un desbordamiento, aparezca una barra de desplazamiento */
-    background-color: #aeefff; /* Fondo blanco para el contenido */
+    overflow-x: auto;
+    background-color: #3fa6c2;
+    font-size: 0.9rem;
 }
 
-/* Título */
+.content-wrapper {
+    width: 100%;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* ===============================
+   TÍTULOS
+   =============================== */
 .main-content h1 {
-    color: #ffffff; /* El color del texto es blanco */
-    background-color: #aeefff; /* El fondo del título será azul */
-
+    color: #ffffff;
     border-radius: 5px;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    font-size: 2rem; /* TÍTULO MÁS GRANDE */
 }
 
-/* Filtros */
-.filter-toggle {
-    background-color: #0099cc;
-    color: white;
-    padding: 8px 16px;
+/* ===============================
+   BOTONES
+   =============================== */
+.btn-crear {
+    background-color: #027ba0;
+    color: #fff;
+    padding: 6px 12px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
+    float: right;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.btn-crear:hover {
+    background-color: #02688a;
+}
+
+.btn-edit,
+.btn-view,
+.btn-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-right: 8px;
+    text-decoration: none;
+}
+
+/* ===============================
+   FILTROS
+   =============================== */
+.filter-toggle {
+    background-color: #027ba0;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
     margin-bottom: 10px;
     text-decoration: none;
 }
 
-/* Fondo azul para los filtros, igual que el fondo del body */
 .filter-content {
     display: none;
     flex-wrap: wrap;
-    gap: 10px;
-    background-color: #007bb5; /* Fondo azul igual al del body */
-    padding: 10px;
+    gap: 12px;
+    background-color: rgba(0, 44, 64, 0.4);
+    padding: 15px;
+    border-radius: 6px;
+    backdrop-filter: blur(2px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    font-size: 0.85rem;
 }
 
 .filter-content.active {
@@ -67,86 +115,152 @@ nav ul li a:hover {
 .filtre {
     display: flex;
     flex-direction: column;
-    width: 150px; /* Filtros más pequeños */
-    margin-left: 10px; /* Filtros más cerca de la barra lateral */
+    width: 150px;
+    margin-left: 10px;
 }
 
 .filt-txt {
     margin-bottom: 5px;
-    font-size: 14px;
-    color: #fff; /* Cambiar el color de los textos de los filtros a blanco */
+    font-size: 0.85rem;
+    color: #d6e4ea;
 }
 
 .filt-input {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
+    padding: 6px;
+    border: 1px solid #5fa6bd;
     border-radius: 5px;
-    font-size: 14px;
+    font-size: 0.85rem;
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #f0f8ff;
 }
 
-/* Botón de filtro */
-.btn-crear {
-
-    background-color: #0099cc;
-    color: #fff;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    float: right; /* Lo coloca a la derecha */
-    margin-bottom: 10px;
-    font-size: 16px;
-    text-decoration: none;
-}
-.btn-crear:hover {
-    background-color: #008bb3;
-}
-
-/* Tabla */
+/* ===============================
+   TABLA
+   =============================== */
 .users-table {
     width: 100%;
-    max-width: calc(100% - 40px); /* Para asegurar que la tabla tenga márgenes laterales */
-    margin: 20px auto; /* Añade márgenes automáticos a los lados de la tabla */
+    margin: 0;
     border-collapse: collapse;
-    background-color: rgba(191, 229, 253, 0.55);
+    background-color: rgba(175, 215, 235, 0.45);
     border-radius: 8px;
-    overflow: hidden; /* Para que los bordes sean limpios */
-    table-layout: fixed; /* Esto asegura que las celdas se ajusten bien */
+    overflow: hidden;
+    table-layout: fixed;
+    font-size: 0.9rem;
 }
 
-/* Asegura que las celdas se alineen bien y tengan un ancho adecuado */
-.users-table th, .users-table td {
-    padding: 12px 16px;
+.users-table thead {
+    background-color: rgba(0, 105, 140, 0.8);
+    color: #fff;
+}
+
+.users-table th,
+.users-table td {
+    padding: 10px 12px;
     text-align: left;
     border-bottom: 1px solid #008bb3;
     overflow: hidden;
-    text-overflow: ellipsis; /* Para manejar texto largo */
+    text-overflow: ellipsis;
 }
 
-/* Cambia el color de fondo de los encabezados de la tabla */
-.users-table thead {
-    background-color: rgba(11, 184, 234, 0.86);
-}
-
-/* Efecto hover en las filas */
 .users-table tbody tr:hover {
-    background-color: #e3f6fd;
+    background-color: rgba(255, 255, 255, 0.15);
 }
 
-/* Asegura que los botones de editar y eliminar no interfieran con el tamaño */
 .users-table td a {
     margin-right: 8px;
 }
 
-/* Estilo de los botones de acción */
-.btn-edit,
-.btn_view,
-.btn-delete {
-    background: none;
-    border: none;
+/* ===============================
+   SWITCH DE ESTADO
+   =============================== */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 22px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
     cursor: pointer;
-    font-size: 18px;
-    margin-right: 8px;
-    text-decoration: none;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc;
+    border-radius: 22px;
+    transition: 0.4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.4s;
+}
+
+input:checked + .slider {
+    background-color: #027ba0;
+}
+
+input:checked + .slider:before {
+    transform: translateX(18px);
+}
+
+/* ===============================
+   NAVIGATION (solo hover aquí)
+   =============================== */
+nav ul li a:hover {
+    background-color: #5eb6d2;
+}
+
+/* ===============================
+   RESPONSIVE
+   =============================== */
+@media (min-width: 769px) {
+    body {
+        padding-left: 220px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+        padding-left: 0;
+    }
+
+    .main-content {
+        padding: 20px 10px;
+    }
+
+    .btn-crear {
+        float: none;
+        display: block;
+        width: 100%;
+        text-align: center;
+        font-size: 0.85rem;
+    }
+
+    .users-table {
+        font-size: 0.85rem;
+    }
+
+    .users-table th,
+    .users-table td {
+        padding: 8px;
+    }
+
+    .filt-txt,
+    .filt-input {
+        font-size: 0.8rem;
+    }
 }

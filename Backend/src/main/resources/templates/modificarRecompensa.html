@@ -18,80 +18,104 @@
         <div class="profile-picture" id="profilePicture">
             <img id="fotoPreview" th:src="${fotoDataUrl != null ? fotoDataUrl : 'https://via.placeholder.com/150'}" alt="Foto usuario" />
         </div>
+
         <div th:if="${error}" class="alert-error">
             <p th:text="${error}"></p>
         </div>
-        <form class="user-form" th:action="@{/recompensas/editar}" th:object="${recompensas}" method="post"
-              enctype="multipart/form-data">
+
+        <form class="user-form" th:action="@{/recompensas/editar}" th:object="${recompensas}" method="post" enctype="multipart/form-data">
             <input type="hidden" th:field="*{id}">
             <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" th:disabled="${visualizar}" />
+
+            <!-- Fila 1 -->
             <div class="form-field">
                 <label for="descripcio">Descripció</label>
                 <input type="text" id="descripcio" th:field="*{descripcio}" th:readonly="${visualizar}">
             </div>
-            <div class="form-field">
-                <label for="observacions">Observacions</label>
-                <textarea id="observacions" th:field="*{observacions}" th:readonly="${visualizar}"></textarea>
-            </div>
+
+            <!-- Fila 2 -->
             <div class="form-field">
                 <label for="cost">Cost</label>
                 <input type="number" id="cost" th:field="*{cost}" min="1" th:readonly="${visualizar}">
             </div>
+
+            <div class="form-field full-width">
+                <div style="display: flex; gap: 1rem;">
+                    <!-- Punt de Bescanvi -->
+                    <div style="flex: 1;">
+                        <label for="besanvi-select">Punt de Bescanvi:</label>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <select id="besanvi-select" th:field="*{puntBescanviId}" th:disabled="${visualizar}" style="width: 100%;">
+                                <option value="" disabled selected hidden>Seleccionar una opción</option>
+                                <option th:each="bescanvis : ${puntBescanviId}" th:value="${bescanvis.id}"
+                                        th:text="${bescanvis.nom}"></option>
+                            </select>
+                            <a class="btn-view"
+                               th:if="${visualizar and recompensas.puntBescanviId != null}"
+                               th:href="@{/bescanvi/visualizar/{id}(id=${recompensas.puntBescanviId.id})}">👁️</a>
+                        </div>
+                    </div>
+
+                    <!-- Estat -->
+                    <div style="flex: 1;">
+                        <label for="estat">Estat</label>
+                        <select th:field="*{estat}" id="estat" th:disabled="${visualizar}" style="width: 100%;">
+                            <option value="" disabled selected hidden></option>
+                            <option class="inp_pais" th:each="estat : ${estat}"
+                                    th:value="${estat}"
+                                    th:text="${estat}"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Observacions debajo -->
+            <div class="form-field full-width">
+                <label for="observacions">Observacions</label>
+                <textarea id="observacions" th:field="*{observacions}" th:readonly="${visualizar}"></textarea>
+            </div>
+
+            <!-- Fila 4 (solo visualizar) -->
             <div class="form-field" th:if="${visualizar}">
                 <label for="nomU">Nom Usuari</label>
                 <input type="text" id="nomU" th:field="*{usuariRecompensa}" th:readonly="${visualizar}">
             </div>
+
             <div class="form-field" th:if="${visualizar}">
                 <label for="dataCreacio">Data Creació</label>
                 <input type="text" id="dataCreacio" th:field="*{dataCreacio}" th:readonly="${visualizar}">
             </div>
+
+            <!-- Fila 5 (solo visualizar) -->
             <div class="form-field" th:if="${visualizar}">
                 <label for="dataAsignacio">Data Assignació</label>
                 <input type="text" id="dataAsignacio" th:field="*{dataAsignacio}" th:readonly="${visualizar}">
             </div>
+
             <div class="form-field" th:if="${visualizar}">
                 <label for="dataReserva">Data Reserva</label>
                 <input type="text" id="dataReserva" th:field="*{dataReserva}" th:readonly="${visualizar}">
             </div>
-            <div class="form-field" th:if="${visualizar}">
+
+            <!-- Fila 6 (solo visualizar) -->
+            <div class="form-field full-width" th:if="${visualizar}">
                 <label for="dataEntrega">Data Entrega</label>
                 <input type="text" id="dataEntrega" th:field="*{dataEntrega}" th:readonly="${visualizar}">
             </div>
-            <div class="form-group">
-                <label for="besanvi-select">Punt de Bescanvi:</label>
-                <div style="display: flex; align-items: center;">
-                    <select id="besanvi-select" th:field="*{puntBescanviId}" th:disabled="${visualizar}">
-                        <option value="" disabled selected hidden>Seleccionar una opción</option>
-                        <option th:each="bescanvis : ${puntBescanviId}" th:value="${bescanvis.id}"
-                                th:text="${bescanvis.nom}"></option>
-                    </select>
-                    <!-- Botón para ver detalles -->
-                    <a class="btn-view"
-                       th:if="${visualizar and recompensas.puntBescanviId != null}"
-                       th:href="@{/bescanvi/visualizar/{id}(id=${recompensas.puntBescanviId.id})}">👁️</a>
-                </div>
-            </div>
-            <div class="form-field full-width">
-                <select class="input" th:field="*{estat}" id="pais" th:disabled="${visualizar}">
-                    <option value="" disabled selected hidden></option>
-                    <option class="inp_pais" th:each="estat : ${estat}"
-                            th:value="${estat}"
-                            th:text="${estat}"></option>
-                </select>
-            </div>
 
+            <!-- Botón -->
             <div class="form-actions" th:if="${!visualizar}">
                 <button type="submit">Guardar</button>
             </div>
         </form>
     </div>
 </div>
+
 <script>
-    // Al hacer clic en el contenedor de foto se abre el selector de archivos
     document.getElementById('profilePicture').addEventListener('click', function() {
         document.getElementById('fotoInput').click();
     });
-    // Previsualización de la foto seleccionada
 
     document.getElementById('fotoInput').addEventListener('change', function(event) {
         const file = event.target.files[0];

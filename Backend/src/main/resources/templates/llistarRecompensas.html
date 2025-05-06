@@ -4,137 +4,133 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Recompensas</title>
-    <link rel="stylesheet" href="/styles/tablas.css">
     <link rel="stylesheet" href="/styles/barraLateral.css">
+    <link rel="stylesheet" href="/styles/tablas.css">
 </head>
 <body>
+
 <!-- Barra lateral -->
 <div th:replace="barraLateral :: barralateral"></div>
 
-<!-- Barra lateral -->
+<!-- Contenido principal -->
+<div class="main-content">
+    <div class="content-wrapper">
 
-<form th:action="@{/recompensas/llistar}" method="get">
-    <div class="main-content">
-        <h1>Llista de Recompenses</h1>
-        <a class="btn-crear" th:href="@{/recompensas/crear}">Crear</a>
+        <!-- Formulario de filtros -->
+        <form th:action="@{/recompensas/llistar}" method="get">
+            <h1>Llista de Recompenses</h1>
 
-        <!-- Botón para desplegar filtros -->
-        <button class="filter-toggle">Mostrar Filtros</button>
+            <a class="btn-crear" th:href="@{/recompensas/crear}">Crear</a>
 
-        <!-- Contenedor de filtros -->
-        <div class="filter-content">
-            <div class="filtre">
-                <label for="nomRecompensa" class="filt-txt">Descripció:</label>
-                <input type="text" id="nomRecompensa" name="nomRecompensa" th:value="${param.nomRecompensa}"
-                       class="filt-input">
+            <!-- Botón para desplegar filtros -->
+            <button class="filter-toggle">Mostrar Filtros</button>
+
+            <!-- Contenedor de filtros -->
+            <div class="filter-content">
+                <div class="filtre">
+                    <label for="nomRecompensa" class="filt-txt">Descripció:</label>
+                    <input type="text" id="nomRecompensa" name="nomRecompensa" th:value="${param.nomRecompensa}" class="filt-input">
+                </div>
+
+                <div class="filtre">
+                    <label for="puntBescanvi" class="filt-txt">Punt de Bescanvi:</label>
+                    <input type="text" id="puntBescanvi" name="puntBescanvi" th:value="${param.puntBescanvi}" class="filt-input">
+                </div>
+
+                <div class="filtre">
+                    <label for="nomUsuari" class="filt-txt">Usuari:</label>
+                    <input type="text" id="nomUsuari" name="nomUsuari" th:value="${param.nomUsuari}" class="filt-input">
+                </div>
+
+                <div class="filtre">
+                    <label for="rangPunts" class="filt-txt">Rang Punts:</label>
+                    <input type="text" id="rangPunts" name="rangPunts" th:value="${param.rangPunts}" class="filt-input">
+                </div>
+
+                <div class="filtre">
+                    <label for="estat" class="filt-txt">Estado:</label>
+                    <select id="estat" name="estat" class="filt-input">
+                        <option value="">Todos</option>
+                        <option th:each="estat : ${estats}" th:value="${estat}" th:text="${estat}"
+                                th:selected="${param.estat == estat}"></option>
+                    </select>
+                </div>
+
+                <div class="filtre">
+                    <label for="ordenarPor" class="filt-txt">Ordenar por:</label>
+                    <select name="ordenarPor" id="ordenarPor" class="filt-input">
+                        <option value="cost" th:selected="${param.ordenarPor == 'cost'}">Costo</option>
+                        <option value="dataAsignacio" th:selected="${param.ordenarPor == 'dataAsignacio'}">Fecha de Asignación</option>
+                        <option value="dataCreacio" th:selected="${param.ordenarPor == 'dataCreacio'}">Fecha de Creación</option>
+                    </select>
+                </div>
+
+                <div class="filtre">
+                    <label for="orden" class="filt-txt">Orden:</label>
+                    <select name="orden" id="orden" class="filt-input">
+                        <option value="asc" th:selected="${param.orden == 'asc'}">Ascendente</option>
+                        <option value="desc" th:selected="${param.orden == 'desc'}">Descendente</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-crear">Filtrar</button>
             </div>
+        </form>
 
-            <div class="filtre">
-                <label for="puntBescanvi" class="filt-txt">Punt de Bescanvi:</label>
-                <input type="text" id="puntBescanvi" name="puntBescanvi" th:value="${param.puntBescanvi}"
-                       class="filt-input">
-            </div>
+        <!-- Tabla de recompensas -->
+        <table class="users-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Descripció</th>
+                <th>Punt de Bescanvi</th>
+                <th>Cost</th>
+                <th>Estat</th>
+                <th>Email Usuari</th>
+                <th>Data Creació</th>
+                <th>Data Reserva</th>
+                <th>Data Assignació</th>
+                <th>Data Entrega</th>
+                <th>Accions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="recompensa : ${recompensas}">
+                <td th:text="${recompensa.id}"></td>
+                <td th:text="${recompensa.descripcio}"></td>
+                <td th:text="${recompensa.puntBescanviId?.nom}"></td>
+                <td th:text="${recompensa.cost}"></td>
+                <td th:text="${recompensa.estat}"></td>
+                <td th:text="${recompensa.usuariRecompensa != null ? recompensa.usuariRecompensa.nom : ''}"></td>
+                <td th:text="${recompensa.dataCreacio}"></td>
+                <td th:text="${recompensa.dataReserva}"></td>
+                <td class="fecha-formateada" th:text="${recompensa.dataAsignacio}"></td>
+                <td th:text="${recompensa.dataEntrega}"></td>
+                <td>
+                    <a class="btn-view" th:href="@{/recompensas/visualizar/{id}(id=${recompensa.id})}">👁️</a>
+                    <a class="btn-edit" th:href="@{/recompensas/edit/{id}(id=${recompensa.id})}">✏️</a>
+                    <a class="btn-delete" th:href="@{/recompensas/delete/{id}(id=${recompensa.id})}"
+                       onclick="return confirm('Estás segur que vols esborrar aquesta recompensa?');">🗑️</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
-            <div class="filtre">
-                <label for="nomUsuari" class="filt-txt">Usuari:</label>
-                <input type="text" id="nomUsuari" name="nomUsuari" th:value="${param.nomUsuari}" class="filt-input">
-            </div>
-
-            <div class="filtre">
-                <label for="rangPunts" class="filt-txt">Rang Punts:</label>
-                <input type="text" id="rangPunts" name="rangPunts" th:value="${param.rangPunts}" class="filt-input">
-            </div>
-
-            <div class="filtre">
-                <label for="estat" class="filt-txt">Estado:</label>
-                <select id="estat" name="estat" class="filt-input">
-                    <option value="">Todos</option>
-                    <option th:each="estat : ${estats}" th:value="${estat}" th:text="${estat}"
-                            th:selected="${param.estat == estat}"></option>
-                </select>
-            </div>
-
-            <div class="filtre">
-                <label for="ordenarPor" class="filt-txt">Ordenar por:</label>
-                <select name="ordenarPor" id="ordenarPor" class="filt-input">
-                    <option value="cost" th:selected="${param.ordenarPor == 'cost'}">Costo</option>
-                    <option value="dataAsignacio" th:selected="${param.ordenarPor == 'dataAsignacio'}">Fecha de
-                        Asignación
-                    </option>
-                    <option value="dataCreacio" th:selected="${param.ordenarPor == 'dataCreacio'}">Fecha de Creación
-                    </option>
-                </select>
-            </div>
-
-            <div class="filtre">
-                <label for="orden" class="filt-txt">Orden:</label>
-                <select name="orden" id="orden" class="filt-input">
-                    <option value="asc" th:selected="${param.orden == 'asc'}">Ascendente</option>
-                    <option value="desc" th:selected="${param.orden == 'desc'}">Descendente</option>
-                </select>
-            </div>
-
-            <button type="submit" class="btn-crear">Filtrar</button>
-        </div>
     </div>
+</div>
 
-    <!-- Tabla de recompensas -->
-    <table class="users-table">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Descripció</th>
-            <th>Punt de Bescanvi</th>
-            <th>Cost</th>
-            <th>Estat</th>
-            <th>Email Usuari</th>
-            <th>Data Creació</th>
-            <th>Data Reserva</th>
-            <th>Data Assignació</th>
-            <th>Data Entrega</th>
-            <th>Accions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="recompensa : ${recompensas}">
-            <td th:text="${recompensa.id}"></td>
-            <td th:text="${recompensa.descripcio}"></td>
-            <td th:text="${recompensa.puntBescanviId?.nom}"></td>
-            <td th:text="${recompensa.cost}"></td>
-            <td th:text="${recompensa.estat}"></td>
-            <td th:text="${recompensa.usuariRecompensa != null
-              ? recompensa.usuariRecompensa.nom
-              : ''}"></td>
-            <td th:text="${recompensa.dataCreacio}"></td>
-            <td th:text="${recompensa.dataReserva}"></td>
-            <td class="fecha-formateada" th:text="${recompensa.dataAsignacio}"></td>
-            <td th:text="${recompensa.dataEntrega}"></td>
-
-
-            <td>
-                <a class="btn-view" th:href="@{/recompensas/visualizar/{id}(id=${recompensa.id})}">👁️</a>
-                <a class="btn-edit" th:href="@{/recompensas/edit/{id}(id=${recompensa.id})}">✏️</a>
-                <a class="btn-delete" th:href="@{/recompensas/delete/{id}(id=${recompensa.id})}"
-                   onclick="return confirm('Estás segur que vols esborrar aquesta recompensa?');">🗑️</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</form>
-
+<!-- Mostrar y ocultar filtros -->
 <script>
-    // Mostrar y ocultar filtros
     const filterToggle = document.querySelector('.filter-toggle');
     const filterContent = document.querySelector('.filter-content');
 
-    // Evitar que el filtro se abra/cierre inmediatamente
     filterToggle.addEventListener('click', function (event) {
-        event.preventDefault(); // Evita que se ejecute por defecto cualquier otro comportamiento
+        event.preventDefault();
         filterContent.classList.toggle('active');
     });
 </script>
 
-
+<!-- Formateo de fechas -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const celdas = document.querySelectorAll(".fecha-formateada");
@@ -143,13 +139,10 @@
             const valorOriginal = celda.textContent.trim();
             if (!valorOriginal) return;
 
-            // Intenta crear un objeto Date
             const fecha = new Date(valorOriginal);
-
             if (!isNaN(fecha)) {
                 const fechaStr = fecha.toISOString().split("T")[0];
                 const horaStr = fecha.toTimeString().split(" ")[0];
-
                 celda.innerHTML = `${fechaStr}<br>${horaStr}`;
             }
         });

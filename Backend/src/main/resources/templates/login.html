@@ -35,6 +35,9 @@
                 <button type="submit" class="btn-login" id="login-btn">Entrar</button>
             </div>
         </form>
+        <div th:if="${errorMessage}" class="alert-error">
+            <p th:text="${errorMessage}"></p>
+        </div>
     </div>
 </div>
 
