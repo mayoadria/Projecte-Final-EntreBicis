@@ -83,7 +83,7 @@ nav ul li a:hover,
    =============================== */
 .main-content {
     flex: 1;
-    padding: 20px;
+    padding: 10px 20px 20px 20px; /* top right bottom left */
     font-size: 0.9rem;
 }
 
@@ -150,7 +150,6 @@ nav ul li a:hover,
 }
 
 .form-field label {
-    margin-bottom: 5px;
     font-weight: bold;
     color: #333;
 }
@@ -168,8 +167,8 @@ nav ul li a:hover,
 }
 
 .user-form textarea {
-    resize: vertical;
-    min-height: 80px;
+    height: 80px;
+    resize: none;
 }
 
 /* Campos que ocupan toda la fila */
