@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ca">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Detalls rutes usuari</title>
+
+    <!-- CSS propis -->
+    <link rel="stylesheet" href="/styles/barraLateral.css"/>
+    <link rel="stylesheet" href="/styles/detallsRuta.css"/>
+
+    <!-- Leaflet (sense integrity per evitar l’error CSP) -->
+    <link  rel="stylesheet"
+           href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+           crossorigin="anonymous">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            crossorigin="anonymous"></script>
+
+    <style>
+        .map { width: 100%; height: 320px; margin-bottom: 1.5rem; }
+    </style>
+</head>
+<body>
+<!-- barra lateral -->
+<div th:replace="~{barraLateral :: barralateral}"></div>
+
+<div class="main-content">
+    <h1>Rutes de l'usuari</h1>
+
+    <!-- una card per a cada ruta -->
+    <div th:each="dto : ${rutes}" class="route-card">
+
+        <!-- capçalera -->
+        <div class="route-header">
+            <span class="route-title"
+                  th:text="${dto.ruta.nom}">Nom ruta</span>
+
+            <div class="route-stats">
+                <div>
+                    <strong th:text="${#numbers.formatDecimal(dto.ruta.km,1,1)}">0,0</strong> Km
+                </div>
+                <div>
+                    <strong th:text="${#numbers.formatDecimal(dto.ruta.km,1,1)}">0,0</strong> p
+                </div>
+                <div th:text="${dto.ruta.temps}">00:00</div>
+                <div>
+                    <strong th:text="${dto.ruta.velMedia}">-</strong> km/h
+                </div>
+            </div>
+        </div>
+
+        <!-- contenidor del mapa -->
+        <div th:attr="id=${'map-' + dto.ruta.id}" class="map"></div>
+
+        <!-- peu -->
+        <div class="route-footer">
+            <span th:text="${dto.ruta.usuari.nom + ' ' + dto.ruta.usuari.cognom}">
+                Nom Usuari
+            </span>
+        </div>
+
+        <!-- script que pinta aquesta ruta -->
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            (() => {                /* ① ——— apertura de la IIFE ——— */
+
+                const coords = /*[[${dto.coords}]]*/ [];
+                const mapId  = 'map-' + /*[[${dto.ruta.id}]]*/ 'x';
+
+                if (coords.length) {
+                    const map = L.map(mapId);
+                    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '© OpenStreetMap'
+                    }).addTo(map);
+
+                    const poly = L.polyline(coords, { color: '#0077ff' }).addTo(map);
+                    map.fitBounds(poly.getBounds());
+
+                    coords.forEach(p => {
+                        L.circleMarker(p, { radius: 4, color: '#e74c3c', weight: 1 })
+                            .addTo(map)
+                            .bindTooltip(
+                                `Lat: ${p[0].toFixed(5)}  Lon: ${p[1].toFixed(5)}`,
+                                { direction: 'top', sticky: true }
+                            );
+                    });
+
+                } else {
+                    document.getElementById(mapId).textContent = 'Sense coordenades';
+                }
+
+            })();
+            /*]]>*/
+        </script>
+
+    </div>
+</div>
+</body>
+</html>

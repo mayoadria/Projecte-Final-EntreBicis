@@ -1,0 +1,98 @@
+/* === Layout general (ya tienes algo parecido) ========================= */
+body{
+    display:flex;
+    height:100vh;
+    background:#aeefff;
+    font-family:Arial, sans-serif;
+    margin: 0;
+
+    padding: 0;
+}
+.main-content{
+    flex:1;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+}
+.main-content h1{
+    margin-bottom:20px;
+    font-size:28px;
+    color:#003550;
+}
+
+/* === GRID de tarjetas ================================================= */
+.routes-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* 220 px ≈ 5 col. en 1366 px */
+    gap: 24px;
+    width: 100%;
+}
+
+/* === Tarjeta de ruta =================================================== */
+.route-card{
+    background:#6de0ff;
+    border-radius:8px;
+    overflow:hidden;
+    box-shadow:0 2px 4px rgba(0,0,0,.15);
+    display:flex;
+    flex-direction:column;
+}
+
+/* Cabecera */
+.route-header{
+    background:#49c2e6;
+    padding:6px 10px;
+    display:flex;
+    flex-direction:column;
+    font-size:12px;
+    font-weight:600;
+}
+.route-title{
+    font-size:14px;
+    margin-bottom:4px;
+}
+.route-stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    text-align:center;
+    gap:4px;
+}
+
+/* Mapa (imagen) */
+.route-card img{
+    width:100%;
+    height:auto;
+    flex:1;
+}
+
+/* Pie */
+.route-footer{
+    background:#00c3ff;
+    padding:8px 10px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-weight:700;
+}
+.route-user{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+
+.route-card:hover{
+    transform: translateY(-4px);                     /* pequeño “salto” */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.20);         /* sombra más marcada */
+    cursor: pointer;
+}
+
+/* Interruptor */
+.switch{position:relative; width:36px; height:20px;}
+.switch input{opacity:0; width:0; height:0;}
+.slider{
+    position:absolute; top:0; left:0; right:0; bottom:0;
+    background:#000; border-radius:20px; cursor:pointer;
+}
+.slider:before{
+    content:""; position:absolute; height:14px; width:14px; left:3px; bottom:3px;
+    background:#fff; border-radius:50%; transition:.3s;
+}
+input:checked + .slider{background:#00d66d;}
+input:checked + .slider:before{transform:translateX(16px);}
+
