@@ -4,9 +4,15 @@
     <meta charset="UTF-8">
     <title>Rutes</title>
 
-    <!-- Barra lateral y estilos propios de la página -->
+    <!-- Barra lateral i estils propis de la pàgina -->
     <link rel="stylesheet" href="/styles/barraLateral.css"/>
     <link rel="stylesheet" href="/styles/rutes.css"/>
+
+    <!-- Petits retocs visuals per a targetes “sense ruta” -->
+    <style>
+        .route-card          { cursor: pointer; }
+        .route-card.disabled { cursor: default; opacity: .65; }
+    </style>
 </head>
 <body>
 <!-- Barra lateral -->
@@ -15,35 +21,64 @@
 <div class="main-content">
     <h1>Rutes</h1>
 
-    <!-- GRID de tarjetas -->
-    <div class="routes-grid">
+    <!-- Missatge quan l'usuari no té cap ruta -->
+    <div th:if="${routeCards == null || #lists.isEmpty(routeCards)}"
+         class="no-routes">
+        <p>No hi ha rutes per mostrar.</p>
+    </div>
+
+    <!-- GRID de targetes -->
+    <div class="routes-grid"
+         th:if="${routeCards != null and !#lists.isEmpty(routeCards)}">
         <div class="route-card"
              th:each="card : ${routeCards}"
-             th:onclick="|window.location.href='@{/ruta/detalls/{id}(id=${card.id})}'|"
-             style="cursor: pointer;">
+             th:data-id="${card.id}"
+             th:classappend="${card.id == null} ? 'disabled' : ''">
 
-            <!-- Cabecera -->
+            <!-- Capçalera -->
             <div class="route-header">
                 <span class="route-title" th:text="${card.title}">Ruta…</span>
 
                 <div class="route-stats">
-                    <div><span th:text="${card.distance}">2,55</span> Km</div>
-                    <div><span th:text="${card.points}">2,5</span> p</div>
+                    <div>
+                        <span th:text="${card.distance}">2,55</span> Km
+                    </div>
+                    <div>
+                        <span th:text="${card.points}">2,5</span> p
+                    </div>
                     <div th:text="${card.time}">10:00</div>
-                    <div><span th:text="${card.avgSpeed}">15</span> km/h</div>
+                    <div>
+                        <span th:text="${card.avgSpeed}">15</span> km/h
+                    </div>
                 </div>
             </div>
 
-            <!-- Mapa -->
-            <img src="/styles/images/LogoEntrebicis.png" alt="Logo Entrebicis"/>
+            <!-- Mapa o miniatura -->
+            <img src="/styles/images/LogoEntrebicis.png"
+                 alt="Logo Entrebicis"/>
 
-            <!-- Pie -->
+            <!-- Peu -->
             <div class="route-footer">
-                <!-- Nombre -->
                 <span th:text="${card.userName}">Nom Usuari</span>
             </div>
         </div>
     </div>
 </div>
+
+<!-- JS: només navega a detalls si existeix id; altrament avisa -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.route-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const id = card.dataset.id;
+                if (id && id !== 'null' && id.trim() !== '') {
+                    window.location.href = `/ruta/detalls/${id}`;
+                } else {
+                    alert('Aquest usuari encara no té cap ruta registrada.');
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>
