@@ -1,98 +1,202 @@
-/* === Layout general (ya tienes algo parecido) ========================= */
-body{
-    display:flex;
-    height:100vh;
-    background:#aeefff;
-    font-family:Arial, sans-serif;
+/* Reinicio básico */
+* {
     margin: 0;
-
     padding: 0;
-}
-.main-content{
-    flex:1;
-    padding:20px;
-    display:flex;
-    flex-direction:column;
-}
-.main-content h1{
-    margin-bottom:20px;
-    font-size:28px;
-    color:#003550;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
-/* === GRID de tarjetas ================================================= */
-.routes-grid{
+/* === Layout general =================================================== */
+body {
+    height: 100vh;
+    background: #aeefff;
+    font-family: Arial, sans-serif;
+    padding-left: 220px; /* espacio para la sidebar fija */
+}
+
+/* Barra lateral fija */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 220px;
+    height: 100vh;
+    background-color: #58b7d3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    z-index: 1000;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenido principal */
+.main-content {
+    margin-left: 0; /* ya hay padding en el body */
+    padding: 20px;
+    overflow-x: auto;
+    background-color: #3fa6c2;
+    font-size: 0.9rem;
+    min-height: 100vh;
+}
+
+.main-content h1 {
+    margin-bottom: 20px;
+    font-size: 28px;
+    color: #003550;
+}
+
+/* === GRID de tarjetas ================================================ */
+.routes-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* 220 px ≈ 5 col. en 1366 px */
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 24px;
     width: 100%;
 }
 
-/* === Tarjeta de ruta =================================================== */
-.route-card{
-    background:#6de0ff;
-    border-radius:8px;
-    overflow:hidden;
-    box-shadow:0 2px 4px rgba(0,0,0,.15);
-    display:flex;
-    flex-direction:column;
+/* === Tarjeta de ruta ================================================ */
+.route-card {
+    background: #6de0ff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .15);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-/* Cabecera */
-.route-header{
-    background:#49c2e6;
-    padding:6px 10px;
-    display:flex;
-    flex-direction:column;
-    font-size:12px;
-    font-weight:600;
-}
-.route-title{
-    font-size:14px;
-    margin-bottom:4px;
-}
-.route-stats{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    text-align:center;
-    gap:4px;
-}
-
-/* Mapa (imagen) */
-.route-card img{
-    width:100%;
-    height:auto;
-    flex:1;
-}
-
-/* Pie */
-.route-footer{
-    background:#00c3ff;
-    padding:8px 10px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    font-weight:700;
-}
-.route-user{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-
-.route-card:hover{
-    transform: translateY(-4px);                     /* pequeño “salto” */
-    box-shadow: 0 6px 12px rgba(0,0,0,0.20);         /* sombra más marcada */
+.route-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.20);
     cursor: pointer;
 }
 
-/* Interruptor */
-.switch{position:relative; width:36px; height:20px;}
-.switch input{opacity:0; width:0; height:0;}
-.slider{
-    position:absolute; top:0; left:0; right:0; bottom:0;
-    background:#000; border-radius:20px; cursor:pointer;
+/* Cabecera */
+.route-header {
+    background: #49c2e6;
+    padding: 6px 10px;
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    font-weight: 600;
 }
-.slider:before{
-    content:""; position:absolute; height:14px; width:14px; left:3px; bottom:3px;
-    background:#fff; border-radius:50%; transition:.3s;
+.route-title {
+    font-size: 14px;
+    margin-bottom: 4px;
 }
-input:checked + .slider{background:#00d66d;}
-input:checked + .slider:before{transform:translateX(16px);}
+.route-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    text-align: center;
+    gap: 4px;
+}
 
+/* Imagen */
+.route-card img {
+    width: 100%;
+    height: auto;
+    flex: 1;
+}
+
+/* Pie de tarjeta */
+.route-footer {
+    background: #00c3ff;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 700;
+}
+.route-user {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Interruptor */
+.switch {
+    position: relative;
+    width: 36px;
+    height: 20px;
+}
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000;
+    border-radius: 20px;
+    cursor: pointer;
+}
+.slider:before {
+    content: "";
+    position: absolute;
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: .3s;
+}
+input:checked + .slider {
+    background: #00d66d;
+}
+input:checked + .slider:before {
+    transform: translateX(16px);
+}
+
+/* === Responsive ====================================================== */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 10px 20px;
+    }
+
+    .profile {
+        display: none;
+    }
+
+    .nav-sections {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .nav-top,
+    .nav-bottom {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+        margin-top: 10px;
+    }
+
+    body {
+        padding-left: 0;
+        padding-top: 120px;
+    }
+
+    .nav-bottom {
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+
+    .nav-top li a,
+    .nav-bottom li a {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+}

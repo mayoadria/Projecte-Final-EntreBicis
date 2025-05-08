@@ -8,7 +8,7 @@
 body {
     display: flex;
     height: 100vh;
-    background-color: #84d0e6; /* Fondo unificado */
+    background-color: #3fa6c2; /* Fondo unificado */
 }
 
 /* ===============================
@@ -89,7 +89,7 @@ nav ul li a:hover,
 
 /* Título */
 .main-content h1 {
-    color: #045b78;
+    color: #ffffff;
     font-size: 2rem;
     margin-bottom: 20px;
 }

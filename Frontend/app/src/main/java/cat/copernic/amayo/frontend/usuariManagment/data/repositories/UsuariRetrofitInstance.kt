@@ -1,7 +1,5 @@
 package cat.copernic.amayo.frontend.usuariManagment.data.repositories
 
-import cat.copernic.amayo.frontend.usuariManagment.data.remote.UsuariApi
-import cat.copernic.mycards.mycards_frontend.user_management.data.repositories.RecompensaRetrofitInstance
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

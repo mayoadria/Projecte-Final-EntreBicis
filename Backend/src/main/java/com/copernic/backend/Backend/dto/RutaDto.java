@@ -2,7 +2,6 @@ package com.copernic.backend.Backend.dto;
 
 import com.copernic.backend.Backend.entity.enums.EstatRutes;
 import com.copernic.backend.Backend.entity.enums.CicloRuta;
-import lombok.val;
 
 import java.util.List;
 

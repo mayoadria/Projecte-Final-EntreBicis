@@ -2,7 +2,6 @@ package com.copernic.backend.Backend.security;
 
 import com.copernic.backend.Backend.entity.Sistema;
 import com.copernic.backend.Backend.entity.Usuari;
-import com.copernic.backend.Backend.entity.enums.Estat;
 import com.copernic.backend.Backend.entity.enums.EstatUsuari;
 import com.copernic.backend.Backend.entity.enums.Rol;
 import com.copernic.backend.Backend.logic.web.UsuariLogic;
@@ -11,7 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;

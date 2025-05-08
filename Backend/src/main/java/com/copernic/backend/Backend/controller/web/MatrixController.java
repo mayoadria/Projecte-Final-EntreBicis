@@ -2,13 +2,10 @@ package com.copernic.backend.Backend.controller.web;
 
 import com.copernic.backend.Backend.entity.Sistema;
 import com.copernic.backend.Backend.logic.web.SistemaLogic;
-import com.copernic.backend.Backend.repository.SistemaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.Duration;
 
 @Controller
 @RequiredArgsConstructor

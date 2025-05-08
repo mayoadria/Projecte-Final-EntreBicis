@@ -1,21 +1,14 @@
 package cat.copernic.amayo.frontend.usuariManagment.viewmodels
 
-import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import cat.copernic.amayo.frontend.core.auth.SessionUser
 import cat.copernic.amayo.frontend.rutaManagment.model.Estat
 import cat.copernic.amayo.frontend.usuariManagment.data.remote.UsuariApi
 import cat.copernic.amayo.frontend.usuariManagment.model.Usuari
-import cat.copernic.amayo.frontend.usuariManagment.data.repositories.UsuariRetrofitInstance
 import cat.copernic.amayo.frontend.usuariManagment.data.repositories.UsuariRetrofitTLSInstance
-import cat.copernic.mycards.mycards_frontend.user_management.data.repositories.RecompensaRetrofitInstance
-import cat.copernic.mycards.mycards_frontend.user_management.data.sources.remote.RecompensasApiRest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class LoginViewModel : ViewModel() {

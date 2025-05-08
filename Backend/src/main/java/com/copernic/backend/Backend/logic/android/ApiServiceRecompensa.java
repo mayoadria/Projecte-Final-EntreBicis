@@ -1,7 +1,6 @@
 package com.copernic.backend.Backend.logic.android;
 
 import com.copernic.backend.Backend.entity.Recompensas;
-import com.copernic.backend.Backend.entity.Usuari;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.PUT;

@@ -1,6 +1,5 @@
 package com.copernic.backend.Backend.controller.web;
 
-import com.copernic.backend.Backend.logic.web.ReservaLogic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

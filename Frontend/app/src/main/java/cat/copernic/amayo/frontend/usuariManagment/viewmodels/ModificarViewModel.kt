@@ -13,7 +13,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cat.copernic.amayo.frontend.usuariManagment.data.remote.UsuariApi
-import cat.copernic.amayo.frontend.usuariManagment.data.repositories.UsuariRetrofitInstance
 import cat.copernic.amayo.frontend.usuariManagment.data.repositories.UsuariRetrofitTLSInstance
 import cat.copernic.amayo.frontend.usuariManagment.model.Usuari
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -7,7 +7,6 @@ import com.copernic.backend.Backend.entity.Posicio_Gps;
 import com.copernic.backend.Backend.entity.Rutes;
 import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.logic.web.UsuariLogic;
-
 import com.copernic.backend.Backend.entity.enums.EstatRutes;
 import com.copernic.backend.Backend.entity.enums.CicloRuta;
 import com.copernic.backend.Backend.logic.android.RutesLogicAndroid;

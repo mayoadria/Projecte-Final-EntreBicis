@@ -1,7 +1,6 @@
 package com.copernic.backend.Backend.logic.web;
 
 import com.copernic.backend.Backend.entity.Recompensas;
-import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.entity.enums.Estat;
 import com.copernic.backend.Backend.repository.RecompensasRepository;
 import org.springframework.beans.factory.annotation.Autowired;

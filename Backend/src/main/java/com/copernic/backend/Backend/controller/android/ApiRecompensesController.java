@@ -1,13 +1,11 @@
 package com.copernic.backend.Backend.controller.android;
 
 import com.copernic.backend.Backend.entity.Recompensas;
-import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.logic.web.RecompensaLogic;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -16,7 +16,7 @@
     <div class="create-user-container">
 
         <div class="profile-picture" id="profilePicture">
-            <img id="fotoPreview" th:src="${fotoDataUrl != null ? fotoDataUrl : 'https://via.placeholder.com/150'}" alt="Foto usuario" />
+            <img id="fotoPreview" th:src="${fotoDataUrl != null ? fotoDataUrl : 'https://via.placeholder.com/150'}" />
         </div>
 
         <div th:if="${error}" class="alert-error">

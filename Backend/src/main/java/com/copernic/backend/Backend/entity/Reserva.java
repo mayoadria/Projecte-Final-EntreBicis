@@ -1,8 +1,6 @@
 package com.copernic.backend.Backend.entity;
 
 import com.copernic.backend.Backend.entity.enums.EstatReserva;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -2,8 +2,6 @@ package cat.copernic.amayo.frontend.usuariManagment.ui
 
 import android.graphics.BitmapFactory
 import android.util.Base64
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

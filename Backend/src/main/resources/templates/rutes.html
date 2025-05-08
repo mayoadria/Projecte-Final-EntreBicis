@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <title>Rutes</title>
 
-    <!-- Barra lateral i estils propis de la pàgina -->
-    <link rel="stylesheet" href="/styles/barraLateral.css"/>
+    <!-- Estils propis -->
     <link rel="stylesheet" href="/styles/rutes.css"/>
+    <link rel="stylesheet" href="/styles/barraLateral.css"/>
 
     <!-- Petits retocs visuals per a targetes “sense ruta” -->
     <style>
@@ -16,56 +16,50 @@
 </head>
 <body>
 <!-- Barra lateral -->
-<div th:replace="barraLateral :: barralateral"></div>
+<div th:replace="barraLateral :: barralateral" class="sidebar"></div>
 
+<!-- Contenido principal -->
 <div class="main-content">
-    <h1>Rutes</h1>
+    <div class="content-wrapper">
+        <h1>Rutes</h1>
 
-    <!-- Missatge quan l'usuari no té cap ruta -->
-    <div th:if="${routeCards == null || #lists.isEmpty(routeCards)}"
-         class="no-routes">
-        <p>No hi ha rutes per mostrar.</p>
-    </div>
+        <!-- Mensaje si no hay rutas -->
+        <div th:if="${routeCards == null || #lists.isEmpty(routeCards)}" class="no-routes">
+            <p>No hi ha rutes per mostrar.</p>
+        </div>
 
-    <!-- GRID de targetes -->
-    <div class="routes-grid"
-         th:if="${routeCards != null and !#lists.isEmpty(routeCards)}">
-        <div class="route-card"
-             th:each="card : ${routeCards}"
-             th:data-id="${card.id}"
-             th:classappend="${card.id == null} ? 'disabled' : ''">
+        <!-- Tarjetas de rutas -->
+        <div class="routes-grid"
+             th:if="${routeCards != null and !#lists.isEmpty(routeCards)}">
+            <div class="route-card"
+                 th:each="card : ${routeCards}"
+                 th:data-id="${card.id}"
+                 th:classappend="${card.id == null} ? 'disabled' : ''">
 
-            <!-- Capçalera -->
-            <div class="route-header">
-                <span class="route-title" th:text="${card.title}">Ruta…</span>
-
-                <div class="route-stats">
-                    <div>
-                        <span th:text="${card.distance}">2,55</span> Km
-                    </div>
-                    <div>
-                        <span th:text="${card.points}">2,5</span> p
-                    </div>
-                    <div th:text="${card.time}">10:00</div>
-                    <div>
-                        <span th:text="${card.avgSpeed}">15</span> km/h
+                <!-- Cabecera -->
+                <div class="route-header">
+                    <span class="route-title" th:text="${card.title}">Ruta…</span>
+                    <div class="route-stats">
+                        <div><span th:text="${card.distance}">2,55</span> Km</div>
+                        <div><span th:text="${card.points}">2,5</span> p</div>
+                        <div th:text="${card.time}">10:00</div>
+                        <div><span th:text="${card.avgSpeed}">15</span> km/h</div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Mapa o miniatura -->
-            <img src="/styles/images/LogoEntrebicis.png"
-                 alt="Logo Entrebicis"/>
+                <!-- Imagen -->
+                <img src="/styles/images/LogoEntrebicis.png" alt="Logo Entrebicis"/>
 
-            <!-- Peu -->
-            <div class="route-footer">
-                <span th:text="${card.userName}">Nom Usuari</span>
+                <!-- Pie -->
+                <div class="route-footer">
+                    <span th:text="${card.userName}">Nom Usuari</span>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- JS: només navega a detalls si existeix id; altrament avisa -->
+<!-- JS para navegación -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.route-card').forEach(card => {

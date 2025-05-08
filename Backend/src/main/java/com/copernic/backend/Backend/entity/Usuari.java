@@ -1,23 +1,18 @@
-    package com.copernic.backend.Backend.entity;
+package com.copernic.backend.Backend.entity;
 
-    import com.copernic.backend.Backend.entity.enums.Estat;
-    import com.copernic.backend.Backend.entity.enums.EstatUsuari;
-    import com.copernic.backend.Backend.entity.enums.Rol;
-    import com.fasterxml.jackson.annotation.JsonIgnore;
-    import com.fasterxml.jackson.annotation.JsonManagedReference;
-    import jakarta.persistence.*;
-    import lombok.*;
-    import lombok.experimental.SuperBuilder;
-    import org.springframework.security.core.GrantedAuthority;
-    import org.springframework.security.core.authority.SimpleGrantedAuthority;
-    import org.springframework.security.core.userdetails.UserDetails;
-
-    import java.util.Collection;
-    import java.util.List;
-    import java.util.Objects;
-    import java.util.stream.Collectors;
-
-    import javax.validation.constraints.*;
+import com.copernic.backend.Backend.entity.enums.EstatUsuari;
+import com.copernic.backend.Backend.entity.enums.Rol;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
     @Entity
     @Data

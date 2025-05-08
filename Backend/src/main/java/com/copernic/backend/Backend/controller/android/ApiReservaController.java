@@ -1,6 +1,5 @@
 package com.copernic.backend.Backend.controller.android;
 
-import com.copernic.backend.Backend.entity.Recompensas;
 import com.copernic.backend.Backend.entity.Reserva;
 import com.copernic.backend.Backend.logic.web.ReservaLogic;
 import jakarta.annotation.PostConstruct;
