@@ -129,7 +129,7 @@ public class SecurityConfig {
         admin.setRol(Rol.ADMINISTRADOR);
         admin.setEstat(EstatUsuari.ACTIU);
         admin.setReserva(false);
-        admin.setRuta(true);
+        //admin.setRuta(true);
 
         usuariLogic.createUsuari(admin);
     }

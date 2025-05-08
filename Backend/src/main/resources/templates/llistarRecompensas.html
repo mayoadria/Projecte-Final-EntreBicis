@@ -84,11 +84,14 @@
         <tr>
             <th>ID</th>
             <th>Descripció</th>
-            <th>Observacions</th>
             <th>Punt de Bescanvi</th>
             <th>Cost</th>
             <th>Estat</th>
             <th>Email Usuari</th>
+            <th>Data Creació</th>
+            <th>Data Reserva</th>
+            <th>Data Assignació</th>
+            <th>Data Entrega</th>
             <th>Accions</th>
         </tr>
         </thead>
@@ -96,13 +99,17 @@
         <tr th:each="recompensa : ${recompensas}">
             <td th:text="${recompensa.id}"></td>
             <td th:text="${recompensa.descripcio}"></td>
-            <td th:text="${recompensa.observacions}"></td>
             <td th:text="${recompensa.puntBescanviId?.nom}"></td>
             <td th:text="${recompensa.cost}"></td>
             <td th:text="${recompensa.estat}"></td>
             <td th:text="${recompensa.usuariRecompensa != null
               ? recompensa.usuariRecompensa.nom
               : ''}"></td>
+            <td th:text="${recompensa.dataCreacio}"></td>
+            <td th:text="${recompensa.dataReserva}"></td>
+            <td class="fecha-formateada" th:text="${recompensa.dataAsignacio}"></td>
+            <td th:text="${recompensa.dataEntrega}"></td>
+
 
             <td>
                 <a class="btn-view" th:href="@{/recompensas/visualizar/{id}(id=${recompensa.id})}">👁️</a>
@@ -126,5 +133,26 @@
     });
 </script>
 
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const celdas = document.querySelectorAll(".fecha-formateada");
+
+        celdas.forEach(celda => {
+            const valorOriginal = celda.textContent.trim();
+            if (!valorOriginal) return;
+
+            // Intenta crear un objeto Date
+            const fecha = new Date(valorOriginal);
+
+            if (!isNaN(fecha)) {
+                const fechaStr = fecha.toISOString().split("T")[0];
+                const horaStr = fecha.toTimeString().split(" ")[0];
+
+                celda.innerHTML = `${fechaStr}<br>${horaStr}`;
+            }
+        });
+    });
+</script>
 </body>
 </html>

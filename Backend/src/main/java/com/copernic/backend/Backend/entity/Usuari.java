@@ -55,11 +55,11 @@
         @Column
         private Double saldo;
 
-        @Column
+        @Column(nullable = true)
         private Boolean reserva;
 
-        @Column
-        private Boolean ruta;
+//        @Column(nullable = true)
+//        private Boolean ruta;
         @Lob
         private String foto; // Se guardará la cadena Base64
         @Enumerated(EnumType.STRING)

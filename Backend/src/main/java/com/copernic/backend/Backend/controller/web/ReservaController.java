@@ -21,6 +21,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -100,7 +102,11 @@ public class ReservaController {
     private void assignarReserva(Reserva reserva) {
         reserva.setEstat(EstatReserva.ASSIGNADA);
         reserva.getIdRecompensa().setEstat(Estat.ASSIGNADES);
-        reserva.getIdRecompensa().setDataAsignacio(LocalDateTime.now());
+
+        LocalDateTime fechaSinSegundos = LocalDateTime.now()
+                .withSecond(0)
+                .withNano(0);
+        reserva.getIdRecompensa().setDataAsignacio(fechaSinSegundos);
 
         double saldoActual = reserva.getEmailUsuari().getSaldo();
         double cost = reserva.getIdRecompensa().getCost();

@@ -41,6 +41,22 @@
                 <label for="nomU">Nom Usuari</label>
                 <input type="text" id="nomU" th:field="*{usuariRecompensa}" th:readonly="${visualizar}">
             </div>
+            <div class="form-field" th:if="${visualizar}">
+                <label for="dataCreacio">Data Creació</label>
+                <input type="text" id="dataCreacio" th:field="*{dataCreacio}" th:readonly="${visualizar}">
+            </div>
+            <div class="form-field" th:if="${visualizar}">
+                <label for="dataAsignacio">Data Assignació</label>
+                <input type="text" id="dataAsignacio" th:field="*{dataAsignacio}" th:readonly="${visualizar}">
+            </div>
+            <div class="form-field" th:if="${visualizar}">
+                <label for="dataReserva">Data Reserva</label>
+                <input type="text" id="dataReserva" th:field="*{dataReserva}" th:readonly="${visualizar}">
+            </div>
+            <div class="form-field" th:if="${visualizar}">
+                <label for="dataEntrega">Data Entrega</label>
+                <input type="text" id="dataEntrega" th:field="*{dataEntrega}" th:readonly="${visualizar}">
+            </div>
             <div class="form-group">
                 <label for="besanvi-select">Punt de Bescanvi:</label>
                 <div style="display: flex; align-items: center;">

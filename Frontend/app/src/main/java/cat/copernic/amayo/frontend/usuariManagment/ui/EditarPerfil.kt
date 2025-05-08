@@ -130,6 +130,18 @@ fun EditarPerfil(
 
         Spacer(modifier = Modifier.height(24.dp))
 
+        Button(
+            onClick = {
+                navController.navigate("changePass")
+            },
+            shape = RoundedCornerShape(50),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors()
+        ) {
+            Text("Canviar Contrasenya", fontWeight = FontWeight.Bold)
+        }
         // Botón Guardar
         Button(
             onClick = {

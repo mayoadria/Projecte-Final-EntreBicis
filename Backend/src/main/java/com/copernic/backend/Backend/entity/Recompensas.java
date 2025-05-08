@@ -37,7 +37,9 @@ public class Recompensas {
     @Column
     private String dataCreacio;
     @Column
-    private LocalDateTime DataAsignacio;
+    private LocalDateTime dataAsignacio;
+    @Column
+    private String dataReserva;
 
     @Column
     private String dataEntrega;
@@ -53,6 +55,6 @@ public class Recompensas {
     private PuntBescanvi puntBescanviId;
 
     @OneToMany(mappedBy = "idRecompensa")
-    @JsonIgnore
+    @JsonIgnoreProperties({"emailUsuari","idRecompensa"})
     private List<Reserva> reservas;
 }

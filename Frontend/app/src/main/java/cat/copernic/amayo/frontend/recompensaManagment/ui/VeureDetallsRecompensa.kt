@@ -29,6 +29,7 @@ import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.ReservaViewmod
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmodel
 import cat.copernic.amayo.frontend.usuariManagment.viewmodels.ModificarViewModel
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -156,6 +157,8 @@ fun detalls(
             // BOTÓN DE RESERVAR (TU BLOQUE ACTUAL ADAPTADO)
             Button(
                 onClick = {
+                    val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                    val fecha = LocalDateTime.now().format(formatter)
                     if (tieneReservas) {
                         if (puedeReservar) {
                             nom?.let { usuario ->
@@ -170,14 +173,14 @@ fun detalls(
                             recompensa?.let { recompensa ->
                                 recompensa.estat = Estat.RESERVADES
                                 recompensa.usuariRecompensa = nom
+                                recompensa.dataReserva = fecha
                                 viewmodel.updateRecompensa(
                                     client = recompensa,
                                     contentResolver = navController.context.contentResolver
                                 )
                             }
 
-                            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                            val fecha = LocalDate.now().format(formatter)
+
                             val nuevaReserva = Reserva(
                                 id = null,
                                 emailUsuari = nom,
