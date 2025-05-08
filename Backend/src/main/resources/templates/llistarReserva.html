@@ -12,6 +12,7 @@
 <div th:replace="barraLateral :: barralateral"></div>
 
 <div class="main-content">
+    <div class="content-wrapper">
     <h1>Llista Reservas</h1>
     <div th:if="${errorS}" style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #f5c6cb;">
         <span th:text="${errorS}"></span>
@@ -54,6 +55,7 @@
         </tr>
         </tbody>
     </table>
+    </div>
 </div>
 
 </body>

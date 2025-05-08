@@ -97,16 +97,26 @@ body {
 }
 
 .filter-content {
+    background: linear-gradient(
+            135deg,
+            rgba(132, 208, 230, 0.4),
+            rgba(199, 240, 255, 0.25),
+            rgba(255, 255, 255, 0.1)
+    );
     display: none;
     flex-wrap: wrap;
-    gap: 12px;
-    background-color: rgba(0, 44, 64, 0.4);
-    padding: 15px;
+    gap: 4px;                /* Menor separación entre filtros */
+    padding: 4px 12px 10px;        /* Menor padding general */
     border-radius: 6px;
-    backdrop-filter: blur(2px);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    font-size: 0.85rem;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08); /* Ligero ajuste de sombra */
+    font-size: 0.8rem;       /* Letra un poco más pequeña */
+    margin-bottom: 8px;
 }
+
+
+
+
 
 .filter-content.active {
     display: flex;
@@ -115,8 +125,9 @@ body {
 .filtre {
     display: flex;
     flex-direction: column;
-    width: 150px;
-    margin-left: 10px;
+    width: 130px;
+    margin-left: 8px;
+
 }
 
 .filt-txt {
@@ -127,10 +138,10 @@ body {
 
 .filt-input {
     width: 100%;
-    padding: 6px;
+    padding: 4px;
     border: 1px solid #5fa6bd;
     border-radius: 5px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     background-color: rgba(255, 255, 255, 0.08);
     color: #f0f8ff;
 }
