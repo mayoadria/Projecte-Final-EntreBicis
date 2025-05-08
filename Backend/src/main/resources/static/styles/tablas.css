@@ -95,6 +95,9 @@ body {
     margin-bottom: 10px;
     text-decoration: none;
 }
+.filter-toggle:hover {
+    background-color: #02688a;
+}
 
 .filter-content {
     background: linear-gradient(

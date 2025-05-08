@@ -2,6 +2,8 @@ package cat.copernic.amayo.frontend.usuariManagment.ui
 
 import android.graphics.BitmapFactory
 import android.util.Base64
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
@@ -43,6 +46,7 @@ fun perfil(sessionViewModel: SessionViewModel,navController: NavController) {
     val bitmap = remember(nom?.foto) {
         nom?.foto?.let { decodeBase64ToBitmap(it) }
     }
+
 
     Column(
         modifier = Modifier
@@ -83,7 +87,16 @@ fun perfil(sessionViewModel: SessionViewModel,navController: NavController) {
                     .size(120.dp)
                     .clip(CircleShape)
             )
-        } ?: Text("No hay imagen disponible.")
+        } ?: Icon(
+            imageVector = Icons.Default.Face,
+            contentDescription = "Sin imagen",
+            tint = Color.Gray,
+            modifier = Modifier
+                .size(80.dp)
+                .clip(CircleShape)
+                .background(Color.LightGray)
+                .padding(16.dp)
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 

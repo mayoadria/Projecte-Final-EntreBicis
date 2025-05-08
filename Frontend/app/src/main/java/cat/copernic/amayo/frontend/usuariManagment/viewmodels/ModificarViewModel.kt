@@ -1,7 +1,11 @@
 package cat.copernic.amayo.frontend.usuariManagment.viewmodels
 
 import android.content.ContentResolver
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
 import androidx.compose.runtime.State
@@ -53,6 +57,9 @@ class ModificarViewModel :ViewModel() {
     fun updateTelefon(telefon: String) {
         _telefon.value = telefon
     }
+    fun updateSelectedImage(uri: Uri?) {
+        _selectedImageUri.value = uri
+    }
     fun convertUriToByteArray(uri: Uri, contentResolver: ContentResolver): ByteArray? {
         try {
             val inputStream: InputStream? = contentResolver.openInputStream(uri)
@@ -72,22 +79,20 @@ class ModificarViewModel :ViewModel() {
             return null
         }
     }
-
-    fun listarClient(userId: String) {
-        viewModelScope.launch {
-            try {
-                val response = UserApi.getByEmail(userId) // Llama a la API para obtener el sobre
-                if (response.isSuccessful) {
-                    val sobreResponse = response.body()
-                    _user.value = sobreResponse // Actualiza el estado con el sobre obtenido
-                } else {
-                    Log.e("ModificarViewModel", "Error al obtener el sobre: ${response.errorBody()?.string()}")
-                }
-            } catch (e: Exception) {
-                Log.e("ModificarViewModel", "Excepción al obtener el sobre: ${e.message}")
+    fun loadBitmapFromUri(uri: Uri, contentResolver: ContentResolver): Bitmap? {
+        return try {
+            if (Build.VERSION.SDK_INT < 28) {
+                MediaStore.Images.Media.getBitmap(contentResolver, uri)
+            } else {
+                val source = ImageDecoder.createSource(contentResolver, uri)
+                ImageDecoder.decodeBitmap(source)
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
+
 
     // Función para actualizar el sobre
     fun updateClient(client: Usuari, contentResolver: ContentResolver) {
