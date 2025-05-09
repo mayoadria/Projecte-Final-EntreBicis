@@ -249,6 +249,7 @@ private fun startLocationUpdates(
     fused.requestLocationUpdates(req, cb, Looper.getMainLooper())
 }
 
+
 private fun addMarker(
     map: MapView,
     point: GeoPoint,
