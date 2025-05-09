@@ -1,17 +1,13 @@
 package cat.copernic.amayo.frontend.usuariManagment.viewmodels
 
-import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cat.copernic.amayo.frontend.usuariManagment.data.remote.UsuariApi
-import cat.copernic.amayo.frontend.usuariManagment.data.repositories.UsuariRetrofitInstance
 import cat.copernic.amayo.frontend.usuariManagment.data.repositories.UsuariRetrofitTLSInstance
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.crypto.SecretKeyFactory
-import javax.crypto.spec.PBEKeySpec
 
 class ChangePasswordViewModel : ViewModel() {
 

@@ -1,6 +1,6 @@
     package com.copernic.backend.Backend.controller.android;
 
-    import com.copernic.backend.Backend.controller.web.UsuariController;
+    import com.copernic.backend.Backend.controller.web.UsuarisWebController;
     import com.copernic.backend.Backend.entity.Token;
     import com.copernic.backend.Backend.entity.Usuari;
     import com.copernic.backend.Backend.entity.enums.EstatUsuari;
@@ -26,7 +26,7 @@
     @RequestMapping("/api/usuari")
     public class ApiUsuariController {
 
-        private static final Logger log = LoggerFactory.getLogger(UsuariController.class);
+        private static final Logger log = LoggerFactory.getLogger(UsuarisWebController.class);
         @Autowired
         private UsuariLogic logic;
         @Autowired

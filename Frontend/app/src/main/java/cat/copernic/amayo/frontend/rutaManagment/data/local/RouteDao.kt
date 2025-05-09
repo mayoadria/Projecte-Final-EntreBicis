@@ -3,8 +3,7 @@ package cat.copernic.amayo.frontend.rutaManagment.data.local
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import cat.copernic.amayo.frontend.rutaManagment.data.local.PositionEntity
-import cat.copernic.amayo.frontend.rutaManagment.data.local.RouteEntity
+
 
 @Dao
 interface RouteDao {

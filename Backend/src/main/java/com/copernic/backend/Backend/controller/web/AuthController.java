@@ -1,10 +1,12 @@
 package com.copernic.backend.Backend.controller.web;
 
 import com.copernic.backend.Backend.entity.Usuari;
-import com.copernic.backend.Backend.entity.enums.Rol;
 import com.copernic.backend.Backend.logic.web.UsuariLogic;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,15 +15,12 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 public class AuthController {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
     private UsuariLogic usuariLogic;
@@ -31,65 +30,88 @@ public class AuthController {
 
     @GetMapping("/")
     public String redirectToLogin() {
+        logger.info("Redirigint a la pàgina de login (/login).");
         return "redirect:/login";
     }
 
     @GetMapping("/login")
-    public String showLogin() {
-        return "login";
-    }
-
-    // Ahora se utiliza "email" para autenticar
-    @PostMapping("/user")
-    public String login(@RequestParam("email") String email,
-                        @RequestParam("contra") String contra) {
-        Optional<Usuari> admin = usuariLogic.getUsuariByEmail(email);
-        if (admin.isPresent() &&
-                passwordEncoder.matches(contra, admin.get().getContra()) &&
-                admin.get().getRol().name().equals("ADMINISTRADOR")) {
-            return "redirect:/home";
+    public String showLogin(@RequestParam(value = "error", required = false) String error,
+                            Model model) {
+        try {
+            if (error != null) {
+                logger.error("Intent fallit d'inici de sessió.");
+                model.addAttribute("errorMessage", "Usuari o contrasenya incorrectes.");
+            } else {
+                logger.error("Accés a la pàgina de login.");
+            }
+            return "login";
+        } catch (Exception e) {
+            logger.error("Error carregant el formulari de login.", e);
+            model.addAttribute("errorMessage", "Error carregant el formulari de login.");
+            return "error";
         }
-        return "redirect:/login?error=true";
     }
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
-        // Obtiene la autenticación actual del contexto de seguridad
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // Si el usuario está autenticado, cierra la sesión
-        if (authentication != null) {
-            new SecurityContextLogoutHandler().logout(request, response, authentication);
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null) {
+                logger.info("Logout iniciat per l'usuari: {}", auth.getName());
+                new SecurityContextLogoutHandler().logout(request, response, auth);
+            } else {
+                logger.error("S'ha intentat fer logout sense autenticació activa.");
+            }
+        } catch (Exception e) {
+            logger.error("Error durant el logout.", e);
         }
-
-        return "redirect:/login"; // Redirige a la página principal
+        return "redirect:/login";
     }
 
     @GetMapping("/home")
-    public String showHome(Model model) {
-        // Recupera el usuario administrador, por ejemplo:
-        Usuari admin = usuariLogic.getUsuariByEmail("admin@entrebicis.com").orElse(null);
-        model.addAttribute("usuari", admin);
-        return "home";
+    public String showHome(Model model,
+                           HttpSession session,
+                           Authentication auth) {
+        Usuari usuari = null;
+
+        try {
+            logger.info("Accés a /home per l'usuari autenticat.");
+
+            // 1) Obtener de la sesión
+            Object obj = session.getAttribute("usuari");
+            if (obj instanceof Usuari) {
+                usuari = (Usuari) obj;
+                logger.debug("Usuari recuperat de la sessió: {}", usuari.getEmail());
+            }
+
+            // 2) Reponer desde auth si está vacío
+            if (usuari == null && auth != null && auth.getName() != null) {
+                usuari = usuariLogic.getUsuariByEmail(auth.getName()).orElse(null);
+                if (usuari != null) {
+                    logger.debug("Usuari recuperat de la base de dades: {}", usuari.getEmail());
+                    session.setAttribute("usuari", usuari);
+                } else {
+                    logger.error("No s'ha pogut trobar l'usuari per email: {}", auth.getName());
+                }
+            }
+
+            // 3) Si sigue siendo null, redirigir
+            if (usuari == null) {
+                logger.error("Usuari no disponible en sessió ni base de dades. Redirigint a login.");
+                return "redirect:/login";
+            }
+
+            model.addAttribute("usuari", usuari);
+            return "home";
+
+        } catch (ClassCastException e) {
+            logger.error("Error de tipus d'usuari a la sessió.", e);
+            return "redirect:/login";
+        } catch (Exception e) {
+            logger.error("Error carregant la pàgina d'inici.", e);
+            model.addAttribute("errorMessage", "S'ha produït un error inesperat.");
+            return "error";
+        }
     }
-
-
-
-//    @GetMapping("/usuaris")
-//    public String showUsuaris(Model model) {
-//        // Obtiene todos los usuarios y filtra los que no son administradores
-//        List<Usuari> usuaris = usuariLogic.getAllUsuaris().stream()
-//                .filter(u -> !u.getRol().equals(Rol.ADMINISTRADOR)) // Ajusta el valor según tu enum (por ejemplo, ADMIN o ADMINISTRADOR)
-//                .collect(Collectors.toList());
-//        model.addAttribute("usuaris", usuaris);
-//        return "usuaris"; // Se buscará usuaris.html en src/main/resources/templates/
-//    }
-
-
-    @GetMapping("/crearUsuaris")
-    public String crearUsuariForm() {
-        return "crearUsuari"; // crear-usuari.html
-    }
-
 
 }

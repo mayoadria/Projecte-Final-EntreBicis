@@ -1,13 +1,9 @@
 package com.copernic.backend.Backend.logic.web;
 
-import com.copernic.backend.Backend.entity.Recompensas;
 import com.copernic.backend.Backend.entity.Reserva;
-import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.repository.ReservaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

@@ -1,76 +1,80 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <title>Gestió d'Usuaris - EntreBicis</title>
     <link rel="stylesheet" href="/styles/barraLateral.css"/>
-    <link rel="stylesheet" href="/styles/tablas.css" />
+    <link rel="stylesheet" href="/styles/tablas.css"/>
 </head>
 <body>
-<!-- Barra lateral -->
+
+<!-- Barra lateral fija -->
 <div th:replace="barraLateral :: barralateral"></div>
 
-<!-- Contenido principal: tabla de usuarios -->
+<!-- Contenido principal -->
 <div class="main-content">
-    <h1>Usuaris</h1>
-    <div th:if="${error}" class="alert-error" th:text="${error}"></div>
+    <div class="content-wrapper">
+        <h1>Usuaris</h1>
 
-    <a href="/usuaris/crear" class="btn-crear">Crear</a>
+        <div th:if="${error}" class="alert-error" th:text="${error}"></div>
 
-    <table class="users-table">
-        <thead>
-        <tr>
-            <th>Correu</th>
-            <th>Nom</th>
-            <th>Telèfon</th>
-            <th>Població</th>
-            <th>Saldo</th>
-            <th>Estat</th>
-            <th>Gestió</th>
-        </tr>
-        </thead>
-        <tbody>
-        <!-- Bucle Thymeleaf para iterar sobre la lista de usuarios -->
-        <tr th:each="usuari : ${usuaris}"
-            th:data-user-email="${usuari.email}">
-            <td th:text="${usuari.email}"></td>
-            <td th:text="${usuari.nom + ' ' + usuari.cognom}"></td>
-            <td th:text="${usuari.telefon}"></td>
-            <td th:text="${usuari.poblacio}"></td>
-            <td th:text="${usuari.saldo}"></td>
-            <td>
-                <label class="switch">
-                    <input type="checkbox"
-                           th:checked="${usuari.estat.name() == 'ACTIU'}"
-                           onchange="toggleUserActivation(this)">
-                    <span class="slider round"></span>
-                </label>
+        <a href="/usuaris/crear" class="btn-crear">Crear</a>
 
-            </td>
-            <td>
-                <a th:href="@{/usuaris/editar/{email}(email=${usuari.email})}" class="btn-edit">✏️</a>
-                <a th:href="@{/usuaris/delete/{email}(email=${usuari.email})}"
-                   class="btn-delete"
-                   onclick="return confirm('¿Está seguro de borrar este usuario?');">🗑️</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+        <table class="users-table">
+            <thead>
+            <tr>
+                <th>Correu</th>
+                <th>Nom</th>
+                <th>Telèfon</th>
+                <th>Població</th>
+                <th>Saldo</th>
+                <th>Estat</th>
+                <th>Gestió</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="usuari : ${usuaris}"
+                th:data-user-email="${usuari.email}">
+                <td th:text="${usuari.email}"></td>
+                <td th:text="${usuari.nom + ' ' + usuari.cognom}"></td>
+                <td th:text="${usuari.telefon}"></td>
+                <td th:text="${usuari.poblacio}"></td>
+                <td th:text="${usuari.saldo}"></td>
+                <td>
+                    <label class="switch">
+                        <input type="checkbox"
+                               th:checked="${usuari.estat != null and usuari.estat.name() == 'ACTIU'}"
+                               onchange="toggleUserActivation(this)">
+                        <span class="slider round"></span>
+                    </label>
+                </td>
+                <td>
+                    <a class="btn-view"
+                       th:href="@{/usuaris/visualitzar/{email}(email=${usuari.email})}"
+                       title="Visualitzar">👁️</a>
+                    <a th:href="@{/usuaris/editar/{email}(email=${usuari.email})}" class="btn-edit">✏️</a>
+                    <a th:href="@{/usuaris/delete/{email}(email=${usuari.email})}"
+                       class="btn-delete"
+                       onclick="return confirm('Esteu segur d\'esborrar aquest usuari?');">🗑️</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
+<!-- Script para activar/desactivar usuario -->
 <script>
     function toggleUserActivation(checkbox) {
         var row = checkbox.closest('tr');
         var email = row.dataset.userEmail;
-
         var isActive = checkbox.checked;
 
-        if (!isActive && !confirm("¿Está seguro de desactivar este usuario?")) {
+        if (!isActive && !confirm("Esteu segur de desactivar aquest usuari?")) {
             checkbox.checked = true;
             return;
         }
 
-        // Redirigir directamente al backend con GET
         window.location.href = '/usuaris/toggleEstat/' + encodeURIComponent(email);
     }
 </script>

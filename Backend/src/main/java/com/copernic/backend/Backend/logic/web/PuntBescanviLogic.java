@@ -1,8 +1,6 @@
 package com.copernic.backend.Backend.logic.web;
 
 import com.copernic.backend.Backend.entity.PuntBescanvi;
-import com.copernic.backend.Backend.entity.Recompensas;
-import com.copernic.backend.Backend.logic.android.PuntBescanviLogicAndroid;
 import com.copernic.backend.Backend.repository.BescanviRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +13,6 @@ public class PuntBescanviLogic {
 
     @Autowired
     BescanviRepository bescanviRepository;
-    @Autowired
-    private PuntBescanviLogicAndroid puntBescanviLogicAndroid;
 
     public List<PuntBescanvi> llistarBescanvi() {
         return bescanviRepository.findAll();

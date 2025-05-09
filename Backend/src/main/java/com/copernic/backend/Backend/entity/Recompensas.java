@@ -2,15 +2,12 @@ package com.copernic.backend.Backend.entity;
 
 import com.copernic.backend.Backend.entity.enums.Estat;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -35,14 +32,14 @@ public class Recompensas {
     @Lob
     private String foto;
     @Column
-    private String dataCreacio;
+    private LocalDateTime dataCreacio;
     @Column
     private LocalDateTime dataAsignacio;
     @Column
-    private String dataReserva;
+    private LocalDateTime dataReserva;
 
     @Column
-    private String dataEntrega;
+    private LocalDateTime dataEntrega;
 
     @ManyToOne
     @JoinColumn(name = "usuari_email", nullable = true)

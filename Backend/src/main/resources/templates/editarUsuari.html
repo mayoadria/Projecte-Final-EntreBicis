@@ -1,89 +1,141 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <title>Editar Usuari - EntreBicis</title>
-    <link rel="stylesheet" href="/styles/crearUsuari.css" />
-    <link rel="stylesheet" href="/styles/barraLateral.css" />
+    <link rel="stylesheet" href="/styles/crearUsuari.css"/>
+    <link rel="stylesheet" href="/styles/barraLateral.css"/>
 </head>
 <body>
 <!-- Barra lateral -->
 <div th:replace="barraLateral :: barralateral"></div>
 
-<!-- Contenido principal: formulario para editar el usuario -->
+<!-- Contenido principal -->
 <div class="main-content">
     <h1>Editar Usuari</h1>
+
     <div class="create-user-container">
+        <!-- Foto -->
         <div class="profile-picture" id="profilePicture">
-            <img id="fotoPreview" th:src="${fotoDataUrl != null ? fotoDataUrl : 'https://via.placeholder.com/150'}" alt="Foto usuario" />
+            <img id="fotoPreview"
+                 th:src="${fotoDataUrl != null ? fotoDataUrl : 'https://via.placeholder.com/150'}"/>
         </div>
 
-        <!-- Formulario para actualizar el usuario -->
-        <form class="user-form" th:action="@{/usuaris/editarUsuari}" method="POST" enctype="multipart/form-data">
-            <!-- Input oculto para la foto -->
-            <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" />
+        <!-- ========= FORMULARIO ========= -->
+        <!-- Añadimos th:object para que *{...} conozca el modelo -->
+        <form class="user-form"
+              th:object="${usuariForm}"
+              th:action="@{/usuaris/editarUsuari}"
+              method="POST"
+              enctype="multipart/form-data">
 
-            <!-- Campo oculto para conservar el email original -->
-            <input type="hidden" name="originalEmail" th:value="${usuariForm.email}" />
+            <!-- Foto oculta -->
+            <input type="file" id="fotoInput" name="fileFoto" accept="image/*"
+                   style="display:none" th:disabled="${visualitzar}"/>
 
+            <!-- Email original (id) -->
+            <input type="hidden" name="originalEmail" th:value="*{email}"/>
+
+            <!-- Correu (solo lectura) -->
             <div class="form-field">
                 <label for="email">Correu</label>
-                <input type="email" id="email" name="email" th:value="${usuariForm.email}" required readonly />
+                <input id="email" type="email" th:field="*{email}" readonly/>
             </div>
 
+            <!-- Nom -->
             <div class="form-field">
                 <label for="nom">Nom</label>
-                <input type="text" id="nom" name="nom" th:value="${usuariForm.nom}" required />
+                <input id="nom" type="text" th:field="*{nom}" th:readonly="${visualitzar}" required/>
             </div>
 
+            <!-- Cognom -->
             <div class="form-field">
                 <label for="cognom">Cognom</label>
-                <input type="text" id="cognom" name="cognom" th:value="${usuariForm.cognom}" />
+                <input id="cognom" type="text" th:field="*{cognom}" th:readonly="${visualitzar}"/>
             </div>
 
+            <!-- Telèfon -->
             <div class="form-field">
                 <label for="telefon">Telèfon</label>
-                <input type="text" id="telefon" name="telefon"
+                <input id="telefon" type="text"
                        pattern="\d{9}" minlength="9" maxlength="9"
                        inputmode="numeric"
-                       title="Introduce un número de 9 dígitos"
-                       th:value="${usuariForm.telefon}" required />
+                       title="Introdueix 9 dígits"
+                       th:field="*{telefon}" th:readonly="${visualitzar}" required/>
             </div>
 
+            <!-- Saldo -->
             <div class="form-field">
                 <label for="saldo">Saldo</label>
-                <input type="number" id="saldo" name="saldo"
-                       th:value="${usuariForm.saldo}"
-                       min="0" max="1000" step="0.1" required />
+                <input id="saldo" type="number" min="0" max="1000" step="0.1"
+                       th:field="*{saldo}" th:readonly="${visualitzar}" required/>
             </div>
 
+            <!-- Població -->
             <div class="form-field">
                 <label for="poblacio">Població</label>
-                <input type="text" id="poblacio" name="poblacio" th:value="${usuariForm.poblacio}" />
+                <input id="poblacio" type="text" th:field="*{poblacio}" th:readonly="${visualitzar}"/>
             </div>
 
-            <button type="submit" class="btn-crear">Editar</button>
+            <!-- ---------- ESTAT ---------- -->
+            <div class="form-field">
+                <label>Estat</label>
+
+                <!-- Selector editable -->
+                <select th:if="${!visualitzar}" th:field="*{estat}">
+                    <option th:each="e : ${estats}"
+                            th:value="${e}"
+                            th:text="${e}"></option>
+                </select>
+
+                <!-- Campo solo lectura -->
+                <input th:if="${visualitzar}" type="text" th:value="*{estat}" readonly/>
+            </div>
+
+            <!-- ---------- ROL ---------- -->
+            <div class="form-field">
+                <label>Rol</label>
+
+                <!-- Selector editable -->
+                <select th:if="${!visualitzar}" th:field="*{rol}">
+                    <option th:each="r : ${rols}"
+                            th:value="${r}"
+                            th:text="${r}"></option>
+                </select>
+
+                <!-- Campo solo lectura -->
+                <input th:if="${visualitzar}" type="text" th:value="*{rol}" readonly/>
+            </div>
+
+            <!-- Botón Guardar -->
+            <div class="form-actions" th:if="${!visualitzar}">
+                <button type="submit">Guardar</button>
+            </div>
+
+            <div class="form-actions" th:if="${visualitzar}">
+                <a class="btn-crear"
+                   th:href="@{/recompensas/recompensa/{recId}(recId=${usuariForm.email})}">
+                    Veure Recompenses
+                </a>
+            </div>
         </form>
     </div>
 </div>
 
 <script>
-    // Al hacer clic en la foto se activa el input para seleccionar un archivo
-    document.getElementById('profilePicture').addEventListener('click', function() {
-        document.getElementById('fotoInput').click();
-    });
+    /* Selector de foto */
+    document.getElementById('profilePicture')
+        .addEventListener('click', () => document.getElementById('fotoInput').click());
 
-    // Previsualización de la foto seleccionada
-    document.getElementById('fotoInput').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('fotoPreview').src = e.target.result;
+    document.getElementById('fotoInput')
+        .addEventListener('change', e => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = ev => document.getElementById('fotoPreview').src = ev.target.result;
+                reader.readAsDataURL(file);
             }
-            reader.readAsDataURL(file);
-        }
-    });
+        });
 </script>
 </body>
 </html>

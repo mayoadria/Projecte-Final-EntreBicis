@@ -1,13 +1,13 @@
 package com.copernic.backend.Backend.entity;
 
 import com.copernic.backend.Backend.entity.enums.EstatReserva;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -23,7 +23,7 @@ public class Reserva {
     private Boolean caducada;
 
     @Column
-    private String datareserva;
+    private LocalDateTime datareserva;
 
     @Column
     @Enumerated(EnumType.STRING)

@@ -34,7 +34,6 @@ import cat.copernic.amayo.frontend.R
 import cat.copernic.amayo.frontend.navigation.BottomNavigationBar
 import cat.copernic.amayo.frontend.rutaManagment.viewmodels.RutaViewModel
 import com.google.android.gms.location.*
-import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
@@ -54,14 +53,13 @@ fun RutaScreen(navController: NavController) {
     )
 
     // Observamos los estados del ViewModel
-    val isRouting by remember { derivedStateOf { rutaVM.isRouting } }
-    val isPaused  by remember { derivedStateOf { rutaVM.isPaused  } }
-    val routeSegments by remember { derivedStateOf { rutaVM.routeSegments } }
+    val isRouting      by remember { derivedStateOf { rutaVM.isRouting } }
+    val routeSegments  by remember { derivedStateOf { rutaVM.routeSegments } }
 
     // Estados de la UI
-    var mapView by remember { mutableStateOf<MapView?>(null) }
+    var mapView     by remember { mutableStateOf<MapView?>(null) }
     var userLocation by remember { mutableStateOf<GeoPoint?>(null) }
-    var autoCenter by remember { mutableStateOf(true) }
+    var autoCenter   by remember { mutableStateOf(true) }
     var showLoadingText by remember { mutableStateOf(true) }
 
     // Cliente de localización y permiso
@@ -92,8 +90,8 @@ fun RutaScreen(navController: NavController) {
             mapView?.overlays?.removeAll { it is Marker && it.title == "Ubicación actual" }
             mapView?.let { addMarker(it, loc, "Ubicación actual", context) }
 
-            // Si está grabando y no en pausa, persistimos y dibujamos
-            if (isRouting && !isPaused) {
+            // Si está grabando, persistimos y dibujamos
+            if (isRouting) {
                 rutaVM.addPoint(loc)
                 mapView?.overlays?.removeAll { it is Polyline }
                 routeSegments.forEach { segment ->
@@ -124,7 +122,7 @@ fun RutaScreen(navController: NavController) {
                 .background(Color(0xFF9CF3FF))
                 .padding(padding)
         ) {
-            // Mapa
+            /* ---------- MAPA ---------- */
             AndroidView(
                 modifier = Modifier
                     .fillMaxSize()
@@ -144,7 +142,7 @@ fun RutaScreen(navController: NavController) {
                 }
             )
 
-            // Controles Play / Pause / Stop
+            /* ---------- CONTROLES ---------- */
             Box(
                 Modifier
                     .fillMaxWidth()
@@ -159,7 +157,7 @@ fun RutaScreen(navController: NavController) {
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Recentrar
+                    // Recentrar mapa
                     IconButton(onClick = {
                         userLocation?.let {
                             autoCenter = true
@@ -171,6 +169,7 @@ fun RutaScreen(navController: NavController) {
                     }
 
                     if (!isRouting) {
+                        /* -------- INICIO -------- */
                         // ▶️ Play
                         IconButton(onClick = {
                             rutaVM.startRoute("Mi ruta", "Salida en bici", userLocation)
@@ -182,8 +181,8 @@ fun RutaScreen(navController: NavController) {
                                 tint = Unspecified
                             )
                         }
-                        // ■ Stop (deshabilitado)
-                        IconButton(onClick = { }, enabled = false) {
+                        // ■ Stop (deshabilitado mientras no se graba)
+                        IconButton(onClick = { /* vacío */ }, enabled = false) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_stop),
                                 contentDescription = "Detener ruta",
@@ -192,17 +191,7 @@ fun RutaScreen(navController: NavController) {
                             )
                         }
                     } else {
-                        // ⏸️ / ▶️ Pause / Resume
-                        IconButton(onClick = { rutaVM.togglePause() }) {
-                            Icon(
-                                painter = painterResource(
-                                    if (isPaused) R.drawable.ic_play else R.drawable.ic_pause
-                                ),
-                                contentDescription = if (isPaused) "Reanudar" else "Pausar",
-                                modifier = Modifier.size(64.dp),
-                                tint = Unspecified
-                            )
-                        }
+                        /* -------- GRABANDO -------- */
                         // ■ Stop
                         IconButton(onClick = { rutaVM.stopRoute() }) {
                             Icon(
@@ -216,7 +205,7 @@ fun RutaScreen(navController: NavController) {
                 }
             }
 
-            // Texto “Cargando mapa…”
+            /* ---------- TEXTO “Cargando mapa…” ---------- */
             if (showLoadingText) {
                 Box(
                     Modifier
@@ -237,7 +226,7 @@ fun RutaScreen(navController: NavController) {
     }
 }
 
-// Funciones auxiliares
+/* ---------- Funciones auxiliares ---------- */
 @SuppressLint("MissingPermission")
 private fun startLocationUpdates(
     fused: FusedLocationProviderClient,
@@ -259,6 +248,7 @@ private fun startLocationUpdates(
     }
     fused.requestLocationUpdates(req, cb, Looper.getMainLooper())
 }
+
 
 private fun addMarker(
     map: MapView,
