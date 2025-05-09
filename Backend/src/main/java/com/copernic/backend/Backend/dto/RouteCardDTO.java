@@ -40,7 +40,7 @@ public class RouteCardDTO {
         this.title     = ruta.getNom();
 
         // km es int ⇒ cásting a double para usar %f
-        this.distance  = String.format("%.2f", (double) ruta.getKm());
+        this.distance  = String.format("%.3f", (double) ruta.getKm());
 
         this.points    = String.format("%.1f", calcularPunts(ruta));
         this.time      = ruta.getTemps();

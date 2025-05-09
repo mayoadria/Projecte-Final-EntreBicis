@@ -29,8 +29,8 @@ public class Rutes {
     @Column
     private String descripcio;
 
-    @Column
-    private int km;
+    @Column(name = "km", columnDefinition = "DECIMAL(7,3)") // 4 enteros + 3 decimales de precisión
+    private double km;
 
     @Enumerated(EnumType.STRING)
     private EstatRutes estat;         // VALIDA / INVALIDA
