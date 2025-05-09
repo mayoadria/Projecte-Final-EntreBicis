@@ -10,6 +10,8 @@ import com.copernic.backend.Backend.logic.web.UsuariLogic;
 import com.copernic.backend.Backend.entity.enums.EstatRutes;
 import com.copernic.backend.Backend.entity.enums.CicloRuta;
 import com.copernic.backend.Backend.logic.android.RutesLogicAndroid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/ruta")
 public class ApiRutaController {
 
+    private static final Logger logger = LoggerFactory.getLogger(ApiRutaController.class);
     @Autowired
     private RutesLogicAndroid rutesLogic;
 
@@ -31,55 +34,70 @@ public class ApiRutaController {
 
 
     @PostMapping
-    public ResponseEntity<RutaDto> createRutaConPosicions(@RequestBody RutaDto rutaDto) {
+    public ResponseEntity<?> createRutaConPosicions(@RequestBody RutaDto rutaDto) {
+        try {
+            // Validación básica del DTO
+            if (rutaDto == null || rutaDto.getEmailUsuari() == null) {
+                logger.warn("❌ RutaDto o email null en la solicitud");
+                return ResponseEntity.badRequest().body("Dades de la ruta no vàlides.");
+            }
 
-        // 1) Construir la entidad base
-        Rutes ruta = Rutes.builder()
-                .nom(rutaDto.getNom())
-                .descripcio(rutaDto.getDescripcio())
-                .estat(EstatRutes.INVALIDA)
-                .cicloRuta(CicloRuta.INICIADA)
-                .build();
+            // Construcción de entidad base
+            Rutes ruta = Rutes.builder()
+                    .nom(rutaDto.getNom())
+                    .descripcio(rutaDto.getDescripcio())
+                    .estat(EstatRutes.INVALIDA)
+                    .cicloRuta(CicloRuta.INICIADA)
+                    .build();
 
-        // 2) Vincular usuario usando el email recibido
-        Usuari u = usuariLogic.getUsuariByEmail(rutaDto.getEmailUsuari())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "Usuari inexistent"));
-        ruta.setUsuari(u);
+            // Asociación de usuario
+            Usuari usuari = usuariLogic.getUsuariByEmail(rutaDto.getEmailUsuari())
+                    .orElse(null);
+            if (usuari == null) {
+                logger.warn("⚠️ Usuari no trobat: {}", rutaDto.getEmailUsuari());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuari inexistent.");
+            }
+            ruta.setUsuari(usuari);
 
+            // Mapeo de posiciones GPS
+            List<Posicio_Gps> posList = rutaDto.getPosicions().stream()
+                    .map(pd -> {
+                        Posicio_Gps p = new Posicio_Gps();
+                        p.setLatitud(pd.getLatitud());
+                        p.setLongitud(pd.getLongitud());
+                        p.setTemps(pd.getTemps());
+                        p.setRutes(ruta);
+                        return p;
+                    }).collect(Collectors.toList());
+            ruta.setPosicionsGps(posList);
 
-        // 3) Mapear posiciones
-        List<Posicio_Gps> posList = rutaDto.getPosicions().stream()
-                .map(pd -> {
-                    Posicio_Gps p = new Posicio_Gps();
-                    p.setLatitud(pd.getLatitud());
-                    p.setLongitud(pd.getLongitud());
-                    p.setTemps(pd.getTemps());
-                    p.setRutes(ruta);
-                    return p;
-                }).collect(Collectors.toList());
-        ruta.setPosicionsGps(posList);
+            // Guardado en base de datos
+            Rutes guardada = rutesLogic.save(ruta);
+            logger.info("✅ Ruta guardada amb ID {}", guardada.getId());
 
-        // 4) Guardar en cascada
-        Rutes guardada = rutesLogic.save(ruta);
+            // Construcción de respuesta DTO
+            RutaDto resp = new RutaDto();
+            resp.setId(guardada.getId());
+            resp.setNom(guardada.getNom());
+            resp.setDescripcio(guardada.getDescripcio());
+            resp.setEstat(guardada.getEstat());
+            resp.setCicloRuta(guardada.getCicloRuta());
+            resp.setPosicions(
+                    guardada.getPosicionsGps().stream().map(p -> {
+                        PosicioDto dto = new PosicioDto();
+                        dto.setLatitud(p.getLatitud());
+                        dto.setLongitud(p.getLongitud());
+                        dto.setTemps(p.getTemps());
+                        return dto;
+                    }).collect(Collectors.toList())
+            );
 
-        // 5) Devolver DTO de respuesta (sin cambios)
-        RutaDto resp = new RutaDto();
-        resp.setId(guardada.getId());
-        resp.setNom(guardada.getNom());
-        resp.setDescripcio(guardada.getDescripcio());
-        resp.setEstat(guardada.getEstat());
-        resp.setCicloRuta(guardada.getCicloRuta());
-        resp.setPosicions(
-                guardada.getPosicionsGps().stream().map(p -> {
-                    PosicioDto dto = new PosicioDto();
-                    dto.setLatitud(p.getLatitud());
-                    dto.setLongitud(p.getLongitud());
-                    dto.setTemps(p.getTemps());
-                    return dto;
-                }).collect(Collectors.toList())
-        );
+            return ResponseEntity.ok(resp);
 
-        return ResponseEntity.ok(resp);
+        } catch (Exception e) {
+            logger.error("❌ Error creant la ruta", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error intern al crear la ruta.");
+        }
     }
 }

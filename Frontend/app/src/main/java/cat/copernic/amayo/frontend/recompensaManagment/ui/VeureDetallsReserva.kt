@@ -76,6 +76,16 @@ fun DetallsReserva(
                 reserva?.emailUsuari?.email?.let {
                     Text("Reservat per: $it", fontSize = 16.sp)
                 }
+
+                if(recompensa?.estat == Estat.RESERVADES){
+                    Text("Data de Reserva: ${recompensa.dataReserva}", fontSize = 18.sp)
+                }
+                if(recompensa?.estat == Estat.ASSIGNADES || recompensa?.estat == Estat.PER_RECOLLIR){
+                    Text("Data d'assignació: ${recompensa.dataAsignacio}", fontSize = 18.sp)
+                }
+                if(recompensa?.estat == Estat.RECOLLIDA){
+                    Text("Data d'Entrega: ${recompensa.dataEntrega}", fontSize = 18.sp)
+                }
             }
         }
 
@@ -111,6 +121,7 @@ fun DetallsReserva(
                     Text("Contacte: ${punt.personaContacte}", fontSize = 14.sp)
                     Text("Telèfon: ${punt.telefon}", fontSize = 14.sp)
                 }
+
             }
         }
 

@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface RecompensasRepository extends JpaRepository<Recompensas, Long> {
     List<Recompensas> findByPuntBescanviId_Id(Long puntId);
+    List<Recompensas> findByUsuariRecompensa_Email(String email);
+
 }

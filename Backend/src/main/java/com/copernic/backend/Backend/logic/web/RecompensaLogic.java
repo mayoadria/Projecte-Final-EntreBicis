@@ -63,4 +63,10 @@ public class RecompensaLogic {
         return recompensasRepository.findByPuntBescanviId_Id(puntId);
     }
 
+    public List<Recompensas> llistarPerEmailUsuari(String email) {
+        return recompensasRepository.findByUsuariRecompensa_Email(email);
+    }
+
+
+
 }

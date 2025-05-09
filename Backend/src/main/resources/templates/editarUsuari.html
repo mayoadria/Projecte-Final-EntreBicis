@@ -111,6 +111,13 @@
             <div class="form-actions" th:if="${!visualitzar}">
                 <button type="submit">Guardar</button>
             </div>
+
+            <div class="form-actions" th:if="${visualitzar}">
+                <a class="btn-crear"
+                   th:href="@{/recompensas/recompensa/{recId}(recId=${usuariForm.email})}">
+                    Veure Recompenses
+                </a>
+            </div>
         </form>
     </div>
 </div>

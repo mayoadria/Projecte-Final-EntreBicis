@@ -5,6 +5,8 @@ import com.copernic.backend.Backend.logic.web.UsuariLogic;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class AuthController {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+
     @Autowired
     private UsuariLogic usuariLogic;
 
@@ -26,57 +30,88 @@ public class AuthController {
 
     @GetMapping("/")
     public String redirectToLogin() {
+        logger.info("Redirigint a la pàgina de login (/login).");
         return "redirect:/login";
     }
 
     @GetMapping("/login")
     public String showLogin(@RequestParam(value = "error", required = false) String error,
                             Model model) {
-        if (error != null) {
-            model.addAttribute("errorMessage", "Usuari o contrasenya incorrectes.");
+        try {
+            if (error != null) {
+                logger.error("Intent fallit d'inici de sessió.");
+                model.addAttribute("errorMessage", "Usuari o contrasenya incorrectes.");
+            } else {
+                logger.error("Accés a la pàgina de login.");
+            }
+            return "login";
+        } catch (Exception e) {
+            logger.error("Error carregant el formulari de login.", e);
+            model.addAttribute("errorMessage", "Error carregant el formulari de login.");
+            return "error";
         }
-        return "login";
     }
-
-    // Ahora se utiliza "email" para autenticar
-
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null) {
-            new SecurityContextLogoutHandler().logout(request, response, auth);
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null) {
+                logger.info("Logout iniciat per l'usuari: {}", auth.getName());
+                new SecurityContextLogoutHandler().logout(request, response, auth);
+            } else {
+                logger.error("S'ha intentat fer logout sense autenticació activa.");
+            }
+        } catch (Exception e) {
+            logger.error("Error durant el logout.", e);
         }
         return "redirect:/login";
     }
 
     @GetMapping("/home")
     public String showHome(Model model,
-                           HttpSession session,          // ⬅ traemos la sesión
-                           Authentication auth) {        // ⬅ por si necesitas repoblar
+                           HttpSession session,
+                           Authentication auth) {
+        Usuari usuari = null;
 
-        // 1) Intenta sacar el objeto desde la sesión (lo metiste en /user)
-        Usuari usuari = (Usuari) session.getAttribute("usuari");
+        try {
+            logger.info("Accés a /home per l'usuari autenticat.");
 
-        // 2) Si la sesión caducó pero el SecurityContext sigue vivo, repón el atributo
-        if (usuari == null && auth != null) {
-            usuari = usuariLogic.getUsuariByEmail(auth.getName()).orElse(null);
-            session.setAttribute("usuari", usuari);
-        }
+            // 1) Obtener de la sesión
+            Object obj = session.getAttribute("usuari");
+            if (obj instanceof Usuari) {
+                usuari = (Usuari) obj;
+                logger.debug("Usuari recuperat de la sessió: {}", usuari.getEmail());
+            }
 
-        // 3) Sin usuario ⇒ vuelve a /login
-        if (usuari == null) {
+            // 2) Reponer desde auth si está vacío
+            if (usuari == null && auth != null && auth.getName() != null) {
+                usuari = usuariLogic.getUsuariByEmail(auth.getName()).orElse(null);
+                if (usuari != null) {
+                    logger.debug("Usuari recuperat de la base de dades: {}", usuari.getEmail());
+                    session.setAttribute("usuari", usuari);
+                } else {
+                    logger.error("No s'ha pogut trobar l'usuari per email: {}", auth.getName());
+                }
+            }
+
+            // 3) Si sigue siendo null, redirigir
+            if (usuari == null) {
+                logger.error("Usuari no disponible en sessió ni base de dades. Redirigint a login.");
+                return "redirect:/login";
+            }
+
+            model.addAttribute("usuari", usuari);
+            return "home";
+
+        } catch (ClassCastException e) {
+            logger.error("Error de tipus d'usuari a la sessió.", e);
             return "redirect:/login";
+        } catch (Exception e) {
+            logger.error("Error carregant la pàgina d'inici.", e);
+            model.addAttribute("errorMessage", "S'ha produït un error inesperat.");
+            return "error";
         }
-
-        model.addAttribute("usuari", usuari);   // por si tu plantilla principal lo usa
-        return "home";
     }
-
-    @GetMapping("/crearUsuaris")
-    public String crearUsuariForm() {
-        return "crearUsuari"; // crear-usuari.html
-    }
-
 
 }

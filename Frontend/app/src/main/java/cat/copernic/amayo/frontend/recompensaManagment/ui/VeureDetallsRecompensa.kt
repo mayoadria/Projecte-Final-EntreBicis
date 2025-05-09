@@ -97,6 +97,9 @@ fun detalls(
                     Text(text = it, fontSize = 16.sp, color = Color(0xFF757575))
                 }
                 Spacer(modifier = Modifier.height(8.dp))
+                recompensa?.dataCreacio?.let {
+                    Text(text = it, fontSize = 16.sp, color = Color(0xFF757575))
+                }
                 Divider()
                 Spacer(modifier = Modifier.height(8.dp))
                 Column {
