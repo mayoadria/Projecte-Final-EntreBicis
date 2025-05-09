@@ -12,8 +12,8 @@
     <div class="login-box">
         <!-- Título fijo -->
         <h2 id="login-title">LOGIN</h2>
-        <form th:action="@{/login}" method="POST" novalidate>
-            <!-- Campo de correo -->
+        <form th:action="@{/user}" method="post" novalidate>
+        <!-- Campo de correo -->
             <div class="input-group">
                 <label for="email">Correo</label>
                 <input type="text" id="email" name="email" required/>
@@ -35,6 +35,9 @@
                 <button type="submit" class="btn-login" id="login-btn">Entrar</button>
             </div>
         </form>
+        <div th:if="${errorMessage}" class="alert-error">
+            <p th:text="${errorMessage}"></p>
+        </div>
     </div>
 </div>
 

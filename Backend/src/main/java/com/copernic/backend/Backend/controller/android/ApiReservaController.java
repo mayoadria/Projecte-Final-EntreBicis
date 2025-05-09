@@ -1,9 +1,10 @@
 package com.copernic.backend.Backend.controller.android;
 
-import com.copernic.backend.Backend.entity.Recompensas;
 import com.copernic.backend.Backend.entity.Reserva;
 import com.copernic.backend.Backend.logic.web.ReservaLogic;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/reserva")
 public class ApiReservaController {
+    private static final Logger logger = LoggerFactory.getLogger(ApiReservaController.class);
     @Autowired
     private ReservaLogic reservaLogic;
 
@@ -30,7 +32,7 @@ public class ApiReservaController {
 
         try {
             if (reserva == null) {
-
+                logger.error("❌ Intent de creació amb reserva null");
                 response = ResponseEntity.notFound().build();
             } else {
 
@@ -40,7 +42,7 @@ public class ApiReservaController {
             }
 
         } catch (Exception e) {
-
+            logger.error("❌ Error al crear reserva", e);
             response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return response;
@@ -56,11 +58,14 @@ public class ApiReservaController {
         try {
             reserva = reservaLogic.findById(id);
             if (reserva == null) {
+                logger.error("⚠️ Reserva no trobada amb ID: {}", id);
                 response = new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
             } else {
+                logger.info("📦 Reserva trobada amb ID: {}", id);
                 response = new ResponseEntity<>(reserva, headers, HttpStatus.OK);
             }
         } catch (Exception e) {
+            logger.error("❌ Error al buscar reserva amb ID: {}", id, e);
             response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return response;
@@ -77,9 +82,10 @@ public class ApiReservaController {
 
         try {
             reservas = reservaLogic.llistarReserva();
-
+            logger.info("🔍 {} reserves trobades", reservas.size());
             response = new ResponseEntity<>(reservas, headers, HttpStatus.OK);
         } catch (Exception e) {
+            logger.error("❌ Error al recuperar totes les reserves", e);
             response = new ResponseEntity<>(null, headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -108,7 +114,7 @@ public class ApiReservaController {
             }
 
         } catch (Exception e) {
-
+            logger.error("❌ Error eliminant reserva amb ID: {}", resID, e);
             response = ResponseEntity.internalServerError().build();
         }
 
@@ -134,6 +140,8 @@ public class ApiReservaController {
                 resposta = ResponseEntity.badRequest().build();
             }
         } catch (Exception e) {
+            logger.error("❌ Error actualitzant reserva amb ID: {}",
+                    reserva != null ? reserva.getId() : "null", e);
             resposta = ResponseEntity.internalServerError().build();
         }
         return resposta;

@@ -5,14 +5,6 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -21,8 +13,6 @@ import cat.copernic.amayo.frontend.core.auth.SessionRepository
 import cat.copernic.amayo.frontend.core.auth.SessionViewModel
 import cat.copernic.amayo.frontend.core.auth.ViewModelFactory
 import cat.copernic.amayo.frontend.navigation.AppNavigation
-import cat.copernic.amayo.frontend.ui.theme.FrontendTheme
-import cat.copernic.amayo.frontend.usuariManagment.ui.LoginScreen
 import org.osmdroid.config.Configuration
 import org.osmdroid.library.BuildConfig
 

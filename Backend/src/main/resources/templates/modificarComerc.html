@@ -15,7 +15,7 @@
     <h1 th:text="${visualizar} ? 'Detalls del Punt de Bescanvi' : 'Modificar Punt de Bescanvi'"></h1>
     <div class="create-user-container">
         <div class="profile-picture" id="profilePicture">
-            <img id="fotoPreview" th:src="${fotoDataUrl != null ? fotoDataUrl : 'https://via.placeholder.com/150'}" alt="Foto usuario" />
+            <img id="fotoPreview" th:src="${fotoDataUrl != null ? fotoDataUrl : 'https://via.placeholder.com/150'}" />
         </div>
         <form class="user-form" th:action="@{/bescanvi/editar}" th:object="${bescanvi}" method="post" enctype="multipart/form-data">
             <input type="hidden" th:field="*{id}">

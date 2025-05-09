@@ -20,12 +20,20 @@ interface RutaApi {
     enum class CicloRuta  { INICIADA, PAUSADA, FINALITZADA }
 
     data class RutaDto(
-        val id: Long? = null,
-        val nom: String,
-        val descripcio: String,
-        val estat: EstatRutes,
-        val cicloRuta: CicloRuta,
-        val posicions: List<PosicioDto>,
-        val emailUsuari: String
+        val id:           Long?        = null,
+        val nom:          String,
+        val descripcio:   String,
+        val estat:        EstatRutes,
+        val cicloRuta:    CicloRuta,
+
+        val km:           Double,
+        val temps:        Int,         // segons totals
+        val tempsParat:   Int,         // segons parat (vel < 1 km/h)
+        val velMax:       Double,      // km/h
+        val velMitja:     Double,      // km/h (només en moviment)
+        val velMitjaKm:   Double,      // min/km (ritme)
+
+        val posicions:    List<PosicioDto>,
+        val emailUsuari:  String
     )
 }

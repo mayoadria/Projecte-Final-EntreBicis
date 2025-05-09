@@ -1,32 +1,39 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Barra Lateral</title>
+    <link rel="stylesheet" href="/styles/barraLateral.css"/>
+</head>
 <body>
 <div th:fragment="barralateral">
     <div class="sidebar">
+        <!-- Perfil de usuario -->
         <div class="profile">
-            <img th:src="${#strings.isEmpty(usuari?.foto) or usuari.foto.length() > 100000
-    ? '/styles/images/MarioPayaso.png'
-    : 'data:image/jpeg;base64,' + usuari.foto}" alt="Foto de perfil"/>
+            <img th:src="${#strings.isEmpty(session.usuari?.foto) or session.usuari.foto.length() > 100000
+                ? '/styles/images/MarioPayaso.png'
+                : 'data:image/jpeg;base64,' + session.usuari.foto}"
+                 alt="Foto de perfil"/>
             <h3>Admin</h3>
         </div>
 
-        <!-- Contenedor principal para secciones de navegación -->
+        <!-- Navegación -->
         <nav class="nav-sections">
-            <!-- Enlaces de la parte superior -->
+            <!-- Parte superior -->
             <ul class="nav-top">
                 <li><a href="/home"><span class="icon">🏠</span>Inici</a></li>
                 <li><a href="/usuaris"><span class="icon">👤</span>Usuaris</a></li>
-                <li><a href="#"><span class="icon">🚴</span>Rutes</a></li>
+                <li><a href="/admin/rutes"><span class="icon">🚴</span>Rutes</a></li>
                 <li><a href="/recompensas/llistar"><span class="icon">🎁</span>Recompenses</a></li>
                 <li><a href="/bescanvi/llistar"><span class="icon">🛍️</span>Comerços</a></li>
                 <li><a href="/reserva/listar"><span class="icon">🛍️</span>Reservas</a></li>
             </ul>
 
-            <!-- Enlaces de la parte inferior -->
+            <!-- Parte inferior -->
             <ul class="nav-bottom">
                 <li><a href="/sistema"><span class="icon">⚙️</span>Configuració</a></li>
-                <li>
-                    <a th:href="@{/usuaris/editar/{email}(email='admin@entrebicis.com')}">
+                <li th:if="${session.usuari != null}">
+                    <a th:href="@{/usuaris/editar/{email}(email=${session.usuari.email})}">
                         <span class="icon">✏️</span>Editar
                     </a>
                 </li>

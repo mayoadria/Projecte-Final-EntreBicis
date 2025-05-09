@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import cat.copernic.amayo.frontend.recompensaManagment.model.Recompensa
 import cat.copernic.amayo.frontend.recompensaManagment.model.Reserva
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun ReservaItem(
@@ -107,10 +109,11 @@ fun ReservaItem(
             }
 
             Spacer(modifier = Modifier.height(8.dp))
-
+            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale("es", "ES"))
             // Otros detalles
-            reserva.datareserva?.let {
-                Text("Data reserva: $it", fontSize = 14.sp)
+            recompensa?.dataReserva?.let {
+                val fechaReservaFormateada = it.format(formatter)
+                Text("Data de Reserva: $fechaReservaFormateada", fontSize = 18.sp)
             }
             Text("Caducada: ${if (reserva.caducada == true) "Sí" else "No"}", fontSize = 14.sp)
             reserva.emailUsuari?.email?.let {

@@ -10,14 +10,17 @@ data class Recompensa(
     var id: Long? = null,
     var descripcio: String? = null,
     var cost: Int? = null,
-    var dataCreacio: String? = null,
+    @field:JsonAdapter(LocalDateTimeAdapter::class)
+    var dataCreacio: LocalDateTime? = null,
     var estat: cat.copernic.amayo.frontend.recompensaManagment.model.Estat? = null,
     var observacions: String? = null,
     var foto: String? = null,
     var puntBescanviId: PuntBescanvi? = null,
     var usuariRecompensa: Usuari? = null,
-    var dataEntrega: String? = null,
-    var dataReserva: String? = null,
+    @field:JsonAdapter(LocalDateTimeAdapter::class)
+    var dataEntrega: LocalDateTime? = null,
+    @field:JsonAdapter(LocalDateTimeAdapter::class)
+    var dataReserva: LocalDateTime? = null,
     @field:JsonAdapter(LocalDateTimeAdapter::class)
     var dataAsignacio: LocalDateTime? = null
 )

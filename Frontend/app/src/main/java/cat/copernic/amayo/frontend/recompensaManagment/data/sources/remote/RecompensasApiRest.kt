@@ -1,7 +1,6 @@
 package cat.copernic.mycards.mycards_frontend.user_management.data.sources.remote
 
 import cat.copernic.amayo.frontend.recompensaManagment.model.Recompensa
-import cat.copernic.amayo.frontend.usuariManagment.model.Usuari
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

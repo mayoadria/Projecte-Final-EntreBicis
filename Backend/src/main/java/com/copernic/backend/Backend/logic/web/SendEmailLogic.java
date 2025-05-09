@@ -31,7 +31,7 @@ public class SendEmailLogic {
 
             helper.setFrom(fromEmail);
             helper.setTo(toEmail);
-            helper.setSubject("MyCards - Token Password Reset");
+            helper.setSubject("Entrebicis - Token Password Reset");
 
             String htmlContent = "<html>" +
                     "<body style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>" +

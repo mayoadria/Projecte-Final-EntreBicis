@@ -1,7 +1,6 @@
 package com.copernic.backend.Backend.logic.web;
 
 import com.copernic.backend.Backend.Excepciones.ExcepcionEmailDuplicado;
-import com.copernic.backend.Backend.controller.web.UsuariController;
 import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -81,6 +80,7 @@ public class UsuariLogic {
         db.setTelefon(dto.getTelefon());
         db.setPoblacio(dto.getPoblacio());
         db.setReserva(dto.getReserva());
+        db.setFoto(dto.getFoto());
         //db.setRuta(dto.getRuta());
         // …cualquier otro campo editable…
 

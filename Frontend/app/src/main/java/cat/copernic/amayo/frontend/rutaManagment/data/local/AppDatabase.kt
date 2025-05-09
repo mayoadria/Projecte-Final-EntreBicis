@@ -4,8 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import cat.copernic.amayo.frontend.rutaManagment.data.local.PositionEntity
-import cat.copernic.amayo.frontend.rutaManagment.data.local.RouteEntity
 
 @Database(entities = [RouteEntity::class, PositionEntity::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
