@@ -102,10 +102,10 @@
                 <td th:text="${recompensa.cost}"></td>
                 <td th:text="${recompensa.estat}"></td>
                 <td th:text="${recompensa.usuariRecompensa != null ? recompensa.usuariRecompensa.nom : ''}"></td>
-                <td th:text="${recompensa.dataCreacio}"></td>
-                <td th:text="${recompensa.dataReserva}"></td>
+                <td class="fecha-formateada" th:text="${recompensa.dataCreacio}"></td>
+                <td class="fecha-formateada" th:text="${recompensa.dataReserva}"></td>
                 <td class="fecha-formateada" th:text="${recompensa.dataAsignacio}"></td>
-                <td th:text="${recompensa.dataEntrega}"></td>
+                <td class="fecha-formateada" th:text="${recompensa.dataEntrega}"></td>
                 <td>
                     <a class="btn-view" th:href="@{/recompensas/visualizar/{id}(id=${recompensa.id})}">👁️</a>
                     <a class="btn-edit" th:href="@{/recompensas/edit/{id}(id=${recompensa.id})}">✏️</a>

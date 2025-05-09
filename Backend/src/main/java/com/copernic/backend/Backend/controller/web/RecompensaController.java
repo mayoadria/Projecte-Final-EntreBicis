@@ -165,7 +165,7 @@ public class RecompensaController {
             }
             // Asignarlo a la recompensa
             recompensa.setPuntBescanviId(bescanvi);
-            recompensa.setDataCreacio(LocalDate.now().toString());
+            recompensa.setDataCreacio(LocalDateTime.now());
             if (recompensa.getEstat() == Estat.ASSIGNADES) {
                 recompensa.setDataAsignacio(LocalDateTime.now());
             } else {

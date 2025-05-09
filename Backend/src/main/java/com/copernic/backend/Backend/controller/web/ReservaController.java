@@ -118,7 +118,7 @@ public class ReservaController {
         try {
             reserva.setEstat(EstatReserva.ASSIGNADA);
             reserva.getIdRecompensa().setEstat(Estat.ASSIGNADES);
-            reserva.getIdRecompensa().setDataAsignacio(LocalDateTime.now().withSecond(0).withNano(0));
+            reserva.getIdRecompensa().setDataAsignacio(LocalDateTime.now());
 
             double saldoActual = reserva.getEmailUsuari().getSaldo();
             double cost = reserva.getIdRecompensa().getCost();

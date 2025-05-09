@@ -32,14 +32,14 @@ public class Recompensas {
     @Lob
     private String foto;
     @Column
-    private String dataCreacio;
+    private LocalDateTime dataCreacio;
     @Column
     private LocalDateTime dataAsignacio;
     @Column
-    private String dataReserva;
+    private LocalDateTime dataReserva;
 
     @Column
-    private String dataEntrega;
+    private LocalDateTime dataEntrega;
 
     @ManyToOne
     @JoinColumn(name = "usuari_email", nullable = true)

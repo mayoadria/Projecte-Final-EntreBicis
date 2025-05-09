@@ -24,7 +24,10 @@ import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmode
 import cat.copernic.amayo.frontend.usuariManagment.viewmodels.ModificarViewModel
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun DetallsReserva(
@@ -71,21 +74,31 @@ fun DetallsReserva(
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text("Estat: ${reserva?.estat?.name ?: "Desconegut"}", fontSize = 18.sp)
-                Text("Data reserva: ${reserva?.datareserva ?: "No disponible"}", fontSize = 16.sp)
                 Text("Caducada: ${if (reserva?.caducada == true) "Sí" else "No"}", fontSize = 16.sp)
                 reserva?.emailUsuari?.email?.let {
                     Text("Reservat per: $it", fontSize = 16.sp)
                 }
+                val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale("es", "ES"))
+                // RESERVADA
+                if (recompensa?.estat == Estat.RESERVADES) {
+                    recompensa.dataReserva?.let {
+                        val fechaReservaFormateada = it.format(formatter)
+                        Text("Data de Reserva: $fechaReservaFormateada", fontSize = 18.sp)
+                    }
+                }
+                if (recompensa?.estat == Estat.ASSIGNADES || recompensa?.estat == Estat.PER_RECOLLIR) {
+                    recompensa.dataAsignacio?.let {
+                        val fechaAssignacioFormateada = it.format(formatter)
+                        Text("Data d'assignació: $fechaAssignacioFormateada", fontSize = 18.sp)
+                    }
+                }
+                if (recompensa?.estat == Estat.RECOLLIDA) {
+                    recompensa.dataEntrega?.let {
+                        val fechaEntregaFormateada = it.format(formatter)
+                        Text("Data d'Entrega: $fechaEntregaFormateada", fontSize = 18.sp)
+                    }
+                }
 
-                if(recompensa?.estat == Estat.RESERVADES){
-                    Text("Data de Reserva: ${recompensa.dataReserva}", fontSize = 18.sp)
-                }
-                if(recompensa?.estat == Estat.ASSIGNADES || recompensa?.estat == Estat.PER_RECOLLIR){
-                    Text("Data d'assignació: ${recompensa.dataAsignacio}", fontSize = 18.sp)
-                }
-                if(recompensa?.estat == Estat.RECOLLIDA){
-                    Text("Data d'Entrega: ${recompensa.dataEntrega}", fontSize = 18.sp)
-                }
             }
         }
 
@@ -183,7 +196,7 @@ fun DetallsReserva(
                     reserva?.let {
                         reserva.estat = EstatReserva.RECOLLIDA
                         recompensa.estat = Estat.RECOLLIDA
-                        val fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+                        val fecha = ZonedDateTime.now(ZoneId.of("Europe/Madrid")).toLocalDateTime()
                         recompensa.dataEntrega = fecha
                         recompensa.usuariRecompensa = nom
 

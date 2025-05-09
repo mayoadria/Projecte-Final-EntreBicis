@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -21,7 +23,7 @@ public class Reserva {
     private Boolean caducada;
 
     @Column
-    private String datareserva;
+    private LocalDateTime datareserva;
 
     @Column
     @Enumerated(EnumType.STRING)

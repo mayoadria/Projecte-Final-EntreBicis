@@ -34,7 +34,7 @@
             <td th:text="${reserva.emailUsuari.nom}"></td>
             <td th:text="${reserva.estat}"></td>
             <td th:text="${reserva.idRecompensa.descripcio}"></td>
-            <td th:text="${reserva.datareserva}"></td>
+            <td class="fecha-formateada" th:text="${reserva.datareserva}"></td>
             <td>
                 <form th:action="@{/reserva/canviarEstat}" method="post" class="acciones">
                     <input type="hidden" name="reservaId" th:value="${reserva.id}" />
@@ -58,5 +58,22 @@
     </div>
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const celdas = document.querySelectorAll(".fecha-formateada");
+
+        celdas.forEach(celda => {
+            const valorOriginal = celda.textContent.trim();
+            if (!valorOriginal) return;
+
+            const fecha = new Date(valorOriginal);
+            if (!isNaN(fecha)) {
+                const fechaStr = fecha.toISOString().split("T")[0];
+                const horaStr = fecha.toTimeString().split(" ")[0];
+                celda.innerHTML = `${fechaStr}<br>${horaStr}`;
+            }
+        });
+    });
+</script>
 </body>
 </html>
