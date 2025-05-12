@@ -4,7 +4,7 @@ import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.entity.enums.EstatUsuari;
 import com.copernic.backend.Backend.entity.enums.Rol;
 import com.copernic.backend.Backend.logic.android.api.ApiServiceUsuaris;
-import com.copernic.backend.Backend.logic.android.RetrofitTLSClient;
+import com.copernic.backend.Backend.logic.android.RetrofitTLS;
 import com.copernic.backend.Backend.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.*;
@@ -49,7 +49,7 @@ public class TestUsuariAndroid {
 
     @BeforeAll
     public void init() throws MalformedURLException, IOException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException, Exception {
-        apiService = RetrofitTLSClient
+        apiService = RetrofitTLS
                 .getRetrofitTLSClient("https://localhost:" + port)
                 .create(ApiServiceUsuaris.class);
     }

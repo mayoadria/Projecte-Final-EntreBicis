@@ -11,7 +11,7 @@ import javax.net.ssl.*;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 
-public class RetrofitTLSClient {
+public class RetrofitTLS {
 
     public static Retrofit getRetrofitTLSClient(String baseUrl) {
 
