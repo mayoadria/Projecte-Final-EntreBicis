@@ -45,73 +45,82 @@ import android.graphics.Color as AndroidColor
 @SuppressLint("MissingPermission", "ClickableViewAccessibility")
 @Composable
 fun RutaScreen(navController: NavController) {
+
+    // ViewModel y contexto
     val context = LocalContext.current
-    val application = context.applicationContext as Application
+    val app     = context.applicationContext as Application
     val rutaVM: RutaViewModel = viewModel(
-        factory = ViewModelProvider.AndroidViewModelFactory(application),
+        factory    = ViewModelProvider.AndroidViewModelFactory(app),
         modelClass = RutaViewModel::class.java
     )
 
-    // Observamos los estados del ViewModel
-    val isRouting      by remember { derivedStateOf { rutaVM.isRouting } }
-    val routeSegments  by remember { derivedStateOf { rutaVM.routeSegments } }
+    // Estados observados
+    val isRouting     by remember { derivedStateOf { rutaVM.isRouting } }
+    val routeSegments by remember { derivedStateOf { rutaVM.routeSegments } }
+    val pending       by remember { derivedStateOf { rutaVM.pendingStats } }
 
-    // Estados de la UI
-    var mapView     by remember { mutableStateOf<MapView?>(null) }
-    var userLocation by remember { mutableStateOf<GeoPoint?>(null) }
-    var autoCenter   by remember { mutableStateOf(true) }
-    var showLoadingText by remember { mutableStateOf(true) }
+    // Estados de UI
+    var mapView            by remember { mutableStateOf<MapView?>(null) }
+    var userLocation       by remember { mutableStateOf<GeoPoint?>(null) }
+    var autoCenter         by remember { mutableStateOf(true) }
+    var showLoadingText    by remember { mutableStateOf(true) }
+    var showDiscardConfirm by remember { mutableStateOf(false) }
 
-    // Cliente de localización y permiso
-    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+    // Inicializamos ubicación
+    val fused = LocationServices.getFusedLocationProviderClient(context)
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        if (granted) startLocationUpdates(fusedLocationClient) { userLocation = it }
+        if (granted) startLocationUpdates(fused) { userLocation = it }
     }
     LaunchedEffect(Unit) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
+        if (ContextCompat.checkSelfPermission(
+                context, Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
             permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         } else {
-            startLocationUpdates(fusedLocationClient) { userLocation = it }
+            startLocationUpdates(fused) { userLocation = it }
         }
     }
 
-    // Cada vez que cambia la ubicación
+    // Cada vez que llega una nueva posición
     LaunchedEffect(userLocation) {
         userLocation?.let { loc ->
             if (showLoadingText) showLoadingText = false
-            if (autoCenter) {
-                mapView?.controller?.setCenter(loc)
-                mapView?.controller?.setZoom(mapView?.zoomLevelDouble ?: 15.0)
-            }
-            mapView?.overlays?.removeAll { it is Marker && it.title == "Ubicación actual" }
-            mapView?.let { addMarker(it, loc, "Ubicación actual", context) }
 
-            // Si está grabando, persistimos y dibujamos
-            if (isRouting) {
-                rutaVM.addPoint(loc)
-                mapView?.overlays?.removeAll { it is Polyline }
-                routeSegments.forEach { segment ->
-                    if (segment.size > 1) {
-                        Polyline().apply {
-                            setPoints(segment)
-                            outlinePaint.color = AndroidColor.BLUE
-                            outlinePaint.strokeWidth = 5f
-                        }.also { mapView?.overlays?.add(0, it) }
+            mapView?.let { map ->
+                // Centro automático
+                if (autoCenter) {
+                    map.controller.setCenter(loc)
+                    map.controller.setZoom(map.zoomLevelDouble)
+                }
+                // Actualizar marcador actual
+                removeCurrentLocationMarker(map)
+                addMarker(map, loc, "Ubicación actual", context)
+                // Si está grabando, añadimos punto y redibujamos ruta
+                if (isRouting) {
+                    rutaVM.addPoint(loc)
+                    clearPolylines(map)
+                    routeSegments.forEach { segment ->
+                        if (segment.size > 1) {
+                            Polyline().apply {
+                                setPoints(segment)
+                                outlinePaint.color = AndroidColor.BLUE
+                                outlinePaint.strokeWidth = 5f
+                            }.also { map.overlayManager.add(0, it) }
+                        }
                     }
                 }
+                map.invalidate()
             }
-            mapView?.invalidate()
         }
     }
 
-    // Animación de “Cargando mapa…”
+    // Animación “Cargando mapa…”
     val alphaAnim = rememberInfiniteTransition().animateFloat(
-        initialValue = 0.5f,
-        targetValue  = 1f,
+        initialValue  = 0.5f,
+        targetValue   = 1f,
         animationSpec = infiniteRepeatable(tween(500), RepeatMode.Reverse)
     )
 
@@ -122,7 +131,7 @@ fun RutaScreen(navController: NavController) {
                 .background(Color(0xFF9CF3FF))
                 .padding(padding)
         ) {
-            /* ---------- MAPA ---------- */
+            // Mapa
             AndroidView(
                 modifier = Modifier
                     .fillMaxSize()
@@ -142,70 +151,26 @@ fun RutaScreen(navController: NavController) {
                 }
             )
 
-            /* ---------- CONTROLES ---------- */
+            // Barra de controles en la parte inferior
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .height(80.dp)
-                    .background(Color(0xFF9CF3FF))
                     .align(Alignment.BottomCenter)
             ) {
-                Row(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    // Recentrar mapa
-                    IconButton(onClick = {
+                BottomControls(
+                    isRouting  = isRouting,
+                    onStart    = { rutaVM.startRoute("Mi ruta", "Salida en bici", userLocation) },
+                    onStop     = { rutaVM.requestStop() },
+                    onRecenter = {
                         userLocation?.let {
                             autoCenter = true
                             mapView?.controller?.setCenter(it)
-                            mapView?.controller?.setZoom(mapView?.zoomLevelDouble ?: 15.0)
-                        }
-                    }) {
-                        Text("📍", fontSize = 30.sp, fontWeight = FontWeight.Bold)
-                    }
-
-                    if (!isRouting) {
-                        /* -------- INICIO -------- */
-                        // ▶️ Play
-                        IconButton(onClick = {
-                            rutaVM.startRoute("Mi ruta", "Salida en bici", userLocation)
-                        }) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_play),
-                                contentDescription = "Iniciar ruta",
-                                modifier = Modifier.size(64.dp),
-                                tint = Unspecified
-                            )
-                        }
-                        // ■ Stop (deshabilitado mientras no se graba)
-                        IconButton(onClick = { /* vacío */ }, enabled = false) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_stop),
-                                contentDescription = "Detener ruta",
-                                modifier = Modifier.size(64.dp),
-                                tint = Unspecified
-                            )
-                        }
-                    } else {
-                        /* -------- GRABANDO -------- */
-                        // ■ Stop
-                        IconButton(onClick = { rutaVM.stopRoute() }) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_stop),
-                                contentDescription = "Detener ruta",
-                                modifier = Modifier.size(64.dp),
-                                tint = Unspecified
-                            )
                         }
                     }
-                }
+                )
             }
 
-            /* ---------- TEXTO “Cargando mapa…” ---------- */
+            // Overlay de carga
             if (showLoadingText) {
                 Box(
                     Modifier
@@ -222,23 +187,62 @@ fun RutaScreen(navController: NavController) {
                     )
                 }
             }
+
+            // Diálogo de resumen de ruta
+            pending?.let { stats ->
+                RouteSummaryDialog(
+                    stats     = stats,
+                    initName  = rutaVM.nomRuta,
+                    initDesc  = rutaVM.descRuta,
+                    onSave    = { n, d ->
+                        rutaVM.saveRoute(n, d)
+                        mapView?.let { clearPolylines(it) }
+                    },
+                    onDiscard = {
+                        showDiscardConfirm = true
+                    }
+                )
+            }
+
+            // Confirmación antes de descartar
+            if (showDiscardConfirm) {
+                AlertDialog(
+                    onDismissRequest = { showDiscardConfirm = false },
+                    title   = { Text("Confirmar descarte") },
+                    text    = { Text("¿Estás seguro de que quieres descartar la ruta?") },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            rutaVM.discardRoute()
+                            mapView?.let { clearPolylines(it) }
+                            showDiscardConfirm = false
+                        }) {
+                            Text("Sí")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showDiscardConfirm = false }) {
+                            Text("No")
+                        }
+                    }
+                )
+            }
         }
     }
 }
 
-/* ---------- Funciones auxiliares ---------- */
 @SuppressLint("MissingPermission")
 private fun startLocationUpdates(
     fused: FusedLocationProviderClient,
     onLocationChanged: (GeoPoint) -> Unit
 ) {
     val req = LocationRequest.Builder(
-        Priority.PRIORITY_HIGH_ACCURACY, 1000L
+        Priority.PRIORITY_HIGH_ACCURACY, 1_000L
     ).apply {
-        setMinUpdateIntervalMillis(2000L)
+        setMinUpdateIntervalMillis(2_000L)
         setMinUpdateDistanceMeters(5f)
         setWaitForAccurateLocation(false)
     }.build()
+
     val cb = object : LocationCallback() {
         override fun onLocationResult(res: LocationResult) {
             res.lastLocation?.let { loc ->
@@ -249,6 +253,21 @@ private fun startLocationUpdates(
     fused.requestLocationUpdates(req, cb, Looper.getMainLooper())
 }
 
+private fun clearPolylines(map: MapView) {
+    val it = map.overlayManager.iterator()
+    while (it.hasNext()) {
+        if (it.next() is Polyline) it.remove()
+    }
+    map.invalidate()
+}
+
+private fun removeCurrentLocationMarker(map: MapView) {
+    val it = map.overlayManager.iterator()
+    while (it.hasNext()) {
+        val o = it.next()
+        if (o is Marker && o.title == "Ubicación actual") it.remove()
+    }
+}
 
 private fun addMarker(
     map: MapView,
@@ -259,8 +278,63 @@ private fun addMarker(
     Marker(map).apply {
         position = point
         setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
-        icon = ContextCompat.getDrawable(context, R.drawable.ic_blue_dot)
+        icon     = ContextCompat.getDrawable(context, R.drawable.ic_blue_dot)
         this.title = title
-        map.overlays.add(this)
+        map.overlayManager.add(this)
+    }
+}
+
+@Composable
+private fun BottomControls(
+    isRouting: Boolean,
+    onStart: () -> Unit,
+    onStop: () -> Unit,
+    onRecenter: () -> Unit
+) {
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .background(Color(0xFF9CF3FF)),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = onRecenter) {
+                Text("📍", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+            }
+            if (!isRouting) {
+                IconButton(onClick = onStart) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_play),
+                        contentDescription = "Iniciar ruta",
+                        modifier = Modifier.size(64.dp),
+                        tint = Unspecified
+                    )
+                }
+                IconButton(onClick = {}, enabled = false) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_stop),
+                        contentDescription = "Detener ruta",
+                        modifier = Modifier.size(64.dp),
+                        tint = Unspecified
+                    )
+                }
+            } else {
+                IconButton(onClick = onStop) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_stop),
+                        contentDescription = "Detener ruta",
+                        modifier = Modifier.size(64.dp),
+                        tint = Unspecified
+                    )
+                }
+            }
+        }
     }
 }
