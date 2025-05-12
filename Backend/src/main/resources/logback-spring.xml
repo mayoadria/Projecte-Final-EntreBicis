@@ -3,11 +3,10 @@
 
     <property name="LOG_DIR" value="logs" />
 
-    <!-- Appender para errores -->
+    <!-- Appender para errores (rotación diaria, subcarpetas por mes/año) -->
     <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_DIR}/error.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_DIR}/error-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${LOG_DIR}/%d{yyyy-MM}/error-%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
@@ -20,28 +19,31 @@
         </encoder>
     </appender>
 
-    <!-- Appender general (se sobreescribe en cada reinicio) -->
-    <appender name="ALL_LOGS" class="ch.qos.logback.core.FileAppender">
-        <file>${LOG_DIR}/entrebicis.log</file>
-        <append>false</append> <!-- ❗ Esto hace que se sobreescriba en cada inicio -->
+    <!-- Appender general (rotación diaria, subcarpetas por mes/año) -->
+    <appender name="ALL_LOGS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/%d{yyyy-MM}/entrebicis-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <!-- Consola (opcional) -->
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%cyan(%d{HH:mm:ss}) [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
+    <!-- Async wrapper para logs generales -->
+    <appender name="ASYNC_ALL" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="ALL_LOGS" />
     </appender>
 
-    <!-- Logger raíz -->
-    <root level="INFO">
-        <appender-ref ref="CONSOLE" />
-        <appender-ref ref="ALL_LOGS" />
+    <!-- Async wrapper para errores -->
+    <appender name="ASYNC_ERROR" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="ERROR_FILE" />
+    </appender>
+
+    <!-- Logger raíz (sin consola en producción) -->
+    <root level="INFO">
+        <appender-ref ref="ASYNC_ALL" />
+        <appender-ref ref="ASYNC_ERROR" />
     </root>
 
 </configuration>
-
