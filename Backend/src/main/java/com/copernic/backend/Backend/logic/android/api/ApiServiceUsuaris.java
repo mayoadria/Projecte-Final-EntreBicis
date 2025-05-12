@@ -2,10 +2,7 @@ package com.copernic.backend.Backend.logic.android.api;
 
 import com.copernic.backend.Backend.entity.Usuari;
 import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.GET;
-import retrofit2.http.PUT;
-import retrofit2.http.Path;
+import retrofit2.http.*;
 
 import java.util.List;
 
