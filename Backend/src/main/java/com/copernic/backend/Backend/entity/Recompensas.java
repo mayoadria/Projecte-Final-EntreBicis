@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import java.time.LocalDateTime;
@@ -16,6 +17,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Recompensas {
 
     @Id
