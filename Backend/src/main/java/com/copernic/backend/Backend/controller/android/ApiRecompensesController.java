@@ -17,16 +17,35 @@ import java.util.List;
 @RequestMapping("/api/recompensa")
 public class ApiRecompensesController {
 
+    /**
+     * Logger per registrar missatges d'informació, advertències i errors del controlador.
+     */
     private static final Logger logger = LoggerFactory.getLogger(ApiRecompensesController.class);
 
+    /**
+     * Component que conté la lògica de negoci per gestionar recompenses.
+     */
     @Autowired
     private RecompensaLogic logic;
 
+    /**
+     * Inicialitza el controlador i mostra un missatge al log quan s'ha creat correctament.
+     * Aquest mètode s'executa automàticament després de la construcció del bean.
+     */
     @PostConstruct
     private void init() {
         logger.info("✅ ApiRecompensesController inicialitzat");
     }
 
+    /**
+     * Obté totes les recompenses per a l'aplicació Android.
+     * <p>
+     * Retorna una llista de recompenses dins d'una resposta HTTP amb codi 200 si tot va bé.
+     * Si hi ha algun error, es retorna una resposta amb codi 500.
+     * </p>
+     *
+     * @return ResponseEntity amb la llista de recompenses o un error si ha fallat.
+     */
     @GetMapping("/all")
     public ResponseEntity<List<Recompensas>> findAll() {
         HttpHeaders headers = new HttpHeaders();
@@ -42,6 +61,16 @@ public class ApiRecompensesController {
         }
     }
 
+    /**
+     * Obté una recompensa pel seu ID.
+     * <p>
+     * Si es troba, retorna la recompensa amb codi 200. Si no existeix, retorna codi 404.
+     * En cas d'error, retorna codi 500.
+     * </p>
+     *
+     * @param id Identificador de la recompensa a buscar.
+     * @return ResponseEntity amb la recompensa trobada o un codi d'error si no s'ha trobat o hi ha hagut problemes.
+     */
     @GetMapping("/byId/{id}")
     public ResponseEntity<Recompensas> findByID(@PathVariable Long id) {
         HttpHeaders headers = new HttpHeaders();
@@ -62,6 +91,16 @@ public class ApiRecompensesController {
         }
     }
 
+    /**
+     * Actualitza una recompensa existent.
+     * <p>
+     * Si la recompensa no existeix o les dades són incorrectes, retorna codi 400 o 404 segons el cas.
+     * Si l'actualització és correcta, retorna codi 200. En cas d'error, retorna codi 500.
+     * </p>
+     *
+     * @param recompensa Objecte recompensa amb les dades actualitzades.
+     * @return ResponseEntity buida amb el codi d'estat corresponent segons el resultat.
+     */
     @PutMapping("/update")
     public ResponseEntity<Void> updateRecompensa(@RequestBody Recompensas recompensa) {
         try {

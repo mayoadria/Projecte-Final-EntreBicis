@@ -16,14 +16,34 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/reserva")
 public class ApiReservaController {
+    /**
+     * Logger per registrar missatges d'informació, advertències i errors del controlador de reserves.
+     */
     private static final Logger logger = LoggerFactory.getLogger(ApiReservaController.class);
+    /**
+     * Component que gestiona la lògica de negoci relacionada amb les reserves.
+     */
     @Autowired
     private ReservaLogic reservaLogic;
 
+    /**
+     * Inicialitza el controlador després de crear-se el bean.
+     * Actualment no fa cap acció, però es pot utilitzar per inicialitzacions futures.
+     */
     @PostConstruct
     private void init() {
     }
 
+    /**
+     * Crea una nova reserva.
+     * <p>
+     * Si la reserva és vàlida, es guarda i es retorna el seu ID amb codi 201. Si la reserva és null, es retorna codi 404.
+     * En cas d'error durant el procés, es retorna codi 500.
+     * </p>
+     *
+     * @param reserva Objecte reserva que es vol crear.
+     * @return ResponseEntity amb l'ID de la nova reserva o un codi d'error si ha fallat.
+     */
     @PostMapping("/crear")
     public ResponseEntity<Long> save(@RequestBody Reserva reserva) {
 
@@ -48,6 +68,16 @@ public class ApiReservaController {
         return response;
     }
 
+    /**
+     * Busca una reserva pel seu ID.
+     * <p>
+     * Si es troba, retorna la reserva amb codi 200. Si no existeix, retorna codi 404.
+     * En cas d'error durant la consulta, es retorna codi 500.
+     * </p>
+     *
+     * @param id Identificador de la reserva a cercar.
+     * @return ResponseEntity amb la reserva trobada o un codi d'error si no s'ha trobat o hi ha hagut problemes.
+     */
     @GetMapping("/byId/{id}")
     public ResponseEntity<Reserva> findByID(@PathVariable Long id) {
         Reserva reserva;
@@ -70,6 +100,15 @@ public class ApiReservaController {
         }
         return response;
     }
+    /**
+     * Recupera totes les reserves existents.
+     * <p>
+     * Retorna una llista de reserves amb codi 200 si la consulta té èxit.
+     * En cas d'error, retorna una resposta amb codi 500.
+     * </p>
+     *
+     * @return ResponseEntity amb la llista de reserves o un codi d'error si ha fallat.
+     */
     @GetMapping("/all")
     public ResponseEntity<List<Reserva>> findAll() {
 
@@ -91,6 +130,18 @@ public class ApiReservaController {
 
         return response;
     }
+
+    /**
+     * Elimina una reserva pel seu ID.
+     * <p>
+     * Si la reserva existeix, s'elimina i es retorna codi 204 (No Content).
+     * Si no existeix, es retorna codi 404. Si l'ID és null, es retorna codi 400.
+     * En cas d'error, es retorna codi 500.
+     * </p>
+     *
+     * @param resID Identificador de la reserva a eliminar.
+     * @return ResponseEntity buida amb el codi d'estat corresponent segons el resultat.
+     */
     @DeleteMapping("/delete/{resID}")
     public ResponseEntity<Void> deleteById(@PathVariable Long resID){
 
@@ -121,6 +172,16 @@ public class ApiReservaController {
         return response;
     }
 
+    /**
+     * Actualitza una reserva existent.
+     * <p>
+     * Si la reserva existeix, s'actualitza i es retorna codi 200. Si no existeix, es retorna codi 404.
+     * Si la reserva és null, es retorna codi 400. En cas d'error, es retorna codi 500.
+     * </p>
+     *
+     * @param reserva Objecte reserva amb les dades actualitzades.
+     * @return ResponseEntity buida amb el codi d'estat corresponent segons el resultat.
+     */
     @PutMapping("/update")
     public ResponseEntity<Void> updateReserva(@RequestBody Reserva reserva) {
 

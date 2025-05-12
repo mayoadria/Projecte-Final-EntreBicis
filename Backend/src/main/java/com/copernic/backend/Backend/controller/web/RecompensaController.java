@@ -23,6 +23,13 @@ import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Controlador web per gestionar les recompenses.
+ * <p>
+ * Inclou operacions per llistar, crear, editar, eliminar i visualitzar recompenses,
+ * així com filtres i consultes per punts de bescanvi i usuaris.
+ * </p>
+ */
 @Controller
 @RequestMapping("/recompensas")
 public class RecompensaController {
