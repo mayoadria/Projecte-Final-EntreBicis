@@ -3,14 +3,13 @@ package com.copernic.backend;
 import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.entity.enums.EstatUsuari;
 import com.copernic.backend.Backend.entity.enums.Rol;
-import com.copernic.backend.Backend.logic.android.ApiServiceUsuaris;
-import com.copernic.backend.Backend.logic.android.RetroFitClient;
+import com.copernic.backend.Backend.logic.android.api.ApiServiceUsuaris;
+import com.copernic.backend.Backend.logic.android.RetrofitTLSClient;
 import com.copernic.backend.Backend.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +17,8 @@ import org.springframework.test.context.ActiveProfiles;
 import retrofit2.Call;
 import retrofit2.Response;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
@@ -33,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-public class TestUsuari {
+public class TestUsuariAndroid {
 
     List<Usuari> usuaris;
     @LocalServerPort
@@ -48,8 +49,8 @@ public class TestUsuari {
 
     @BeforeAll
     public void init() throws MalformedURLException, IOException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException, Exception {
-        apiService = RetroFitClient
-                .getRetrofitClient("http://localhost:" + port)
+        apiService = RetrofitTLSClient
+                .getRetrofitTLSClient("https://localhost:" + port)
                 .create(ApiServiceUsuaris.class);
     }
 
@@ -92,6 +93,37 @@ public class TestUsuari {
     }
 
     @Test
+    public void testGetByIdOk() throws JsonProcessingException, IOException {
+
+        Usuari usuari = Usuari.builder()
+                .email("usuari@test.com")
+                .nom("Usuari Test")
+                .cognom("Cognom Test")
+                .telefon("666666666")
+                .poblacio("TestPoblacio")
+                .contra(passwordEncoder.encode("contrasenya"))
+                .saldo(100.0)
+                .foto(null)
+                .rol(Rol.CICLISTA)
+                .estat(EstatUsuari.ACTIU)
+                .rutes(Collections.emptyList())
+                .recompensas(Collections.emptyList())
+                .build();
+
+        userRepository.save(usuari);
+
+        Call<Usuari> call = apiService.byId(usuari.getEmail());
+        Response<Usuari> response = call.execute();
+
+        if (response.isSuccessful())
+        {
+            Usuari usuarip2 = response.body();
+            assertEquals(HttpStatus.OK.value(),response.code());
+            assertEquals(usuari, usuarip2);
+        }
+        else fail();
+    }
+    @Test
     public void testUpdateOk() throws IOException {
 
         Usuari carta = new Usuari();
@@ -126,4 +158,8 @@ public class TestUsuari {
         Usuari modifiedProduct = userRepository.findById(carta.getEmail()).orElse(null);
         assertTrue(carta2.equals(modifiedProduct));
     }
+
+
+
 }
+

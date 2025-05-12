@@ -1,10 +1,11 @@
-package com.copernic.backend.Backend.logic.android;
+package com.copernic.backend.Backend.logic.android.api;
 
 import com.copernic.backend.Backend.entity.Usuari;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.PUT;
+import retrofit2.http.Path;
 
 import java.util.List;
 
@@ -15,4 +16,7 @@ public interface ApiServiceUsuaris {
     Call<List<Usuari>> findAll();
     @PUT(BASE_URL + "update")
     Call<Void> update(@Body Usuari usu);
+    @GET(BASE_URL+"getByEmail/{email}")
+    Call<Usuari> byId(@Path("email") String prodId);
+
 }

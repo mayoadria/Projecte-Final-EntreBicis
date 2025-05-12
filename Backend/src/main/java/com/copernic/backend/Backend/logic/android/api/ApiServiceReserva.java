@@ -1,4 +1,4 @@
-package com.copernic.backend.Backend.logic.android;
+package com.copernic.backend.Backend.logic.android.api;
 
 import com.copernic.backend.Backend.entity.Reserva;
 import retrofit2.Call;
