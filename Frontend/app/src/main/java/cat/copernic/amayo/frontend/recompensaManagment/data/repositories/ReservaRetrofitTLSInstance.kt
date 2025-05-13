@@ -25,8 +25,8 @@ import javax.net.ssl.X509TrustManager
  * @property retrofitTLSInstance Instància única de Retrofit configurada amb TLS relaxat per a l'API de reserves.
  */
 object ReservaRetrofitTLSInstance {
-    private const val BASE_URL = "https://10.0.2.2:8443/api/reserva/"
-    //private const val BASE_URL = "https://entrebicis.hopto.org:8443/api/reserva/"
+    //private const val BASE_URL = "https://10.0.2.2:8443/api/reserva/"
+    private const val BASE_URL = "https://entrebicis.hopto.org:8443/api/reserva/"
 
 
     /**
