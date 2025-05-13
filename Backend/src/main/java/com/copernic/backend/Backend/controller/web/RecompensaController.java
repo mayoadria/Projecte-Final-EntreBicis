@@ -44,6 +44,19 @@ public class RecompensaController {
     @Autowired
     private UsuariLogic usuariLogic;
 
+    /**
+     * Llista les recompenses amb opcions de filtratge i ordenació.
+     *
+     * @param nomRecompensa Nom parcial de la recompensa per filtrar.
+     * @param puntBescanvi Nom del punt de bescanvi per filtrar.
+     * @param nomUsuari Nom de l'usuari assignat a la recompensa per filtrar.
+     * @param rangPunts Rang de punts en format "min-max" per filtrar.
+     * @param estat Estat de la recompensa per filtrar.
+     * @param ordenarPor Camp pel qual ordenar (cost, dataAsignacio, dataCreacio).
+     * @param orden Ordre de llistat (asc o desc).
+     * @param model Model per passar dades a la vista.
+     * @return Vista de llistat de recompenses o pàgina d'error.
+     */
     @GetMapping("/llistar")
     public String LlistarRecompensas(
             @RequestParam(name = "nomRecompensa", required = false) String nomRecompensa,
@@ -143,7 +156,12 @@ public class RecompensaController {
         }
     }
 
-
+    /**
+     * Mostra el formulari per crear una nova recompensa.
+     *
+     * @param model Model per passar dades a la vista.
+     * @return Vista del formulari de creació o pàgina d'error.
+     */
     @GetMapping("/crear")
     public String Registre(Model model) {
         try {
@@ -157,7 +175,15 @@ public class RecompensaController {
             return "error";
         }
     }
-
+    /**
+     * Guarda una nova recompensa a la base de dades.
+     *
+     * @param recompensa Objecte Recompensas amb les dades del formulari.
+     * @param puntBescanviId ID del punt de bescanvi associat.
+     * @param model Model per passar dades a la vista.
+     * @param fileFoto Arxiu d'imatge opcional per la recompensa.
+     * @return Redirecció al llistat de recompenses o pàgina d'error.
+     */
     @PostMapping("/guardar")
     public String guardarRecompensa(@ModelAttribute("recompensas") Recompensas recompensa,
                                     @RequestParam("bescanvi") Long puntBescanviId, Model model,
@@ -188,7 +214,12 @@ public class RecompensaController {
             return "error";
         }
     }
-
+    /**
+     * Elimina una recompensa identificada pel seu ID.
+     *
+     * @param id ID de la recompensa a eliminar.
+     * @return Redirecció al llistat de recompenses o pàgina d'error.
+     */
     @GetMapping("/delete/{id}")
     public String deleteRecompensa(@PathVariable Long id) {
         try{
@@ -201,7 +232,13 @@ public class RecompensaController {
         }
 
     }
-
+    /**
+     * Mostra el formulari per editar una recompensa.
+     *
+     * @param id ID de la recompensa a editar.
+     * @param model Model per passar dades a la vista.
+     * @return Vista d'edició de recompensa o pàgina d'error.
+     */
     @GetMapping("/edit/{id}")
     public String editarUsuario(@PathVariable Long id, Model model) {
         try{
@@ -227,6 +264,16 @@ public class RecompensaController {
         }
     }
 
+    /**
+     * Guarda els canvis realitzats en una recompensa existent.
+     *
+     * @param recompensa Objecte Recompensas amb les dades modificades.
+     * @param puntBescanviId ID del punt de bescanvi associat.
+     * @param model Model per passar dades a la vista.
+     * @param fileFoto Nova imatge opcional per la recompensa.
+     * @return Redirecció al llistat de recompenses o pàgina d'error.
+     * @throws IOException En cas d'error al processar la imatge.
+     */
     @PostMapping("/editar")
     public String guardarCambios(@ModelAttribute Recompensas recompensa,
                                  @RequestParam("puntBescanviId") Long puntBescanviId,
@@ -301,6 +348,13 @@ public class RecompensaController {
         }
     }
 
+    /**
+     * Mostra els detalls d'una recompensa en mode visualització.
+     *
+     * @param id ID de la recompensa a visualitzar.
+     * @param model Model per passar dades a la vista.
+     * @return Vista de visualització de recompensa o pàgina d'error.
+     */
     @GetMapping("/visualizar/{id}")
     public String visualizarUsuario(@PathVariable Long id, Model model) {
         try{
@@ -326,6 +380,14 @@ public class RecompensaController {
         }
     }
 
+    /**
+     * Llista les recompenses associades a un punt de bescanvi.
+     *
+     * @param puntId ID del punt de bescanvi.
+     * @param model Model per passar dades a la vista.
+     * @param redirectAttributes Missatges d'error en cas d'errada.
+     * @return Vista de recompenses filtrades o redirecció.
+     */
     @GetMapping("/punt/{puntId}")
     public String llistarPerPunt(
             @PathVariable("puntId") Long puntId,
@@ -351,6 +413,14 @@ public class RecompensaController {
         }
     }
 
+    /**
+     * Llista les recompenses associades a un usuari (pel seu email).
+     *
+     * @param recId Email de l'usuari associat.
+     * @param model Model per passar dades a la vista.
+     * @param redirectAttributes Missatges d'error en cas d'errada.
+     * @return Vista de recompenses filtrades o redirecció.
+     */
     @GetMapping("/recompensa/{recId}")
     public String llistarPerRecompensaUsuari(
             @PathVariable("recId") String puntId,

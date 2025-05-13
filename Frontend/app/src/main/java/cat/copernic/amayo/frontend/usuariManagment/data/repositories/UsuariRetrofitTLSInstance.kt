@@ -12,8 +12,8 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 object UsuariRetrofitTLSInstance {
-    //private const val BASE_URL = "https://10.0.2.2:8443/api/usuari/"
-    private const val BASE_URL = "https://entrebicis.hopto.org:8443/api/usuari/"
+    private const val BASE_URL = "https://10.0.2.2:8443/api/usuari/"
+    //private const val BASE_URL = "https://entrebicis.hopto.org:8443/api/usuari/"
     val retrofitTLSInstance: Retrofit by lazy {
 
         val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {

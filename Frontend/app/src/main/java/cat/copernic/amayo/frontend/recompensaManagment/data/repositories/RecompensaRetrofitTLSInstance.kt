@@ -15,8 +15,8 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 object RecompensaRetrofitTLSInstance {
-    //private const val BASE_URL = "https://10.0.2.2:8443/api/recompensa/"
-    private const val BASE_URL = "https://entrebicis.hopto.org:8443/api/recompensa/"
+    private const val BASE_URL = "https://10.0.2.2:8443/api/recompensa/"
+    //private const val BASE_URL = "https://entrebicis.hopto.org:8443/api/recompensa/"
 
     val retrofitTLSInstance: Retrofit by lazy {
 

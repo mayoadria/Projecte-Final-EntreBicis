@@ -19,9 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Controlador web per gestionar l'autenticació d'usuaris.
- * <p>
  * Inclou la gestió de login, logout i l'accés a la pàgina d'inici (/home).
- * </p>
  */
 @Controller
 public class AuthController {

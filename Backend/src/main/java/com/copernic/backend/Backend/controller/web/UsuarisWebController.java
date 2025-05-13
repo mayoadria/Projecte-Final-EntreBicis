@@ -24,6 +24,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.Base64;
 
+/**
+ * Controlador web per gestionar usuaris (creació, edició, eliminació, visualització i canvi d'estat).
+ */
 @Controller
 @RequestMapping("/usuaris")
 public class UsuarisWebController {
@@ -36,7 +39,12 @@ public class UsuarisWebController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Listar usuarios, excluyendo administradores
+    /**
+     * Mostra el llistat de tots els usuaris, excepte administradors.
+     *
+     * @param model Model per passar dades a la vista.
+     * @return Vista de llistat d'usuaris o pàgina d'error.
+     */
     @GetMapping
     public String showUsuaris(Model model) {
         try {
@@ -56,8 +64,12 @@ public class UsuarisWebController {
         }
     }
 
-
-    // Mostrar la página para crear un usuario
+    /**
+     * Mostra el formulari per crear un nou usuari.
+     *
+     * @param model Model per passar dades a la vista.
+     * @return Vista de creació d'usuari o pàgina d'error.
+     */
     @GetMapping("/crear")
     public String showCrearUsuariForm(Model model) {
         try {
@@ -70,7 +82,15 @@ public class UsuarisWebController {
         }
     }
 
-    // Crear un usuario asignando el rol CICLISTA y guardando la foto en Base64 (si se selecciona)
+    /**
+     * Processa la creació d'un nou usuari assignant el rol CICLISTA.
+     * També guarda la imatge en format Base64 si es proporciona.
+     *
+     * @param usuari Dades del nou usuari.
+     * @param fileFoto Imatge opcional de l'usuari.
+     * @param model Model per passar dades a la vista.
+     * @return Redirecció al llistat d'usuaris o retorn al formulari amb errors.
+     */
     @PostMapping("/crearUsuari")
     public String crearUsuari(@ModelAttribute("newUsuari") Usuari usuari,
                               @RequestParam(value = "fileFoto", required = false) MultipartFile fileFoto,
@@ -98,8 +118,13 @@ public class UsuarisWebController {
         }
     }
 
-
-    // Mostrar el formulario de edición para un usuario dado su email
+    /**
+     * Mostra el formulari d'edició per un usuari concret.
+     *
+     * @param email Email de l'usuari a editar.
+     * @param model Model per passar dades a la vista.
+     * @return Vista d'edició d'usuari o redirecció si no existeix.
+     */
     @GetMapping("/editar/{email}")
     public String editarUsuariForm(@PathVariable String email, Model model) {
         try {
@@ -126,7 +151,15 @@ public class UsuarisWebController {
         }
     }
 
-    // Procesar la edición y actualizar el usuario. Se utiliza el email original para evitar modificar el identificador.
+    /**
+     * Processa l'edició d'un usuari i actualitza les seves dades.
+     * La contrasenya només es modifica si és diferent de l'actual.
+     *
+     * @param usuariForm Dades modificades de l'usuari.
+     * @param fileFoto Nova imatge opcional.
+     * @return Redirecció al llistat d'usuaris o pàgina d'error.
+     * @throws IOException Si hi ha errors processant la imatge.
+     */
     @PostMapping("/editarUsuari")
     public String editarUsuari(@ModelAttribute("usuariForm") Usuari usuariForm, @RequestParam(value = "fileFoto", required = false) MultipartFile fileFoto) throws IOException {
         try {
@@ -158,7 +191,13 @@ public class UsuarisWebController {
         }
     }
 
-    // Eliminar un usuario dado su email
+    /**
+     * Elimina un usuari donat el seu email, sempre que no tingui una reserva activa.
+     *
+     * @param email Email de l'usuari a eliminar.
+     * @param redirectAttributes Missatge d'error si no es pot eliminar.
+     * @return Redirecció al llistat d'usuaris.
+     */
     @GetMapping("/delete/{email:.+}")
     public String deleteUsuari(@PathVariable String email, RedirectAttributes redirectAttributes) {
         try {
@@ -176,6 +215,14 @@ public class UsuarisWebController {
         }
     }
 
+    /**
+     * Alterna l'estat d'un usuari entre ACTIU i INACTIU.
+     * No permet desactivar usuaris amb reserves actives.
+     *
+     * @param email Email de l'usuari a modificar.
+     * @param redirectAttributes Missatges d'error si escau.
+     * @return Redirecció al llistat d'usuaris.
+     */
     @GetMapping("/toggleEstat/{email}")
     public String toggleEstatUsuari(@PathVariable String email,
                                     RedirectAttributes redirectAttributes) {
@@ -210,12 +257,23 @@ public class UsuarisWebController {
         }
     }
 
-
+    /**
+     * Impedeix la modificació directa del camp email des de formularis web.
+     *
+     * @param binder DataBinder per restringir camps.
+     */
     @InitBinder("usuari")
     public void initBinder(WebDataBinder binder) {
         binder.setDisallowedFields("email");
     }
 
+    /**
+     * Mostra en mode lectura els detalls d'un usuari concret.
+     *
+     * @param email Email de l'usuari a visualitzar.
+     * @param model Model per passar dades a la vista.
+     * @return Vista de detalls de l'usuari o redirecció si no existeix.
+     */
     @GetMapping("/visualitzar/{email:.+}")
     public String visualitzarUsuari(@PathVariable String email, Model model) {
         try {

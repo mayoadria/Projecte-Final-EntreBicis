@@ -10,104 +10,171 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-    @Entity
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @SuperBuilder
-    public class Usuari implements UserDetails {
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
+public class Usuari implements UserDetails {
 
 
-        @Column(unique = true)
-        @Id
-        private String email;
+    /**
+     * Correu electrònic de l'usuari, que actua com a identificador únic.
+     */
+    @Column(unique = true)
+    @Id
+    private String email;
 
+    /**
+     * Nom de l'usuari.
+     */
+    @Column
+    private String nom;
 
-        @Column
-        private String nom;
+    /**
+     * Cognom de l'usuari.
+     */
+    @Column
+    private String cognom;
 
-        @Column
-        private String cognom;
+    /**
+     * Contrasenya encriptada de l'usuari.
+     */
+    @Column
+    private String contra;
 
-        @Column
-        private String contra;
+    /**
+     * Telèfon de contacte de l'usuari.
+     */
+    @Column
+    private String telefon;
 
+    /**
+     * Població de residència de l'usuari.
+     */
+    @Column
+    private String poblacio;
 
-        @Column
-        private String telefon;
+    /**
+     * Saldo actual de l'usuari (en punts).
+     */
+    @Column
+    private Double saldo;
 
+    /**
+     * Indica si l'usuari té una reserva activa.
+     */
+    @Builder.Default
+    @Column(nullable = false)
+    private Boolean reserva = false;
 
-        @Column
-        private String poblacio;
+    /**
+     * Fotografia de l'usuari emmagatzemada com a cadena Base64.
+     */
+    @Lob
+    private String foto;
 
-        @Column
-        private Double saldo;
+    /**
+     * Rol de l'usuari dins del sistema (CICLISTA, ADMINISTRADOR).
+     */
+    @Enumerated(EnumType.STRING)
+    private Rol rol;
 
-        @Builder.Default
-        @Column(nullable = false)
-        private Boolean reserva = false;
+    /**
+     * Estat d'activació de l'usuari (ACTIU, INACTIU).
+     */
+    @Enumerated(EnumType.STRING)
+    private EstatUsuari estat;
 
-//        @Column(nullable = true)
-//        private Boolean ruta;
-        @Lob
-        private String foto; // Se guardará la cadena Base64
-        @Enumerated(EnumType.STRING)
-        private Rol rol;
+    /**
+     * Llista de rutes associades a l'usuari.
+     * Relació OneToMany amb {@link Rutes}.
+     */
+    @OneToMany(mappedBy = "usuari", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    @ToString.Exclude
+    private List<Rutes> rutes;
 
-        @Enumerated(EnumType.STRING)
-        private EstatUsuari estat;
+    /**
+     * Llista de recompenses associades a l'usuari.
+     * Relació OneToMany amb {@link Recompensas}.
+     */
+    @OneToMany(mappedBy = "usuariRecompensa", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @ToString.Exclude
+    private List<Recompensas> recompensas;
 
-        @OneToMany(mappedBy = "usuari", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-        @JsonManagedReference
-        @ToString.Exclude
-        private List<Rutes> rutes;
+    /**
+     * Llista de reserves realitzades per l'usuari.
+     * Relació OneToMany amb {@link Reserva}.
+     */
+    @OneToMany(mappedBy = "emailUsuari", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @JsonIgnore
+    private List<Reserva> reservas;
 
-        @OneToMany(mappedBy = "usuariRecompensa", cascade = CascadeType.ALL)
-        @JsonManagedReference
-        @ToString.Exclude
-        private List<Recompensas> recompensas;
-
-        @OneToMany(mappedBy = "emailUsuari", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-        @ToString.Exclude
-        @JsonIgnore
-        private List<Reserva> reservas;
-
-
-        @Override
-        public Collection<? extends GrantedAuthority> getAuthorities() {
-            return List.of(new SimpleGrantedAuthority("ROLE_" + rol.name()));
-        }
-
-        @Override
-        public String getPassword() {
-            return contra; // Devuelve la contraseña real
-        }
-
-        @Override
-        public String getUsername() {
-            return email; // Devuelve el email como username
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Usuari usuari = (Usuari) o;
-            return Objects.equals(email, usuari.email) &&
-                    Objects.equals(nom, usuari.nom) &&
-                    Objects.equals(cognom, usuari.cognom) &&
-                    Objects.equals(telefon, usuari.telefon) &&
-                    Objects.equals(poblacio, usuari.poblacio) &&
-                    Objects.equals(rol, usuari.rol) &&
-                    Objects.equals(estat, usuari.estat); // Excluye 'saldo' y 'foto' si no son relevantes
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(email, nom, cognom, telefon, poblacio, rol, estat); // Ajusta según los atributos relevantes
-        }
+    /**
+     * Retorna les autoritats (roles) de l'usuari per a Spring Security.
+     *
+     * @return Col·lecció d'autoritats de l'usuari.
+     */
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + rol.name()));
     }
+
+    /**
+     * Obté la contrasenya encriptada de l'usuari.
+     *
+     * @return Contrasenya encriptada.
+     */
+    @Override
+    public String getPassword() {
+        return contra; // Devuelve la contraseña real
+    }
+
+    /**
+     * Obté el nom d'usuari per a l'autenticació (corresponent a l'email).
+     *
+     * @return Correu electrònic de l'usuari.
+     */
+    @Override
+    public String getUsername() {
+        return email; // Devuelve el email como username
+    }
+
+    /**
+     * Compara si dos usuaris són iguals segons les seves dades principals.
+     *
+     * @param o Objecte a comparar.
+     * @return {@code true} si són iguals, {@code false} si no.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Usuari usuari = (Usuari) o;
+        return Objects.equals(email, usuari.email) &&
+                Objects.equals(nom, usuari.nom) &&
+                Objects.equals(cognom, usuari.cognom) &&
+                Objects.equals(telefon, usuari.telefon) &&
+                Objects.equals(poblacio, usuari.poblacio) &&
+                Objects.equals(rol, usuari.rol) &&
+                Objects.equals(estat, usuari.estat); // Excluye 'saldo' y 'foto' si no son relevantes
+    }
+
+    /**
+     * Calcula el hashCode de l'usuari a partir dels seus camps rellevants.
+     *
+     * @return Valor hashCode.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(email, nom, cognom, telefon, poblacio, rol, estat); // Ajusta según los atributos relevantes
+    }
+}

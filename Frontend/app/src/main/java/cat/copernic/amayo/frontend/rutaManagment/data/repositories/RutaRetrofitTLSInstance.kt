@@ -14,8 +14,8 @@ import javax.net.ssl.X509TrustManager
 
 object RutaRetrofitTLSInstance {
 
-    //private const val BASE_URL = "https://10.0.2.2:8443/api/"
-    private const val BASE_URL = "https://entrebicis.hopto.org:8443/api/"
+    private const val BASE_URL = "https://10.0.2.2:8443/api/"
+    //private const val BASE_URL = "https://entrebicis.hopto.org:8443/api/"
     val retrofitTLSInstance: Retrofit by lazy {
 
         /* ── Trust-all SSL (ya lo tenías) ─────────────────────────────── */
