@@ -26,6 +26,11 @@ import org.springframework.security.web.firewall.StrictHttpFirewall;
 import java.time.Duration;
 import java.util.Optional;
 
+/**
+ * Configuració de seguretat per a l'aplicació.
+ * Defineix la protecció per la API REST (stateless) i la seguretat per la interfície web (formularis).
+ * També s'encarrega de la inicialització d'usuaris per defecte i configuracions addicionals com la permissió d'URL amb ';'.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -34,6 +39,14 @@ public class SecurityConfig {
     private final UsuariLogic usuariLogic;
     private final SistemaRepository sistemaRepository;
 
+    /**
+     * Constructor que injecta les dependències necessàries.
+     *
+     * @param validadorUsuaris     Validador personalitzat d'usuaris.
+     * @param usuariServiceSQL     Lògica d'usuaris.
+     * @param userDetailsService   Servei de detalls d'usuari (no utilitzat directament).
+     * @param sistemaRepository    Repositori de configuració del sistema.
+     */
     public SecurityConfig(ValidadorUsuaris validadorUsuaris,
                           UsuariLogic usuariServiceSQL,
                           UserDetailsService userDetailsService,
@@ -43,7 +56,14 @@ public class SecurityConfig {
         this.sistemaRepository = sistemaRepository;
     }
 
-    /* 1.  Cadena exclusiva API – stateless, sin redirecciones */
+    /**
+     * Cadena de seguretat per a la API REST.
+     * Sense sessions, sense redireccions, només respostes 401/403 en cas d'error.
+     *
+     * @param http Configuració HTTP.
+     * @return {@link SecurityFilterChain} configurada.
+     * @throws Exception En cas d'error en la configuració.
+     */
     @Bean @Order(1)
     public SecurityFilterChain apiChain(HttpSecurity http) throws Exception {
         http.securityMatcher("/api/**")
@@ -63,7 +83,13 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /* 2.  Cadena web (formularios) */
+    /**
+     * Cadena de seguretat per a la interfície web amb formularis de login.
+     *
+     * @param http Configuració HTTP.
+     * @return {@link SecurityFilterChain} configurada.
+     * @throws Exception En cas d'error en la configuració.
+     */
     @Bean @Order(2)
     public SecurityFilterChain webChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
@@ -90,7 +116,11 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /* 3.  Permitir ‘;’ en la URL  */
+    /**
+     * Configura un {@link HttpFirewall} permissiu per a URL amb caràcters ';'.
+     *
+     * @return Firewall configurat.
+     */
     @Bean
     public HttpFirewall allowSemicolonFirewall() {
         StrictHttpFirewall fw = new StrictHttpFirewall();
@@ -98,23 +128,31 @@ public class SecurityConfig {
         return fw;
     }
 
-
-//    @Bean
-//    public HttpFirewall allowSemicolonHttpFirewall() {
-//        StrictHttpFirewall firewall = new StrictHttpFirewall();
-//        firewall.setAllowSemicolon(true); // Permite ';' en las URLs
-//        return firewall;
-//    }
+    /**
+     * Proporciona el {@link AuthenticationManager} de Spring Security.
+     *
+     * @param authConfig Configuració d'autenticació.
+     * @return {@link AuthenticationManager} configurat.
+     * @throws Exception En cas d'error.
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
+    /**
+     * Codificador de contrasenyes mitjançant BCrypt.
+     *
+     * @return Instància de {@link PasswordEncoder}.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Crea un usuari administrador per defecte si no existeix.
+     */
     private void crearAdminSiNoExiste() {
         Optional<Usuari> adminExistente = usuariLogic.getUsuariByEmail("admin@entrebicis.com");
         if (adminExistente.isPresent()) {
@@ -138,6 +176,9 @@ public class SecurityConfig {
         usuariLogic.createUsuari(admin);
     }
 
+    /**
+     * Crea una configuració per defecte del sistema si no existeix.
+     */
     private void crearSistemaSiNoExiste() {
         Optional<Sistema> sistemaExistente = sistemaRepository.findById(1L);
         if (sistemaExistente.isPresent()) {

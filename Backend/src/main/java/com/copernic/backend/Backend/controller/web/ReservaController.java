@@ -19,6 +19,12 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Controlador web per gestionar les reserves.
+ * <p>
+ * Inclou funcionalitats per llistar, eliminar, canviar l'estat i caducar reserves segons la seva validesa.
+ * </p>
+ */
 @Controller
 @RequestMapping("/reserva")
 public class ReservaController {
@@ -34,6 +40,12 @@ public class ReservaController {
     @Autowired
     private SistemaLogic sistemaLogic;
 
+    /**
+     * Mostra el llistat de totes les reserves.
+     *
+     * @param model Model per passar les dades a la vista.
+     * @return Vista amb el llistat de reserves o pàgina d'error.
+     */
     @GetMapping("/listar")
     public String showUsuaris(Model model) {
         try {
@@ -47,6 +59,13 @@ public class ReservaController {
         }
     }
 
+    /**
+     * Elimina una reserva a partir del seu ID.
+     *
+     * @param id ID de la reserva a eliminar.
+     * @param redirectAttributes Missatge de confirmació o error per la vista.
+     * @return Redirecció al llistat de reserves.
+     */
     @GetMapping("/delete/{id}")
     public String deleteReserva(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
@@ -60,6 +79,14 @@ public class ReservaController {
         return "redirect:/reserva/listar";
     }
 
+    /**
+     * Canvia l'estat d'una reserva (ASSIGNADA/DESASSIGNADA) depenent del seu estat actual.
+     *
+     * @param reservaId ID de la reserva a modificar.
+     * @param redirectAttributes Missatge de confirmació o error per la vista.
+     * @param model Model per passar dades en cas d'error.
+     * @return Redirecció al llistat de reserves o vista d'error.
+     */
     @PostMapping("/canviarEstat")
     public String canviarEstatReserva(@RequestParam Long reservaId,
                                       RedirectAttributes redirectAttributes,
@@ -110,10 +137,26 @@ public class ReservaController {
         return "redirect:/reserva/listar";
     }
 
+    /**
+     * Comprova si l'usuari associat a la reserva té saldo suficient per bescanviar la recompensa.
+     *
+     * @param reserva Reserva a verificar.
+     * @return Cert si l'usuari té saldo igual o superior al cost de la recompensa, fals altrament.
+     */
     private boolean hiHaSaldo(Reserva reserva) {
         return reserva.getEmailUsuari().getSaldo() >= reserva.getIdRecompensa().getCost();
     }
 
+    /**
+     * Assigna una reserva a un usuari i actualitza els valors associats.
+     * Aquesta operació:
+     *     Canvia l'estat de la reserva a {@code ASSIGNADA}.
+     *     Actualitza l'estat de la recompensa a {@code ASSIGNADES} i li assigna la data d'assignació actual.
+     *     Descompta del saldo de l'usuari el cost de la recompensa.
+     *     Guarda les actualitzacions de la reserva, recompensa i perfil d'usuari.
+     *
+     * @param reserva Reserva a assignar.
+     */
     private void assignarReserva(Reserva reserva) {
         try {
             reserva.setEstat(EstatReserva.ASSIGNADA);
@@ -134,6 +177,17 @@ public class ReservaController {
         }
     }
 
+    /**
+     * Desassigna una reserva d'un usuari i restaura els valors associats.
+     * Aquesta operació:
+     *     Canvia l'estat de la reserva a {@code DESASSIGNADA}.
+     *     Actualitza l'estat de la recompensa a {@code DISPONIBLES} i elimina la data d'assignació.
+     *     Marca que l'usuari no té una reserva activa.
+     *     Reintegra al saldo de l'usuari el cost de la recompensa.
+     *     Guarda les actualitzacions de la reserva, recompensa i perfil d'usuari.
+     *
+     * @param reserva Reserva a desassignar.
+     */
     private void desassignarReserva(Reserva reserva) {
         try {
             reserva.setEstat(EstatReserva.DESASSIGNADA);
@@ -155,6 +209,13 @@ public class ReservaController {
         }
     }
 
+    /**
+     * Comprova si una reserva ha superat el temps permès i hauria de caducar.
+     *
+     * @param reserva Reserva a comprovar.
+     * @param tempsPermes Durada màxima permesa per la reserva.
+     * @return Cert si la reserva ha caducat, fals altrament.
+     */
     public boolean haCaducat(Reserva reserva, Duration tempsPermes) {
         LocalDateTime data = reserva.getIdRecompensa().getDataAsignacio();
         return data != null && data.plus(tempsPermes).isBefore(LocalDateTime.now());

@@ -21,6 +21,12 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Controlador REST per gestionar les rutes i les seves posicions des de l'aplicació Android.
+ * <p>
+ * Proporciona operacions per crear rutes associades a un usuari i les seves posicions GPS.
+ * </p>
+ */
 @RestController
 @RequestMapping("/api/ruta")
 public class ApiRutaController {
@@ -32,7 +38,20 @@ public class ApiRutaController {
     @Autowired
     private UsuariLogic usuariLogic;
 
-
+    /**
+     * Crea una nova ruta amb les seves posicions GPS i l'associa a un usuari.
+     * <p>
+     * Valida les dades rebudes, comprova si l'usuari existeix i guarda la ruta juntament amb les seves posicions.
+     * Retorna un {@link RutaDto} amb la informació de la ruta guardada si tot és correcte.
+     * </p>
+     * <p>
+     * Retorna codi 400 si les dades no són vàlides o l'usuari no existeix.
+     * Retorna codi 500 si hi ha un error intern.
+     * </p>
+     *
+     * @param rutaDto Dades de la ruta a crear, incloent posicions GPS i email de l'usuari.
+     * @return ResponseEntity amb el DTO de la ruta creada o un missatge d'error.
+     */
     @PostMapping
     public ResponseEntity<?> createRutaConPosicions(@RequestBody RutaDto rutaDto) {
         try {

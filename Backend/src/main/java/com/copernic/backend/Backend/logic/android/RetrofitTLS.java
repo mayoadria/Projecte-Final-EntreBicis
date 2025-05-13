@@ -11,8 +11,22 @@ import javax.net.ssl.*;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 
+/**
+ * Classe utilitària per crear una instància de {@link Retrofit} amb connexió TLS personalitzada.
+ * Aquesta configuració permet acceptar tots els certificats SSL (desenvolupament/testing),
+ * incloent-hi certificats autofirmats. També registra adaptadors per tractar tipus {@code LocalDateTime}.
+ */
 public class RetrofitTLS {
 
+    /**
+     * Crea i retorna una instància de {@link Retrofit} configurada amb TLS que accepta tots els certificats.
+     * Utilitza un {@link TrustManager} permissiu per evitar errors de certificats no vàlids en desenvolupament.
+     * També configura Gson amb un {@link LocalDateTimeAdapter} per la correcta serialització/deserialització de dates.
+     *
+     * @param baseUrl URL base del servei REST (ex: https://api.exemple.com/).
+     * @return Instància configurada de {@link Retrofit} amb suport TLS permissiu.
+     * @throws RuntimeException Si hi ha un error configurant TLS.
+     */
     public static Retrofit getRetrofitTLSClient(String baseUrl) {
 
         try {

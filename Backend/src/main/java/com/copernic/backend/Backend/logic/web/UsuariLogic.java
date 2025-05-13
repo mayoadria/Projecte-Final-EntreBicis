@@ -15,6 +15,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Servei de lògica de negoci per a la gestió d'usuaris.
+ * Proporciona operacions per crear, consultar, modificar i eliminar usuaris,
+ * així com funcions específiques com la gestió de perfils i comprovació de duplicats.
+ */
 @Service
 public class UsuariLogic {
 
@@ -26,6 +31,14 @@ public class UsuariLogic {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * Crea un nou usuari al sistema després de validar la unicitat del correu electrònic.
+     * La contrasenya es desa encriptada.
+     *
+     * @param usuari Objecte {@link Usuari} a crear.
+     * @return L'usuari creat.
+     * @throws ExcepcionEmailDuplicado si el correu ja existeix.
+     */
     public Usuari createUsuari(Usuari usuari) {
         if (existeEmail(usuari.getEmail())) {
             throw new ExcepcionEmailDuplicado("El correu electrònic ja està registrat.");
@@ -36,39 +49,84 @@ public class UsuariLogic {
         }
     }
 
+    /**
+     * Obté la llista de tots els usuaris.
+     *
+     * @return Llista de {@link Usuari}.
+     */
     public List<Usuari> getAllUsuaris() {
         return userRepository.findAll();
     }
 
+    /**
+     * Cerca un usuari pel seu email (opcional).
+     *
+     * @param email Correu electrònic a buscar.
+     * @return {@link Optional} d'usuari.
+     */
     public Optional<Usuari> getUsuariByEmail(String email) {
         return userRepository.findById(email);
     }
 
+    /**
+     * Cerca un usuari pel seu email.
+     *
+     * @param email Correu electrònic a buscar.
+     * @return L'usuari trobat o {@code null} si no existeix.
+     */
     public Usuari getUsuariByEmaiL(String email) {
         return userRepository.findByEmail(email);
     }
 
 
-    // Actualiza la entidad existente sin modificar el identificador (email)
+    /**
+     * Actualitza un usuari existent sense modificar el seu email (identificador).
+     *
+     * @param usuariActualitzat Objecte {@link Usuari} amb les dades a actualitzar.
+     */
     public void updateUsuari(Usuari usuariActualitzat) {
         // No se toca el campo "email" ya que es el identificador
         userRepository.save(usuariActualitzat);
 
     }
-
+    /**
+     * Elimina un usuari pel seu email.
+     *
+     * @param email Correu electrònic de l'usuari a eliminar.
+     */
     public void deleteUsuari(String email) {
         userRepository.deleteById(email);
     }
 
+    /**
+     * Comprova si un usuari amb el correu electrònic donat existeix.
+     *
+     * @param email Correu electrònic a verificar.
+     * @return {@code true} si existeix, {@code false} si no.
+     */
     public boolean existeEmail(String email) {
         Usuari usu = userRepository.findById(email).orElse(null);
         return usu != null;
     }
 
+    /**
+     * Cerca un usuari pel seu email.
+     *
+     * @param email Correu electrònic a buscar.
+     * @return L'usuari trobat o {@code null} si no existeix.
+     */
     public Usuari findByEmail(String email) {
         return userRepository.findById(email).orElse(null);
     }
 
+    /**
+     * Actualitza el perfil d'un usuari (nom, cognom, telèfon, població, etc.).
+     * També permet actualitzar la contrasenya si es proporciona un valor en text pla.
+     *
+     * @param dto Objecte {@link Usuari} amb les dades a actualitzar.
+     * @return L'email de l'usuari actualitzat.
+     * @throws EntityNotFoundException si l'usuari no existeix.
+     */
     @Transactional
     public String savePerfil(Usuari dto) {
 

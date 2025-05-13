@@ -17,6 +17,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * Controlador web per gestionar l'autenticació d'usuaris.
+ * Inclou la gestió de login, logout i l'accés a la pàgina d'inici (/home).
+ */
 @Controller
 public class AuthController {
 
@@ -28,12 +32,25 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @GetMapping("/")
+    /**
+     * Redirigeix l'usuari a la pàgina de login.
+     *
+     * @return Redirecció a la ruta /login.
+     */    @GetMapping("/")
     public String redirectToLogin() {
         logger.info("Redirigint a la pàgina de login (/login).");
         return "redirect:/login";
     }
-
+    /**
+     * Mostra la pàgina de login.
+     * <p>
+     * Si s'ha produït un error d'autenticació, es mostra un missatge d'error.
+     * </p>
+     *
+     * @param error Paràmetre opcional per indicar si hi ha hagut un error en l'inici de sessió.
+     * @param model Objecte Model per passar dades a la vista.
+     * @return Nom de la vista a renderitzar (login o error).
+     */
     @GetMapping("/login")
     public String showLogin(@RequestParam(value = "error", required = false) String error,
                             Model model) {
@@ -51,7 +68,16 @@ public class AuthController {
             return "error";
         }
     }
-
+    /**
+     * Realitza el logout de l'usuari autenticat.
+     * <p>
+     * Si hi ha una sessió activa, es tanca i es redirigeix a la pàgina de login.
+     * </p>
+     *
+     * @param request  Sol·licitud HTTP.
+     * @param response Resposta HTTP.
+     * @return Redirecció a la ruta /login.
+     */
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -67,7 +93,18 @@ public class AuthController {
         }
         return "redirect:/login";
     }
-
+    /**
+     * Mostra la pàgina d'inici (home) de l'usuari autenticat.
+     * <p>
+     * Comprova si l'usuari està a la sessió, si no, el busca a la base de dades.
+     * Si no es troba, es redirigeix a la pàgina de login.
+     * </p>
+     *
+     * @param model   Objecte Model per passar dades a la vista.
+     * @param session Sessió HTTP de l'usuari.
+     * @param auth    Objecte d'autenticació actiu.
+     * @return Nom de la vista a renderitzar (home, login o error).
+     */
     @GetMapping("/home")
     public String showHome(Model model,
                            HttpSession session,

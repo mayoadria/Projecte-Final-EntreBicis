@@ -15,6 +15,12 @@ import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Controlador web per gestionar els punts de bescanvi (comerços).
+ * <p>
+ * Permet llistar, crear, editar, eliminar i visualitzar punts de bescanvi.
+ * </p>
+ */
 @Controller
 @RequestMapping("/bescanvi")
 public class ComerçosController {
@@ -23,7 +29,18 @@ public class ComerçosController {
 
     @Autowired
     private PuntBescanviLogic puntBescanviLogic;
-
+    /**
+     * Mostra la llista de punts de bescanvi.
+     * <p>
+     * Permet filtrar per nom si s'indica el paràmetre corresponent.
+     * </p>
+     *
+     * @param model   Model per passar dades a la vista.
+     * @param error   Missatge d'error (opcional).
+     * @param success Missatge d'èxit (opcional).
+     * @param nomPunt Nom del punt per filtrar la llista (opcional).
+     * @return Vista amb la llista de punts de bescanvi.
+     */
     @GetMapping("/llistar")
     public String llistarComerc(
             Model model,
@@ -46,13 +63,29 @@ public class ComerçosController {
             return "llistarComerc";
         }
     }
-
+    /**
+     * Mostra el formulari per crear un nou punt de bescanvi.
+     *
+     * @param model Model per passar dades a la vista.
+     * @return Vista del formulari de creació.
+     */
     @GetMapping("/crear")
     public String crear(Model model) {
         model.addAttribute("bescanvis", new PuntBescanvi());
         return "crearComerc";
     }
-
+    /**
+     * Guarda un nou punt de bescanvi.
+     * <p>
+     * També gestiona la pujada d'una imatge associada en format Base64.
+     * </p>
+     *
+     * @param puntBescanvi        Dades del punt de bescanvi a guardar.
+     * @param model               Model per passar dades a la vista.
+     * @param redirectAttributes  Per mostrar missatges després de redireccions.
+     * @param fileFoto            Imatge adjunta (opcional).
+     * @return Redirecció a la llista o vista d'error.
+     */
     @PostMapping("/guardar")
     public String guardarComerc(
             @ModelAttribute("bescanvis") PuntBescanvi puntBescanvi,
@@ -76,7 +109,13 @@ public class ComerçosController {
             return "crearComerc";
         }
     }
-
+    /**
+     * Elimina un punt de bescanvi pel seu ID.
+     *
+     * @param id                  Identificador del punt a eliminar.
+     * @param redirectAttributes  Per mostrar missatges després de redireccions.
+     * @return Redirecció a la llista de punts de bescanvi.
+     */
     @GetMapping("/delete/{id}")
     public String deleteBescanvi(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
@@ -89,7 +128,13 @@ public class ComerçosController {
         }
         return "redirect:/bescanvi/llistar";
     }
-
+    /**
+     * Mostra el formulari per editar un punt de bescanvi existent.
+     *
+     * @param id    Identificador del punt a editar.
+     * @param model Model per passar dades a la vista.
+     * @return Vista del formulari d'edició o redirecció si hi ha error.
+     */
     @GetMapping("/edit/{id}")
     public String editarPuntBescanvi(@PathVariable Long id, Model model) {
         try {
@@ -114,7 +159,18 @@ public class ComerçosController {
             return "redirect:/bescanvi/llistar";
         }
     }
-
+    /**
+     * Guarda els canvis realitzats en un punt de bescanvi existent.
+     * <p>
+     * També permet actualitzar la imatge associada.
+     * </p>
+     *
+     * @param form                Dades del punt de bescanvi actualitzades.
+     * @param model               Model per passar dades a la vista.
+     * @param redirectAttributes  Per mostrar missatges després de redireccions.
+     * @param fileFoto            Nova imatge (opcional).
+     * @return Redirecció a la llista o vista d'error.
+     */
     @PostMapping("/editar")
     public String guardarCambios(
             @ModelAttribute("bescanvi") PuntBescanvi form,
@@ -157,7 +213,13 @@ public class ComerçosController {
             return "modificarComerc";
         }
     }
-
+    /**
+     * Mostra la vista de detall d'un punt de bescanvi en mode només lectura.
+     *
+     * @param id    Identificador del punt a visualitzar.
+     * @param model Model per passar dades a la vista.
+     * @return Vista amb els detalls del punt de bescanvi o redirecció si hi ha error.
+     */
     @GetMapping("/visualizar/{id}")
     public String visualizar(@PathVariable Long id, Model model) {
         try {
