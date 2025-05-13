@@ -21,6 +21,10 @@ import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
+/**
+ * ViewModel encarregat de gestionar la modificació de dades d'usuari, incloent-hi text i imatge.
+ * Gestiona la càrrega d'imatges, conversió a Base64 i actualització via API.
+ */
 class ModificarViewModel :ViewModel() {
 
     private val UserApi: UsuariApi = UsuariRetrofitTLSInstance.retrofitTLSInstance.create(
@@ -44,21 +48,47 @@ class ModificarViewModel :ViewModel() {
     val user: State<Usuari?> = _user
 
 
+    /**
+     * Actualitza el valor del nom de l'usuari.
+     * @param nom Nou valor per al camp nom.
+     */
     fun updateNom(nom: String) {
         _nom.value = nom
     }
+    /**
+     * Actualitza el valor del cognom de l'usuari.
+     * @param cognom Nou valor per al camp cognom.
+     */
     fun updateCognom(cognom: String) {
         _cognom.value = cognom
     }
+    /**
+     * Actualitza el valor de la població de l'usuari.
+     * @param poblacio Nou valor per al camp població.
+     */
     fun updatePoblacio(poblacio: String) {
         _poblacio.value = poblacio
     }
+    /**
+     * Actualitza el valor del telèfon de l'usuari.
+     * @param telefon Nou valor per al camp telèfon.
+     */
     fun updateTelefon(telefon: String) {
         _telefon.value = telefon
     }
+    /**
+     * Actualitza la URI de la imatge seleccionada.
+     * @param uri URI de la imatge seleccionada o null si es vol esborrar.
+     */
     fun updateSelectedImage(uri: Uri?) {
         _selectedImageUri.value = uri
     }
+    /**
+     * Converteix una URI d'imatge a un array de bytes.
+     * @param uri URI de la imatge a convertir.
+     * @param contentResolver ContentResolver per accedir a la imatge.
+     * @return Array de bytes de la imatge o null si hi ha error.
+     */
     fun convertUriToByteArray(uri: Uri, contentResolver: ContentResolver): ByteArray? {
         try {
             val inputStream: InputStream? = contentResolver.openInputStream(uri)
@@ -78,6 +108,12 @@ class ModificarViewModel :ViewModel() {
             return null
         }
     }
+    /**
+     * Carrega un Bitmap a partir d'una URI, compatible amb diferents versions d'Android.
+     * @param uri URI de la imatge.
+     * @param contentResolver ContentResolver per accedir a la imatge.
+     * @return Bitmap resultant o null si hi ha error.
+     */
     fun loadBitmapFromUri(uri: Uri, contentResolver: ContentResolver): Bitmap? {
         return try {
             if (Build.VERSION.SDK_INT < 28) {
@@ -93,7 +129,11 @@ class ModificarViewModel :ViewModel() {
     }
 
 
-    // Función para actualizar el sobre
+    /**
+     * Actualitza les dades d'un usuari enviant la informació (i imatge si cal) a l'API.
+     * @param client Usuari amb les dades a modificar.
+     * @param contentResolver ContentResolver per accedir a imatges.
+     */
     fun updateClient(client: Usuari, contentResolver: ContentResolver) {
         viewModelScope.launch {
             try {

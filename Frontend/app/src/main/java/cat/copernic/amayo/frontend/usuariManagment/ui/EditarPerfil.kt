@@ -46,6 +46,14 @@ import cat.copernic.amayo.frontend.core.auth.SessionViewModel
 import cat.copernic.amayo.frontend.usuariManagment.viewmodels.ModificarViewModel
 
 
+/**
+ * Pantalla para editar el perfil del usuario, permitiendo modificar campos como nombre,
+ * apellido, teléfono, población y foto de perfil.
+ *
+ * @param sessionViewModel ViewModel encargado de gestionar la sesión del usuario.
+ * @param modificarViewModel ViewModel encargado de gestionar la lógica de actualización de perfil.
+ * @param navController Controlador de navegación para gestionar las transiciones de pantalla.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditarPerfil(

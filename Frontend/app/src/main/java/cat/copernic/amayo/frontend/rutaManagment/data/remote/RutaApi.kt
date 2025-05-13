@@ -4,21 +4,61 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 
+/**
+ * Interfaz para acceder a la API de rutas.
+ * Define las operaciones disponibles para enviar rutas al servidor.
+ */
 interface RutaApi {
 
+    /**
+     * Envía una nueva ruta al backend para ser guardada.
+     *
+     * @param rutaDto Los datos de la ruta a guardar.
+     * @return Una respuesta que contiene el objeto RutaDto guardado.
+     */
     @POST("ruta")
     suspend fun saveRuta(@Body rutaDto: RutaDto): Response<RutaDto>
 
+    /**
+     * DTO que representa una posición GPS con latitud, longitud y tiempo transcurrido.
+     *
+     * @property latitud Coordenada de latitud.
+     * @property longitud Coordenada de longitud.
+     * @property temps Tiempo transcurrido en segundos en esa posición.
+     */
     data class PosicioDto(
         val latitud: Double,
         val longitud: Double,
         val temps: Int
     )
 
-    // DTO principal con admin + ciclo + posiciones
+    /**
+     * Enum que indica el estado de validación de una ruta.
+     */
     enum class EstatRutes { VALIDA, INVALIDA }
+    /**
+     * Enum que representa el ciclo de vida de una ruta.
+     */
     enum class CicloRuta  { INICIADA, PAUSADA, FINALITZADA }
 
+    /**
+     * DTO principal que contiene toda la información de una ruta,
+     * incluyendo métricas, estado, ciclo, posiciones y el usuario asociado.
+     *
+     * @property id Identificador de la ruta (opcional).
+     * @property nom Nombre de la ruta.
+     * @property descripcio Descripción de la ruta.
+     * @property estat Estado de validación de la ruta.
+     * @property cicloRuta Ciclo de vida actual de la ruta.
+     * @property km Distancia total de la ruta en kilómetros.
+     * @property temps Tiempo total en segundos.
+     * @property tempsParat Tiempo detenido en segundos (velocidad < 1 km/h).
+     * @property velMax Velocidad máxima alcanzada (km/h).
+     * @property velMitja Velocidad media en movimiento (km/h).
+     * @property velMitjaKm Ritmo medio en min/km.
+     * @property posicions Lista de posiciones GPS registradas durante la ruta.
+     * @property emailUsuari Email del usuario propietario de la ruta.
+     */
     data class RutaDto(
         val id:           Long?        = null,
         val nom:          String,

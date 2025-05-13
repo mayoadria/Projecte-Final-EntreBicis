@@ -26,6 +26,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import cat.copernic.amayo.frontend.R
 
+/**
+ * Pantalla que es mostra quan una recompensa ha estat recollida correctament.
+ *
+ * Aquesta pantalla serveix com a confirmació visual per a l'usuari,
+ * mostrant un missatge d'èxit i un botó per tornar enrere.
+ *
+ * @param navController Controlador de navegació per gestionar el retorn a la pantalla anterior.
+ */
 @Composable
 fun RecompensaEntregadaScreen(navController: NavController) {
     Column(

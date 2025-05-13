@@ -32,6 +32,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import cat.copernic.amayo.frontend.core.auth.SessionViewModel
 
+/**
+ * Pantalla de perfil del usuario que muestra información como nombre, saldo y foto de perfil.
+ * Incluye botones para editar perfil, ver rutas, consultar reservas y cerrar sesión.
+ *
+ * @param sessionViewModel ViewModel encargado de gestionar la sesión del usuario.
+ * @param navController Controlador de navegación para gestionar el cambio de pantallas.
+ */
 @Composable
 fun perfil(sessionViewModel: SessionViewModel,navController: NavController) {
     val nom by sessionViewModel.userData.collectAsState()
@@ -152,6 +159,14 @@ fun perfil(sessionViewModel: SessionViewModel,navController: NavController) {
     }
 }
 
+/**
+ * Componente reutilizable que muestra un icono con texto debajo y responde a clics.
+ *
+ * @param icon Icono a mostrar.
+ * @param text Texto asociado al icono.
+ * @param iconColor Color del icono.
+ * @param onClick Acción a ejecutar al hacer clic.
+ */
 @Composable
 fun IconButtonWithText(
     icon: ImageVector,
@@ -177,7 +192,12 @@ fun IconButtonWithText(
     }
 }
 
-// Función para decodificar imagen base64 a Bitmap
+/**
+ * Decodifica una cadena en base64 a un objeto Bitmap.
+ *
+ * @param base64Str Cadena base64 de la imagen.
+ * @return Imagen decodificada como Bitmap o null si falla.
+ */
 fun decodeBase64ToBitmap(base64Str: String): android.graphics.Bitmap? {
     return try {
         val cleanBase64 = base64Str.substringAfter(",") // por si viene con encabezado

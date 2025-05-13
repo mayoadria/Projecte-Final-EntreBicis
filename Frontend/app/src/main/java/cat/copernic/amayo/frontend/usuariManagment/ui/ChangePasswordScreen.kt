@@ -19,6 +19,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import cat.copernic.amayo.frontend.usuariManagment.viewmodels.ChangePasswordViewModel
 
+/**
+ * Pantalla de cambio de contraseña donde el usuario puede solicitar un email de confirmación,
+ * introducir un código de verificación y actualizar su contraseña.
+ *
+ * @param viewModel ViewModel encargado de gestionar la lógica del cambio de contraseña.
+ * @param navController Controlador de navegación para gestionar transiciones entre pantallas.
+ */
 @Composable
 fun ChangePasswordScreen(viewModel: ChangePasswordViewModel, navController: NavController) {
     val context = LocalContext.current

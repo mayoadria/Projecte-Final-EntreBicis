@@ -12,6 +12,16 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import kotlinx.coroutines.delay
 
+/**
+ * Composable que representa la pantalla inicial (Splash Screen) de l'aplicació.
+ *
+ * Mostra una animació de càrrega mentre es comprova l'estat de la sessió de l'usuari.
+ * Un cop determinat si hi ha una sessió activa, redirigeix automàticament a la pantalla d'inici
+ * o a la de login.
+ *
+ * @param navController Controlador de navegació per redirigir entre pantalles.
+ * @param sessionViewModel ViewModel que conté l'estat de la sessió de l'usuari.
+ */
 @Composable
 fun SplashScreen(navController: NavController, sessionViewModel: SessionViewModel) {
     val userSession by sessionViewModel.userSession.collectAsState()

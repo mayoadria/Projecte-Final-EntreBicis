@@ -31,7 +31,16 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import cat.copernic.amayo.frontend.recompensaManagment.model.Recompensa
 
-
+/**
+ * Composable que mostra un element de recompensa en format targeta.
+ *
+ * Aquesta targeta inclou la descripció, observacions, cost i una imatge codificada en Base64.
+ * Quan es fa clic sobre la targeta, es navega a la pantalla de detalls de la recompensa.
+ *
+ * @param recompensa L'objecte Recompensa a mostrar.
+ * @param navController Controlador de navegació per a gestionar canvis de pantalla.
+ * @param scale Factor d'escala per a ajustar l'elevació de la targeta.
+ */
 @Composable
 fun RecompensaItem(recompensa: Recompensa, navController: NavController, scale: Float) {
     val bitmap = remember(recompensa.foto) { recompensa.foto?.let { decodeBase64ToBitmap(it) } }
@@ -87,13 +96,25 @@ fun RecompensaItem(recompensa: Recompensa, navController: NavController, scale: 
         }
     }
 }
-
+/**
+ * Funció auxiliar que calcula un valor Dp escalat en funció d'un factor de multiplicació.
+ *
+ * @param value Valor original en Dp.
+ * @param scale Factor d'escala a aplicar.
+ * @return Valor en Dp després d'aplicar l'escala.
+ */
 @Composable
 fun scaledDp(value: Dp, scale: Float): Dp {
     val density = LocalDensity.current
     return with(density) { (value.toPx() * scale).toDp() }
 }
 
+/**
+ * Funció per descomprimir una imatge codificada en Base64 i convertir-la en Bitmap.
+ *
+ * @param base64String Cadena Base64 que representa la imatge.
+ * @return L'objecte Bitmap corresponent o null si la descompressió falla.
+ */
 fun decodeBase64ToBitmap(base64String: String): Bitmap? {
     return try {
         val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)

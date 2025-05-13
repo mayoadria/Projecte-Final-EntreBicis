@@ -22,6 +22,17 @@ import androidx.navigation.NavController
 import cat.copernic.amayo.frontend.core.auth.SessionViewModel
 import cat.copernic.amayo.frontend.recompensaManagment.model.Estat
 
+/**
+ * Pantalla principal de la gestió de recompenses.
+ *
+ * Mostra una llista de recompenses disponibles, permet aplicar filtres i ordenar
+ * per diferents criteris (descripció, cost). Utilitza el ViewModel per carregar les dades
+ * i controlar la sessió de l'usuari.
+ *
+ * @param llistaViewmodel ViewModel per gestionar la llista de recompenses.
+ * @param navController Controlador de navegació per canviar de pantalla.
+ * @param sessionViewModel ViewModel de sessió per obtenir dades de l'usuari.
+ */
 @Composable
 fun recompensa(
     llistaViewmodel: llistaViewmodel,
@@ -97,6 +108,15 @@ fun recompensa(
     }
 }
 
+/**
+ * Capçalera de la pantalla de recompenses.
+ *
+ * Inclou el títol, el saldo de l'usuari i un menú amb opcions per aplicar filtres o ordenar.
+ *
+ * @param onFilterApplied Funció que rep els valors dels filtres aplicats.
+ * @param onSortSelected Funció que rep el criteri d'ordenació i l'ordre (ascendent/descendent).
+ * @param sessionViewModel ViewModel de sessió per obtenir el saldo de l'usuari.
+ */
 @Composable
 fun Header(
     onFilterApplied: (String, String, String) -> Unit,
@@ -194,6 +214,14 @@ fun Header(
     }
 }
 
+/**
+ * Diàleg per aplicar filtres a la llista de recompenses.
+ *
+ * Permet filtrar per descripció, observacions, cost i estat.
+ *
+ * @param onApplyFilter Funció que rep els valors introduïts pels filtres.
+ * @param onDismiss Funció que es crida per tancar el diàleg sense aplicar filtres.
+ */
 @Composable
 fun FilterDialog(
     onApplyFilter: (String, String, String, String) -> Unit,
@@ -247,6 +275,14 @@ fun FilterDialog(
     )
 }
 
+/**
+ * Diàleg per seleccionar criteris d'ordenació de la llista de recompenses.
+ *
+ * Permet ordenar per descripció (A-Z, Z-A) i per cost (ascendent, descendent).
+ *
+ * @param onSortSelected Funció que rep el criteri i l'ordre seleccionat.
+ * @param onDismiss Funció per tancar el diàleg.
+ */
 @Composable
 fun SortDialog(
     onSortSelected: (String, Boolean) -> Unit,

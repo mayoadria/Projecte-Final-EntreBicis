@@ -9,6 +9,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel encarregat de gestionar el procés de canvi de contrasenya d’un usuari.
+ * Inclou la validació de dades, enviament de correus, verificació de tokens i actualització de la contrasenya.
+ */
 class ChangePasswordViewModel : ViewModel() {
 
     // Preparació de variables
@@ -73,7 +77,10 @@ class ChangePasswordViewModel : ViewModel() {
     private val _isUserPassUpdated = MutableStateFlow(false)
     val isUserPassUpdated: StateFlow<Boolean> = _isUserPassUpdated
 
-    // Mètodes per Actualitzar els estats de les dades
+    /**
+     * Actualitza el valor de l'email i reinicia els errors relacionats.
+     * @param text Nou valor de l'email.
+     */
     fun updateEmail(text: String) {
         _email.value = text
         _emptyEmailError.value = null
@@ -81,22 +88,37 @@ class ChangePasswordViewModel : ViewModel() {
         _emailSuccess.value = null
     }
 
+    /**
+     * Actualitza el valor del codi d’autenticació i reinicia errors relacionats.
+     * @param text Nou codi introduït.
+     */
     fun updateCode(text: String) {
         _codeAuth.value = text
         _emptyCodeAuthError.value = null
         _codeError.value = null
     }
 
+    /**
+     * Actualitza el valor de la nova contrasenya.
+     * @param text Nova contrasenya.
+     */
     fun updateNewContra(text: String) {
         _newContra.value = text
         _emptyNewContraError.value = null
     }
 
+    /**
+     * Actualitza el valor de la confirmació de nova contrasenya.
+     * @param text Repetició de la nova contrasenya.
+     */
     fun updateRepNewContra(text: String) {
         _repNewContra.value = text
         _emptyRepNewContraError.value = null
     }
 
+    /**
+     * Reinicia l’estat que indica si la contrasenya ha estat modificada correctament.
+     */
     fun resetUserPassUpdated() {
         _isUserPassUpdated.value = false
     }
@@ -106,6 +128,10 @@ class ChangePasswordViewModel : ViewModel() {
         UsuariApi::class.java
     )
 
+    /**
+     * Envia un correu de verificació al correu introduït.
+     * Comprova prèviament si l’email és vàlid.
+     */
     fun enviarEmail() {
         viewModelScope.launch {
             try {
@@ -137,7 +163,10 @@ class ChangePasswordViewModel : ViewModel() {
         }
     }
 
-
+    /**
+     * Canvia la contrasenya de l’usuari després de validar el codi d’autenticació.
+     * Comprova que totes les dades siguin vàlides abans d’enviar la sol·licitud.
+     */
     fun changePass() {
         viewModelScope.launch {
             try {
@@ -209,18 +238,10 @@ class ChangePasswordViewModel : ViewModel() {
         }
     }
 
-//    private fun hashPasswordPBKDF2(nomUsuari: String, contra: String): String {
-//        val iterations = 10000
-//        val keyLength = 256
-//        val salt = nomUsuari.toByteArray()
-//
-//        val spec = PBEKeySpec(contra.toCharArray(), salt, iterations, keyLength)
-//        val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
-//        val hash = factory.generateSecret(spec).encoded
-//
-//        return Base64.encodeToString(hash, Base64.NO_WRAP)
-//    }
-
+    /**
+     * Comprova si el correu introduït és vàlid i retorna si ha passat la validació.
+     * @return True si el correu és vàlid, False en cas contrari.
+     */
     private fun comprovarEmail(): Boolean {
         var valid = true
         if (email.value.isEmpty()) {
@@ -236,7 +257,11 @@ class ChangePasswordViewModel : ViewModel() {
         return valid
     }
 
-
+    /**
+     * Comprova si totes les dades necessàries per canviar la contrasenya són correctes.
+     * Inclou verificació de camps buits, longitud mínima i coincidència de contrasenyes.
+     * @return True si totes les dades són vàlides, False en cas contrari.
+     */
     private fun comprovarDades(): Boolean {
         var valid = true
 

@@ -11,9 +11,28 @@ import javax.net.ssl.SSLSession
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
+/**
+ * Singleton que proporciona una instància segura de Retrofit per accedir a l'API de reserves via HTTPS.
+ *
+ * Aquesta implementació configura un client TLS que accepta qualsevol certificat i hostname.
+ * Està pensada per a entorns de desenvolupament on es fa servir un servidor local o proves amb certificats no vàlids.
+ *
+ * La IP 10.0.2.2 permet accedir al localhost de la màquina host des de l'emulador d'Android.
+ * La connexió es fa al port 8443 per HTTPS.
+ *
+ * Important: Acceptar tots els certificats i hostnames no és segur en producció.
+ *
+ * @property retrofitTLSInstance Instància única de Retrofit configurada amb TLS relaxat per a l'API de reserves.
+ */
 object ReservaRetrofitTLSInstance {
     private const val BASE_URL = "https://10.0.2.2:8443/api/reserva/"
     //private const val BASE_URL = "https://entrebicis.hopto.org:8443/api/reserva/"
+
+
+    /**
+     * Crea i retorna una instància de Retrofit configurada per ignorar la validació de certificats i hostname.
+     * Aquesta instància es crea només la primera vegada que s'accedeix.
+     */
     val retrofitTLSInstance: Retrofit by lazy {
 
         val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {

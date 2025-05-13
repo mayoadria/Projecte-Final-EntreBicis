@@ -14,10 +14,29 @@ import javax.net.ssl.SSLSession
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
+/**
+ * Singleton que proporciona una instància segura de [Retrofit] per accedir a l'API de recompenses via HTTPS.
+ *
+ *
+ * Aquesta implementació configura un client TLS que accepta qualsevol certificat (ús només recomanat en entorns de desenvolupament).
+ * S'utilitza per fer crides a l'API de recompenses en un servidor local o remot amb HTTPS.
+ * Inclou suport per serialitzar i deserialitzar [LocalDateTime] en el format `yyyy-MM-dd HH:mm:ss`.
+ *
+ *
+ * ATENCIÓ:
+ * Acceptar qualsevol certificat i hostname és una pràctica insegura per a entorns de producció.
+ * Aquesta configuració és vàlida només per proves locals (localhost/10.0.2.2).
+ *
+ * @property retrofitTLSInstance Instància única de [Retrofit] inicialitzada de forma lazy amb configuració TLS relaxada.
+ */
 object RecompensaRetrofitTLSInstance {
     private const val BASE_URL = "https://10.0.2.2:8443/api/recompensa/"
     //private const val BASE_URL = "https://entrebicis.hopto.org:8443/api/recompensa/"
 
+    /**
+     * Instància de [Retrofit] configurada per a connexions HTTPS sense validació estricta de certificats.
+     * Inclou un adaptador personalitzat per a [LocalDateTime].
+     */
     val retrofitTLSInstance: Retrofit by lazy {
 
         val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {

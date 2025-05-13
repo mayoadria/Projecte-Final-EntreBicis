@@ -12,6 +12,16 @@ import androidx.navigation.NavController
 import cat.copernic.amayo.frontend.core.auth.SessionViewModel
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.ReservaViewmodel
 
+/**
+ * Pantalla que mostra les reserves pròpies de l'usuari actual.
+ *
+ * Aquesta pantalla filtra totes les reserves per mostrar únicament les
+ * que ha fet l'usuari loguejat, permetent ordenar-les i aplicar filtres.
+ *
+ * @param reservaViewmodel ViewModel per gestionar la llista de reserves.
+ * @param navController Controlador de navegació per canviar de pantalla.
+ * @param sessionViewModel ViewModel de sessió per obtenir les dades de l'usuari actual.
+ */
 @Composable
 fun reservesPropies(
     reservaViewmodel: ReservaViewmodel,

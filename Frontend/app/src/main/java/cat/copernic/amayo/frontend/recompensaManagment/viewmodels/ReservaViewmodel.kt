@@ -17,6 +17,22 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel que gestiona la información relacionada con las reservas de recompensas.
+ * Este ViewModel es responsable de interactuar con la API remota para crear, listar, actualizar y eliminar reservas.
+ *
+ * @property reservaApi API que maneja las operaciones de reservas a través de Retrofit.
+ * @property reservaD Reserva seleccionada, generalmente para mostrar detalles.
+ * @property reserva Lista de todas las reservas disponibles.
+ * @property deleteSuccess Estado que indica si la eliminación de una reserva fue exitosa.
+ *
+ * **Funciones principales**:
+ * - `crearReserva`: Crea una nueva reserva enviando los datos a la API.
+ * - `listar`: Carga los detalles de una reserva específica a partir de su ID.
+ * - `LlistarReservas`: Carga todas las reservas disponibles desde la API.
+ * - `updateReserva`: Actualiza los detalles de una reserva en la API.
+ * - `borrar`: Elimina una reserva específica de la API.
+ */
 class ReservaViewmodel : ViewModel(){
     private val reservaApi: ReservaApiRest = ReservaRetrofitTLSInstance.retrofitTLSInstance.create(
         ReservaApiRest::class.java
@@ -32,6 +48,12 @@ class ReservaViewmodel : ViewModel(){
     init {
         LlistarReservas()
     }
+
+    /**
+     * Crea una nueva reserva en la API.
+     *
+     * @param reserva La reserva que se desea crear.
+     */
     fun crearReserva(reserva: Reserva){
         viewModelScope.launch {
             val response = reservaApi.save(reserva)
@@ -44,6 +66,11 @@ class ReservaViewmodel : ViewModel(){
         }
     }
 
+    /**
+     * Carga los detalles de una reserva específica a partir de su ID.
+     *
+     * @param id El ID de la reserva que se desea cargar.
+     */
     fun listar(id: Long) {
         viewModelScope.launch {
             try {
@@ -58,6 +85,10 @@ class ReservaViewmodel : ViewModel(){
             }
         }
     }
+    /**
+     * Carga todas las reservas disponibles desde la API.
+     * Los resultados se almacenan en el estado `reserva`.
+     */
     fun LlistarReservas() {
         viewModelScope.launch {
             try {
@@ -73,7 +104,11 @@ class ReservaViewmodel : ViewModel(){
             }
         }
     }
-
+    /**
+     * Actualiza la información de una reserva en la API.
+     *
+     * @param client La reserva con los nuevos datos que se deben guardar.
+     */
     fun updateReserva(client: Reserva) {
         viewModelScope.launch {
             try {
@@ -93,7 +128,11 @@ class ReservaViewmodel : ViewModel(){
             }
         }
     }
-
+    /**
+     * Elimina una reserva específica de la API.
+     *
+     * @param cartaId El ID de la reserva que se desea eliminar.
+     */
     fun borrar(cartaId: Long) {
         viewModelScope.launch {
             try {

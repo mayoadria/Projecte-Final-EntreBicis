@@ -26,6 +26,20 @@ import cat.copernic.amayo.frontend.usuariManagment.viewmodels.ChangePasswordView
 import cat.copernic.amayo.frontend.usuariManagment.viewmodels.LoginViewModel
 import cat.copernic.amayo.frontend.usuariManagment.viewmodels.ModificarViewModel
 
+/**
+ * Configuració principal de la navegació de l'aplicació mitjançant Jetpack Compose Navigation.
+ *
+ * Defineix totes les rutes i pantalles disponibles dins de l'aplicació, incloent:
+ *     Splash screen
+ *     Login
+ *     Pantalla inicial amb Bottom Navigation
+ *     Gestió de recompenses, reserves i perfil d'usuari
+ *     Edició de perfil i canvi de contrasenya
+ *
+ * Utilitza un [NavHost] per gestionar la navegació i comparteix el [SessionViewModel] entre pantalles.
+ *
+ * @param sessionViewModel ViewModel que gestiona l'estat de la sessió d'usuari.
+ */
 @Composable
 fun AppNavigation(sessionViewModel: SessionViewModel) {
     val navController = rememberNavController()

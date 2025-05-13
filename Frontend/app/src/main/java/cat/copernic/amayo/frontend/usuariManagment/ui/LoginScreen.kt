@@ -33,6 +33,15 @@ import cat.copernic.amayo.frontend.core.auth.SessionViewModel
 import cat.copernic.amayo.frontend.usuariManagment.viewmodels.LoginViewModel
 import kotlinx.coroutines.launch
 
+/**
+ * Pantalla de inicio de sesión que permite al usuario introducir su correo y contraseña
+ * para autenticarse. Gestiona la validación de campos, errores de autenticación
+ * y navegación tras un login exitoso.
+ *
+ * @param navController Controlador de navegación para gestionar cambios de pantalla.
+ * @param viewModel ViewModel encargado de la lógica de autenticación de usuario.
+ * @param sessionViewModel ViewModel para gestionar la sesión activa del usuario.
+ */
 @Composable
 fun LoginScreen(navController: NavController, viewModel: LoginViewModel ,sessionViewModel: SessionViewModel) {
     val isUserLoged by viewModel.isUserLoged.collectAsState()

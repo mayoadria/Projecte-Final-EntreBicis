@@ -10,22 +10,40 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel responsable de gestionar l'estat de la sessió de l'usuari.
+ *
+ * <p>Gestiona la persistència i recuperació de les dades de sessió (email, connexió) mitjançant el [SessionRepository].
+ * A més, obté les dades completes de l'usuari des de l'API i exposa aquesta informació a la UI.</p>
+ *
+ * @property sessionRepository Repositori per a la gestió de dades de sessió amb DataStore.
+ */
 class SessionViewModel(private val sessionRepository: SessionRepository) : ViewModel() {
 
+    /** Estat de la sessió de l'usuari actual com a [StateFlow]. */
     private val _userSession = MutableStateFlow(SessionUser("", false))
     val userSession: StateFlow<SessionUser> get() = _userSession
 
+    /** Dades completes de l'usuari carregades des de l'API. */
     private val _userData = MutableStateFlow<Usuari?>(null)
     val userData: StateFlow<Usuari?> get() = _userData
 
+    /** Instància de l'API per recuperar informació de l'usuari. */
     private val userApi: UsuariApi = UsuariRetrofitTLSInstance.retrofitTLSInstance.create(
         UsuariApi::class.java
     )
 
+    /**
+     * Bloc d'inicialització per carregar l'estat de la sessió a l'arrencada.
+     */
     init {
         loadSession()
     }
 
+    /**
+     * Carrega la sessió guardada des de DataStore i actualitza l'estat intern.
+     * Si la sessió és vàlida, obté les dades completes de l'usuari des de l'API.
+     */
     private fun loadSession() {
         viewModelScope.launch {
             sessionRepository.getSession().collect { session ->
@@ -51,10 +69,18 @@ class SessionViewModel(private val sessionRepository: SessionRepository) : ViewM
         }
     }
 
+    /**
+     * Actualitza les dades de l'usuari al [StateFlow] local.
+     *
+     * @param client Objecte [Usuari] amb les dades a actualitzar.
+     */
     fun updateUserData(client: Usuari?) {
         _userData.value = client
     }
 
+    /**
+     * Finalitza la sessió de l'usuari, buidant la informació guardada i reiniciant l'estat.
+     */
     fun logout() {
         _userSession.value = SessionUser("", false)
         _userData.value = null
@@ -63,6 +89,11 @@ class SessionViewModel(private val sessionRepository: SessionRepository) : ViewM
         }
     }
 
+    /**
+     * Actualitza l'estat de la sessió (email i connexió) i el desa persistentment.
+     *
+     * @param sessionUser Objecte [SessionUser] amb les noves dades de sessió.
+     */
     fun updateSession(sessionUser: SessionUser) {
         viewModelScope.launch {
             sessionRepository.saveSession(sessionUser)

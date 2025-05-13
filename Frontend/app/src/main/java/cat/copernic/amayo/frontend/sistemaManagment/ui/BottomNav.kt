@@ -19,6 +19,15 @@ import cat.copernic.amayo.frontend.recompensaManagment.ui.recompensa
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmodel
 import cat.copernic.amayo.frontend.usuariManagment.ui.perfil
 
+/**
+ * Composable que define la navegación inferior de la aplicación (Bottom Navigation).
+ *
+ * Gestiona la navegación entre las pantallas principales: Inici, Recompenses y Perfil.
+ * Utiliza un `NavController` interno para la navegación dentro de la barra inferior.
+ *
+ * @param navController Controlador de navegación principal de la app.
+ * @param sessionViewModel ViewModel que gestiona la sesión del usuario actual.
+ */
 @Composable
 fun BottomNav(navController: NavController, sessionViewModel: SessionViewModel) {
 

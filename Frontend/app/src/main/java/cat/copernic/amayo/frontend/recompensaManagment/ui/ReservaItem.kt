@@ -1,8 +1,5 @@
 package cat.copernic.amayo.frontend.recompensaManagment.ui
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.util.Base64
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,6 +30,19 @@ import cat.copernic.amayo.frontend.recompensaManagment.model.Reserva
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+/**
+ * Composable que mostra una targeta amb la informació d'una reserva.
+ *
+ * Aquesta targeta inclou l'estat de la reserva, les observacions, el cost en punts,
+ * la imatge de la recompensa, la data de la reserva, el correu de l'usuari reservant
+ * i una descripció de la recompensa.
+ * Permet la navegació a una pantalla de detalls de la reserva quan es fa clic sobre ella.
+ *
+ * @param reserva Objeto de tipus Reserva que conté la informació de la reserva a mostrar.
+ * @param navController Controlador de navegació per gestionar les pantalles.
+ * @param scale Factor d'escala per ajustar l'elevació de la targeta.
+ * @param verReservadas Boolean que determina si es vol mostrar només les reserves confirmades.
+ */
 @Composable
 fun ReservaItem(
     reserva: Reserva,

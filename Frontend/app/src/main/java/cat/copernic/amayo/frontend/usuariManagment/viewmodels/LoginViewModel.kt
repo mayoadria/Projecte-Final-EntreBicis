@@ -11,6 +11,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
 
+/**
+ * ViewModel encarregat de gestionar la lògica d'inici de sessió d'un usuari.
+ * Inclou validacions, trucades a l'API, gestió d'estat i missatges d'error.
+ */
 class LoginViewModel : ViewModel() {
 
     private val _usuari = MutableStateFlow<Usuari?>(null)
@@ -45,6 +49,10 @@ class LoginViewModel : ViewModel() {
         UsuariApi::class.java
     )
 
+    /**
+     * Actualitza el valor del correu electrònic i neteja errors associats.
+     * @param text Nou valor per al camp email.
+     */
     fun updateEmail(text: String) {
         _email.value = text.trim()
 
@@ -54,6 +62,10 @@ class LoginViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Actualitza el valor de la contrasenya i neteja errors associats.
+     * @param text Nou valor per al camp contrasenya.
+     */
     fun updateContra(text: String) {
         _contra.value = text
 
@@ -63,10 +75,18 @@ class LoginViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Reinicia l'estat de connexió de l'usuari després d'un login correcte.
+     */
     fun resetUserLoged() {
         _isUserLoged.value = false
     }
 
+    /**
+     * Realitza el procés d'inici de sessió comprovant les dades i validant la resposta de l'API.
+     * Controla l'estat de l'usuari i gestiona possibles errors.
+     * @return Usuari autenticat o null si ha fallat.
+     */
     suspend fun login(): Usuari? = withContext(Dispatchers.IO) {
         _authError.value = null               // limpia errores de intentos previos
         var loggedUser: Usuari? = null
@@ -113,6 +133,10 @@ class LoginViewModel : ViewModel() {
         loggedUser
     }
 
+    /**
+     * Comprova si els camps email i contrasenya compleixen les validacions bàsiques.
+     * @return True si les dades són vàlides, False si hi ha errors.
+     */
     private fun comprovarDades(): Boolean {
         var valid = true
 

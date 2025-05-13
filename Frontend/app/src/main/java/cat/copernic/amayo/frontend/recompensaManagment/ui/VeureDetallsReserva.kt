@@ -29,6 +29,21 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+/**
+ * Composable que muestra los detalles de una reserva de recompensa. Incluye información sobre
+ * el estado de la reserva, los detalles de la recompensa, el punto de intercambio y las acciones
+ * disponibles, como cambiar el estado de la recompensa o cancelarla.
+ *
+ * Dependiendo del estado de la recompensa, se activan diferentes botones de acción, como pasar a
+ * "Per Recollir", "Recollir Recompensa" o "Cancelar Recompensa".
+ *
+ * @param reservaId El ID de la reserva cuya información se va a mostrar.
+ * @param reservaViewmodel El ViewModel encargado de manejar las reservas.
+ * @param llistaViewmodel El ViewModel encargado de manejar las recompensas.
+ * @param sessionViewModel El ViewModel que gestiona la sesión del usuario.
+ * @param modificarViewModel El ViewModel que gestiona la modificación de datos del usuario.
+ * @param navController El controlador de navegación para gestionar la navegación entre pantallas.
+ */
 @Composable
 fun DetallsReserva(
     reservaId: Long,
