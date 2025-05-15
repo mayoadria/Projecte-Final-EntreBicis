@@ -8,6 +8,6 @@ data class ruta(
     var velMedia: Double? = null,
     var velMax: Double? = null,
     var velMitjaKm: Double? = null,
-    var tempsParat: Double? = null,
-    var temps: String? = null,
+    var tempsParat: Int? = null,
+    var temps: Int? = null,
 )

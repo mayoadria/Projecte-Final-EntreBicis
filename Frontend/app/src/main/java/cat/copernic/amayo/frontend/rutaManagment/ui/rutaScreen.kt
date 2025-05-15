@@ -27,12 +27,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import cat.copernic.amayo.frontend.R
+import cat.copernic.amayo.frontend.dataStore                                       // ← para acceder a DataStore
+import cat.copernic.amayo.frontend.core.auth.SessionRepository                     // ← repositorio de sesión
+import cat.copernic.amayo.frontend.core.auth.SessionViewModel                      // ← ViewModel de sesión
 import cat.copernic.amayo.frontend.navigation.BottomNavigationBar
 import cat.copernic.amayo.frontend.rutaManagment.viewmodels.RutaViewModel
+import cat.copernic.amayo.frontend.rutaManagment.viewmodels.RutesViewmodel          // ← ViewModel de listado
 import com.google.android.gms.location.*
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -45,28 +50,52 @@ import android.graphics.Color as AndroidColor
 @SuppressLint("MissingPermission", "ClickableViewAccessibility")
 @Composable
 fun RutaScreen(navController: NavController) {
-
-    // ViewModel y contexto
     val context = LocalContext.current
-    val app     = context.applicationContext as Application
+    val app = context.applicationContext as Application
+
+    // VM de grabación
     val rutaVM: RutaViewModel = viewModel(
         factory    = ViewModelProvider.AndroidViewModelFactory(app),
         modelClass = RutaViewModel::class.java
     )
 
-    // Estados observados
+    // VM de listados, para recargar tras guardar
+    val rutasListVM: RutesViewmodel = viewModel(
+        factory    = ViewModelProvider.AndroidViewModelFactory(app),
+        modelClass = RutesViewmodel::class.java
+    )
+
+    // VM de sesión con FACTORY PERSONALIZADA para inyectar SessionRepository
+    val sessionVM: SessionViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                if (modelClass.isAssignableFrom(SessionViewModel::class.java)) {
+                    val repo = SessionRepository(app.dataStore)  // crea el repo con tu DataStore
+                    return SessionViewModel(repo) as T           // inyecta en el constructor
+                }
+                throw IllegalArgumentException("Unknown ViewModel class")
+            }
+        }
+    )  // ← reemplaza la llamada anterior que usaba AndroidViewModelFactory y fallaba :contentReference[oaicite:0]{index=0}:contentReference[oaicite:1]{index=1}
+
+    // Obtenemos el email del usuario
+    val user by sessionVM.userSession.collectAsState()  // o userData si prefieres
+    val email = user.email
+
+    // Estados de la ruta
     val isRouting     by remember { derivedStateOf { rutaVM.isRouting } }
     val routeSegments by remember { derivedStateOf { rutaVM.routeSegments } }
     val pending       by remember { derivedStateOf { rutaVM.pendingStats } }
 
-    // Estados de UI
+    // Parámetros UI
     var mapView            by remember { mutableStateOf<MapView?>(null) }
     var userLocation       by remember { mutableStateOf<GeoPoint?>(null) }
     var autoCenter         by remember { mutableStateOf(true) }
     var showLoadingText    by remember { mutableStateOf(true) }
     var showDiscardConfirm by remember { mutableStateOf(false) }
 
-    // Inicializamos ubicación
+    // Setup de location...
     val fused = LocationServices.getFusedLocationProviderClient(context)
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -84,40 +113,34 @@ fun RutaScreen(navController: NavController) {
         }
     }
 
-    // Cada vez que llega una nueva posición
     LaunchedEffect(userLocation) {
         userLocation?.let { loc ->
             if (showLoadingText) showLoadingText = false
-
-            mapView?.let { map ->
-                // Centro automático
+            mapView?.apply {
                 if (autoCenter) {
-                    map.controller.setCenter(loc)
-                    map.controller.setZoom(map.zoomLevelDouble)
+                    controller.setCenter(loc)
+                    controller.setZoom(zoomLevelDouble)
                 }
-                // Actualizar marcador actual
-                removeCurrentLocationMarker(map)
-                addMarker(map, loc, "Ubicación actual", context)
-                // Si está grabando, añadimos punto y redibujamos ruta
+                removeCurrentLocationMarker(this)
+                addMarker(this, loc, "Ubicación actual", context)
                 if (isRouting) {
                     rutaVM.addPoint(loc)
-                    clearPolylines(map)
+                    clearPolylines(this)
                     routeSegments.forEach { segment ->
                         if (segment.size > 1) {
                             Polyline().apply {
                                 setPoints(segment)
                                 outlinePaint.color = AndroidColor.BLUE
                                 outlinePaint.strokeWidth = 5f
-                            }.also { map.overlayManager.add(0, it) }
+                            }.also { overlayManager.add(0, it) }
                         }
                     }
                 }
-                map.invalidate()
+                invalidate()
             }
         }
     }
 
-    // Animación “Cargando mapa…”
     val alphaAnim = rememberInfiniteTransition().animateFloat(
         initialValue  = 0.5f,
         targetValue   = 1f,
@@ -151,7 +174,7 @@ fun RutaScreen(navController: NavController) {
                 }
             )
 
-            // Barra de controles en la parte inferior
+            // Controles inferiores
             Box(
                 Modifier
                     .fillMaxWidth()
@@ -170,7 +193,7 @@ fun RutaScreen(navController: NavController) {
                 )
             }
 
-            // Overlay de carga
+            // Overlay "Cargando…"
             if (showLoadingText) {
                 Box(
                     Modifier
@@ -191,44 +214,41 @@ fun RutaScreen(navController: NavController) {
             // Diálogo de resumen de ruta
             pending?.let { stats ->
                 RouteSummaryDialog(
-                    stats     = stats,
-                    initName  = rutaVM.nomRuta,
-                    initDesc  = rutaVM.descRuta,
-                    onSave    = { n, d ->
+                    stats    = stats,
+                    initName = rutaVM.nomRuta,
+                    initDesc = rutaVM.descRuta,
+                    onSave   = { n, d ->
                         rutaVM.saveRoute(n, d)
+                        rutasListVM.loadRoutes(email)        // recargamos YA la lista
                         mapView?.let { clearPolylines(it) }
+                        navController.popBackStack()
                     },
-                    onDiscard = {
-                        showDiscardConfirm = true
-                    }
+                    onDiscard = { showDiscardConfirm = true }
                 )
             }
 
-            // Confirmación antes de descartar
+            // Confirmación de descarte
             if (showDiscardConfirm) {
                 AlertDialog(
                     onDismissRequest = { showDiscardConfirm = false },
-                    title   = { Text("Confirmar descarte") },
-                    text    = { Text("¿Estás seguro de que quieres descartar la ruta?") },
-                    confirmButton = {
+                    title            = { Text("Confirmar descarte") },
+                    text             = { Text("¿Seguro que quieres descartar la ruta?") },
+                    confirmButton    = {
                         TextButton(onClick = {
                             rutaVM.discardRoute()
                             mapView?.let { clearPolylines(it) }
                             showDiscardConfirm = false
-                        }) {
-                            Text("Sí")
-                        }
+                        }) { Text("Sí") }
                     },
-                    dismissButton = {
-                        TextButton(onClick = { showDiscardConfirm = false }) {
-                            Text("No")
-                        }
+                    dismissButton    = {
+                        TextButton(onClick = { showDiscardConfirm = false }) { Text("No") }
                     }
                 )
             }
         }
     }
 }
+
 
 @SuppressLint("MissingPermission")
 private fun startLocationUpdates(
