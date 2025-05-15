@@ -54,6 +54,8 @@ public class Rutes {
 
     @Column
     private String temps;
+    @Column
+    private Double punts;
 
     @CreationTimestamp
     @Column(name = "fecha_creacion", updatable = false)

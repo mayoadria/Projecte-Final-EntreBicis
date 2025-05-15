@@ -29,12 +29,20 @@ public class RutaDto {
     private Double velMax;        // km/h
     private Double velMitja;      // km/h
     private Double velMitjaKm;    // min/km
+    private Double punts;    // min/km
 
     private String fechaCreacion;
 
     public RutaDto() {
     }
 
+    public Double getPunts() {
+        return punts;
+    }
+
+    public void setPunts(Double punts) {
+        this.punts = punts;
+    }
 
     public Long getId() {
         return id;

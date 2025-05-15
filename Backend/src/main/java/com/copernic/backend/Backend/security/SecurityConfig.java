@@ -145,7 +145,7 @@ public class SecurityConfig {
         sistema.setId(1L); // Forzamos el ID=1
         sistema.setVelMax(20.0);          // Valor por defecto (ajusta según tus necesidades)
         sistema.setTempsMaxAturat(Duration.ofMinutes(5));    // Valor por defecto
-        sistema.setConversioSaldo(2);       // Valor por defecto
+        sistema.setConversioSaldo(1);       // Valor por defecto
         sistema.setTempsRecollida(Duration.ofHours(72));    // Valor por defecto
 
         sistemaRepository.save(sistema);

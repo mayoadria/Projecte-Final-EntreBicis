@@ -5,7 +5,9 @@ import com.copernic.backend.Backend.dto.PosicioDto;
 import com.copernic.backend.Backend.dto.RutaDto;
 import com.copernic.backend.Backend.entity.Posicio_Gps;
 import com.copernic.backend.Backend.entity.Rutes;
+import com.copernic.backend.Backend.entity.Sistema;
 import com.copernic.backend.Backend.entity.Usuari;
+import com.copernic.backend.Backend.logic.web.SistemaLogic;
 import com.copernic.backend.Backend.logic.web.UsuariLogic;
 
 import com.copernic.backend.Backend.entity.enums.EstatRutes;
@@ -34,6 +36,9 @@ public class ApiRutaController {
     @Autowired
     private UsuariLogic usuariLogic;
 
+    @Autowired
+    private SistemaLogic sistemaLogic;
+
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
 
@@ -45,20 +50,24 @@ public class ApiRutaController {
         System.out.println(">>> MÉTODO guardarRuta ACTIVO");
         System.out.println(dto); // muestra todo lo que Jackson recibe
 
+        // 1. Recuperamos el usuario y comprobamos que exista
         Usuari usuari = usuariLogic.findByEmail(dto.getEmailUsuari());
-        if (usuari == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if (usuari == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
 
+        // 2. Creamos la entidad Rutes y rellenamos campos básicos
         Rutes r = new Rutes();
         r.setUsuari(usuari);
         r.setNom(dto.getNom());
         r.setDescripcio(dto.getDescripcio());
-        r.setEstat(dto.getEstat()      != null ? dto.getEstat()      : EstatRutes.INVALIDA);
-        r.setCicloRuta(dto.getCicloRuta()!= null ? dto.getCicloRuta() : CicloRuta.FINALITZADA);
+        r.setEstat(dto.getEstat()        != null ? dto.getEstat()       : EstatRutes.INVALIDA);
+        r.setCicloRuta(dto.getCicloRuta()!= null ? dto.getCicloRuta(): CicloRuta.FINALITZADA);
 
-        /* ── MÉTRICAS ─────────────────────────────────────────── */
+        // 3. Métricas kilométricas
+        double kmRounded = 0.0;
         if (dto.getKm() != null) {
-            // redondear a 3 decimales exactos antes de guardar
-            double kmRounded = Math.round(dto.getKm() * 1_000.0) / 1_000.0;
+            kmRounded = Math.round(dto.getKm() * 1_000.0) / 1_000.0;
             r.setKm(kmRounded);
         }
         if (dto.getVelMitja()   != null) r.setVelMedia(dto.getVelMitja());
@@ -66,8 +75,27 @@ public class ApiRutaController {
         if (dto.getVelMitjaKm() != null) r.setVelMitjaKM(dto.getVelMitjaKm());
         if (dto.getTempsParat() != null) r.setTempsParat(dto.getTempsParat().doubleValue());
         if (dto.getTemps()      != null) r.setTemps(formatSeconds(dto.getTemps()));
+        // Eliminamos la copia directa de dto.getPunts()
+        // if (dto.getPunts() != null) r.setPunts(dto.getPunts());
 
-        /* Posicions GPS → CascadeType.ALL */
+        // 4. Cálculo de puntos y actualización de saldo
+        // ── SALDO CONVERSIÓN ─────────────────────────────────────
+        if (kmRounded > 0.0) {
+            Sistema sistema = sistemaLogic.getSistema();
+            if (sistema != null && sistema.getConversioSaldo() > 0.0) {
+                double factor = sistema.getConversioSaldo();
+                // DEBUG: para verificar que esté leyendo bien el parámetro
+                System.out.println(">>> conversioSaldo leída: " + factor);
+                System.out.println(">>> DEBUG kmRounded: " + kmRounded);
+                // puntos = factor × km, redondeado a 3 decimales
+                double puntos = Math.round(factor * kmRounded * 1_000.0) / 1_000.0;
+                System.out.println(">>> DEBUG puntos calculados: " + puntos);
+                r.setPunts(puntos);
+            }
+        }
+
+
+        // 5. Posiciones GPS (CascadeType.ALL)
         if (dto.getPosicions() != null) {
             List<Posicio_Gps> pos = dto.getPosicions().stream().map(p -> {
                 Posicio_Gps pg = new Posicio_Gps();
@@ -80,9 +108,12 @@ public class ApiRutaController {
             r.setPosicionsGps(pos);
         }
 
-        rutesLogic.save(r);        // guarda ruta + posicions
+        // 6. Guardamos primero la ruta (que incluye ya puntos) y luego el usuario
+        rutesLogic.save(r);
+
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
 
     @GetMapping("/usuari/{email}")
     public ResponseEntity<List<RutaDto>> getRoutesByUser(@PathVariable String email) {

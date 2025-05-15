@@ -45,6 +45,7 @@ interface RutaApi {
 
         val posicions:    List<PosicioDto>,
         val emailUsuari:  String,
-        val fechaCreacion: String = ""
+        val fechaCreacion: String = "",
+        val punts: Double
     )
 }

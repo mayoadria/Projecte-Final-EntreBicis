@@ -48,6 +48,7 @@ class RutaViewModel(
     private var velMax               : Double = 0.0
     private var prevPoint            : GeoPoint? = null
     private var prevTimestampMillis  : Long   = 0L
+    private var punts: Double = 0.0
 
     /* ---------- Stats pendientes (para el popup) ---------- */
     data class RouteStats(
@@ -239,7 +240,8 @@ class RutaViewModel(
                     velMitjaKm    = stats.ritmeMinKm,
                     posicions     = posDtos,
                     emailUsuari   = email,
-                    fechaCreacion = now
+                    fechaCreacion = now,
+                    punts = punts
                 )
 
                 try {

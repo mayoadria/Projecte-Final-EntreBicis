@@ -31,7 +31,7 @@ public class Sistema {
     private Duration tempsMaxAturat;
 
     @Column
-    private int conversioSaldo;
+    private double conversioSaldo;
 
     @Column
     @DurationUnit(HOURS)     // <- y aquí “como horas”
