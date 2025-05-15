@@ -32,9 +32,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import cat.copernic.amayo.frontend.R
+import cat.copernic.amayo.frontend.Session.SessionRepository
+import cat.copernic.amayo.frontend.Session.SessionViewModel
 import cat.copernic.amayo.frontend.dataStore                                       // ← para acceder a DataStore
-import cat.copernic.amayo.frontend.core.auth.SessionRepository                     // ← repositorio de sesión
-import cat.copernic.amayo.frontend.core.auth.SessionViewModel                      // ← ViewModel de sesión
 import cat.copernic.amayo.frontend.navigation.BottomNavigationBar
 import cat.copernic.amayo.frontend.rutaManagment.viewmodels.RutaViewModel
 import cat.copernic.amayo.frontend.rutaManagment.viewmodels.RutesViewmodel          // ← ViewModel de listado

@@ -42,7 +42,7 @@ public class MatrixController {
             @RequestParam("tempsMaxAturat") String tempsMaxAturatStr,
             @RequestParam("tempsRecollida") String tempsRecollidaStr,
             @RequestParam("velMax") Double velMax,
-            @RequestParam("conversioSaldo") Integer conversioSaldo,
+            @RequestParam("conversioSaldo") Double conversioSaldo,
             Model model
     ) {
         try {
