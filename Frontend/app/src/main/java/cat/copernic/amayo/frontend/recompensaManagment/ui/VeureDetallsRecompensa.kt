@@ -21,15 +21,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import cat.copernic.amayo.frontend.core.auth.SessionViewModel
+import cat.copernic.amayo.frontend.Session.SessionViewModel
+import cat.copernic.amayo.frontend.core.decodeBase64ToBitmap
 import cat.copernic.amayo.frontend.recompensaManagment.model.Estat
 import cat.copernic.amayo.frontend.recompensaManagment.model.EstatReserva
 import cat.copernic.amayo.frontend.recompensaManagment.model.Reserva
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.ReservaViewmodel
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmodel
 import cat.copernic.amayo.frontend.usuariManagment.viewmodels.ModificarViewModel
-import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -194,6 +193,10 @@ fun detalls(
                         nom?.let { usuario ->
                             usuario.reserva = true
 
+                            val saldoActual = usuario.saldo ?: 0.0
+                            val coste = recompensa?.cost ?: 0
+                            sessionViewModel.updateSaldo(saldoActual - coste)
+
                             modificarViewModel.updateClient(
                                 client = usuario,
                                 contentResolver = navController.context.contentResolver
@@ -221,6 +224,9 @@ fun detalls(
 
                         reservaViewmodel.crearReserva(nuevaReserva)
 
+                        navController.navigate("recompensa") {
+                            popUpTo("detallsRecompensa") { inclusive = true }  // o el route correcto
+                        }
                     } else {
                         Toast.makeText(context, "Saldo insuficient.", Toast.LENGTH_LONG).show()
                     }

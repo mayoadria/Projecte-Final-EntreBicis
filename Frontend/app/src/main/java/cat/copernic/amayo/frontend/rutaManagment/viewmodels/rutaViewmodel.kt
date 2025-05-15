@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import cat.copernic.amayo.frontend.core.auth.SessionRepository
+import cat.copernic.amayo.frontend.Session.SessionRepository
 import cat.copernic.amayo.frontend.dataStore
 import cat.copernic.amayo.frontend.rutaManagment.data.local.*
 import cat.copernic.amayo.frontend.rutaManagment.data.remote.RutaApi

@@ -9,9 +9,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
-import cat.copernic.amayo.frontend.core.auth.SessionRepository
-import cat.copernic.amayo.frontend.core.auth.SessionViewModel
-import cat.copernic.amayo.frontend.core.auth.ViewModelFactory
+import cat.copernic.amayo.frontend.Session.SessionRepository
+import cat.copernic.amayo.frontend.Session.SessionViewModel
+import cat.copernic.amayo.frontend.Session.ViewModelFactory
 import cat.copernic.amayo.frontend.navigation.AppNavigation
 import org.osmdroid.config.Configuration
 import org.osmdroid.library.BuildConfig

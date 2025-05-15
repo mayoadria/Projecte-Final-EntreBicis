@@ -12,7 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import cat.copernic.amayo.frontend.core.auth.SessionViewModel
+import cat.copernic.amayo.frontend.Session.SessionViewModel
 import cat.copernic.amayo.frontend.navigation.BottomNavItem
 import cat.copernic.amayo.frontend.navigation.BottomNavigationBar
 import cat.copernic.amayo.frontend.recompensaManagment.ui.recompensa

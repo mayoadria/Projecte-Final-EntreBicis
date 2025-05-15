@@ -1,26 +1,28 @@
 package cat.copernic.amayo.frontend.recompensaManagment.ui
 
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmodel
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Icon
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import cat.copernic.amayo.frontend.core.auth.SessionViewModel
+import cat.copernic.amayo.frontend.Session.SessionViewModel
+import cat.copernic.amayo.frontend.core.HeaderReusable
 import cat.copernic.amayo.frontend.recompensaManagment.model.Estat
+import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.llistaViewmodel
 
 /**
  * Pantalla principal de la gestió de recompenses.
@@ -39,6 +41,11 @@ fun recompensa(
     navController: NavController,
     sessionViewModel: SessionViewModel
 ) {
+    LaunchedEffect(Unit) {
+
+        llistaViewmodel.LlistarRecompenses()
+
+    }
     var filtroDesc by remember { mutableStateOf("") }
     var filtroObs by remember { mutableStateOf("") }
     var filtroEstat by remember { mutableStateOf("") }
@@ -81,7 +88,8 @@ fun recompensa(
             .background(Color(0x9C9CF3FF))
             .statusBarsPadding()
     ) {
-        Header(
+        HeaderReusable(
+            title = "Premis",
             onFilterApplied = { desc, obs, estat ->
                 filtroDesc = desc
                 filtroObs = obs
@@ -91,7 +99,7 @@ fun recompensa(
                 ordenarPor = criterio
                 ascendente = asc
             },
-            sessionViewModel
+            sessionViewModel = sessionViewModel
         )
 
         LazyColumn(
@@ -108,209 +116,5 @@ fun recompensa(
     }
 }
 
-/**
- * Capçalera de la pantalla de recompenses.
- *
- * Inclou el títol, el saldo de l'usuari i un menú amb opcions per aplicar filtres o ordenar.
- *
- * @param onFilterApplied Funció que rep els valors dels filtres aplicats.
- * @param onSortSelected Funció que rep el criteri d'ordenació i l'ordre (ascendent/descendent).
- * @param sessionViewModel ViewModel de sessió per obtenir el saldo de l'usuari.
- */
-@Composable
-fun Header(
-    onFilterApplied: (String, String, String) -> Unit,
-    onSortSelected: (String, Boolean) -> Unit,
-    sessionViewModel: SessionViewModel
-) {
-    var expanded by rememberSaveable { mutableStateOf(false) }
-    var showFilterDialog by rememberSaveable { mutableStateOf(false) }
-    var showSortDialog by rememberSaveable { mutableStateOf(false) }
-    val usu by sessionViewModel.userData.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color(0xCE4E98DE))
-            .padding(8.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Premis",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-            Text(
-                text = "${usu?.saldo}",
-                fontSize = 16.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
-        }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box {
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = "Menú",
-                    tint = Color.Black,
-                    modifier = Modifier.clickable { expanded = true }
-                )
-
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    DropdownMenuItem(
-                        text = { Text("Filtres") },
-                        onClick = {
-                            expanded = false
-                            showFilterDialog = true
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text("Ordenar") },
-                        onClick = {
-                            expanded = false
-                            showSortDialog = true
-                        }
-                    )
-                }
-            }
-        }
-    }
-
-    if (showFilterDialog) {
-        FilterDialog(
-            onApplyFilter = { desc, obs, cost, estat ->
-                onFilterApplied(desc, obs, estat)
-                showFilterDialog = false
-            },
-            onDismiss = { showFilterDialog = false }
-        )
-    }
-
-    if (showSortDialog) {
-        SortDialog(
-            onSortSelected = { criterio, asc ->
-                onSortSelected(criterio, asc)
-                showSortDialog = false
-            },
-            onDismiss = { showSortDialog = false }
-        )
-    }
-}
-
-/**
- * Diàleg per aplicar filtres a la llista de recompenses.
- *
- * Permet filtrar per descripció, observacions, cost i estat.
- *
- * @param onApplyFilter Funció que rep els valors introduïts pels filtres.
- * @param onDismiss Funció que es crida per tancar el diàleg sense aplicar filtres.
- */
-@Composable
-fun FilterDialog(
-    onApplyFilter: (String, String, String, String) -> Unit,
-    onDismiss: () -> Unit
-) {
-    var filterDesc by remember { mutableStateOf("") }
-    var filterObs by remember { mutableStateOf("") }
-    var filterCost by remember { mutableStateOf("") }
-    var filterEstat by remember { mutableStateOf("") }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Selecciona els filtres") },
-        text = {
-            Column {
-                TextField(
-                    value = filterDesc,
-                    onValueChange = { filterDesc = it },
-                    placeholder = { Text("Introdueix una descripció") }
-                )
-
-                TextField(
-                    value = filterObs,
-                    onValueChange = { filterObs = it },
-                    placeholder = { Text("Introdueix observacions") }
-                )
-
-                TextField(
-                    value = filterCost,
-                    onValueChange = { filterCost = it },
-                    placeholder = { Text("Introdueix un cost") }
-                )
-
-                TextField(
-                    value = filterEstat,
-                    onValueChange = { filterEstat = it },
-                    placeholder = { Text("Introdueix un estat") }
-                )
-            }
-        },
-        confirmButton = {
-            Button(onClick = { onApplyFilter(filterDesc, filterObs, filterCost, filterEstat) }) {
-                Text("Aplicar")
-            }
-        },
-        dismissButton = {
-            Button(onClick = onDismiss) {
-                Text("Cancelar")
-            }
-        }
-    )
-}
-
-/**
- * Diàleg per seleccionar criteris d'ordenació de la llista de recompenses.
- *
- * Permet ordenar per descripció (A-Z, Z-A) i per cost (ascendent, descendent).
- *
- * @param onSortSelected Funció que rep el criteri i l'ordre seleccionat.
- * @param onDismiss Funció per tancar el diàleg.
- */
-@Composable
-fun SortDialog(
-    onSortSelected: (String, Boolean) -> Unit,
-    onDismiss: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Selecciona l'ordre") },
-        text = {
-            Column {
-                Button(onClick = { onSortSelected("descripcio", true) }) {
-                    Text("Ordenar A-Z")
-                }
-                Button(onClick = { onSortSelected("descripcio", false) }) {
-                    Text("Ordenar Z-A")
-                }
-                Button(onClick = { onSortSelected("cost", true) }) {
-                    Text("Ordenar Cost Asc.")
-                }
-                Button(onClick = { onSortSelected("cost", false) }) {
-                    Text("Ordenar Cost Desc.")
-                }
-            }
-        },
-        confirmButton = {
-            Button(onClick = onDismiss) {
-                Text("Cerrar")
-            }
-        }
-    )
-}

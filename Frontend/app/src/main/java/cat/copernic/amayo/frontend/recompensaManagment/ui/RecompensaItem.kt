@@ -1,15 +1,11 @@
 package cat.copernic.amayo.frontend.recompensaManagment.ui
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.util.Base64
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,12 +19,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import cat.copernic.amayo.frontend.core.decodeBase64ToBitmap
+import cat.copernic.amayo.frontend.core.scaledDp
 import cat.copernic.amayo.frontend.recompensaManagment.model.Recompensa
 
 /**
@@ -94,33 +90,5 @@ fun RecompensaItem(recompensa: Recompensa, navController: NavController, scale: 
                 )
             }
         }
-    }
-}
-/**
- * Funció auxiliar que calcula un valor Dp escalat en funció d'un factor de multiplicació.
- *
- * @param value Valor original en Dp.
- * @param scale Factor d'escala a aplicar.
- * @return Valor en Dp després d'aplicar l'escala.
- */
-@Composable
-fun scaledDp(value: Dp, scale: Float): Dp {
-    val density = LocalDensity.current
-    return with(density) { (value.toPx() * scale).toDp() }
-}
-
-/**
- * Funció per descomprimir una imatge codificada en Base64 i convertir-la en Bitmap.
- *
- * @param base64String Cadena Base64 que representa la imatge.
- * @return L'objecte Bitmap corresponent o null si la descompressió falla.
- */
-fun decodeBase64ToBitmap(base64String: String): Bitmap? {
-    return try {
-        val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
-        BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
     }
 }

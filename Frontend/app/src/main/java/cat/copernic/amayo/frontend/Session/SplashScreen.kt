@@ -1,4 +1,4 @@
-package cat.copernic.amayo.frontend.core.auth
+package cat.copernic.amayo.frontend.Session
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

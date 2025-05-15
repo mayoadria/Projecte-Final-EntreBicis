@@ -19,13 +19,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import cat.copernic.amayo.frontend.recompensaManagment.model.Recompensa
+import cat.copernic.amayo.frontend.core.decodeBase64ToBitmap
+import cat.copernic.amayo.frontend.core.scaledDp
 import cat.copernic.amayo.frontend.recompensaManagment.model.Reserva
 import java.time.format.DateTimeFormatter
 import java.util.Locale

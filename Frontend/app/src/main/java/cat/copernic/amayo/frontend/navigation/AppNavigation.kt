@@ -7,8 +7,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import cat.copernic.amayo.frontend.core.auth.SessionViewModel
-import cat.copernic.amayo.frontend.core.auth.SplashScreen
+import cat.copernic.amayo.frontend.Session.SessionViewModel
+import cat.copernic.amayo.frontend.Session.SplashScreen
 import cat.copernic.amayo.frontend.recompensaManagment.ui.DetallsReserva
 import cat.copernic.amayo.frontend.recompensaManagment.ui.RecompensaEntregadaScreen
 import cat.copernic.amayo.frontend.sistemaManagment.ui.BottomNav
