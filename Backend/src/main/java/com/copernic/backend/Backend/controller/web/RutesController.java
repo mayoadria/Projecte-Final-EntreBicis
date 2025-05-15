@@ -96,51 +96,6 @@ public class RutesController {
     }
 
 
-    /* ====================== API: guardar ruta ======================== */
-    @PostMapping(value = "/api/ruta", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<Void> guardarRuta(@RequestBody RutaDto dto) {
 
-        System.out.println(">>> MÉTODO guardarRuta ACTIVO");
-        System.out.println(dto); // muestra todo lo que Jackson recibe
-
-        Usuari usuari = usuariRepository.findByEmail(dto.getEmailUsuari());
-        if (usuari == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
-        Rutes r = new Rutes();
-        r.setUsuari(usuari);
-        r.setNom(dto.getNom());
-        r.setDescripcio(dto.getDescripcio());
-        r.setEstat(dto.getEstat()      != null ? dto.getEstat()      : EstatRutes.INVALIDA);
-        r.setCicloRuta(dto.getCicloRuta()!= null ? dto.getCicloRuta() : CicloRuta.FINALITZADA);
-
-        /* ── MÉTRICAS ─────────────────────────────────────────── */
-        if (dto.getKm() != null) {
-            // redondear a 3 decimales exactos antes de guardar
-            double kmRounded = Math.round(dto.getKm() * 1_000.0) / 1_000.0;
-            r.setKm(kmRounded);
-        }
-        if (dto.getVelMitja()   != null) r.setVelMedia(dto.getVelMitja());
-        if (dto.getVelMax()     != null) r.setVelMax(dto.getVelMax());
-        if (dto.getVelMitjaKm() != null) r.setVelMitjaKM(dto.getVelMitjaKm());
-        if (dto.getTempsParat() != null) r.setTempsParat(dto.getTempsParat().doubleValue());
-        if (dto.getTemps()      != null) r.setTemps(formatSeconds(dto.getTemps()));
-
-        /* Posicions GPS → CascadeType.ALL */
-        if (dto.getPosicions() != null) {
-            List<Posicio_Gps> pos = dto.getPosicions().stream().map(p -> {
-                Posicio_Gps pg = new Posicio_Gps();
-                pg.setRutes(r);
-                pg.setLatitud(p.getLatitud());
-                pg.setLongitud(p.getLongitud());
-                pg.setTemps(p.getTemps());
-                return pg;
-            }).toList();
-            r.setPosicionsGps(pos);
-        }
-
-        rutesRepository.save(r);        // guarda ruta + posicions
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
 
 }

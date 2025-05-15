@@ -1,0 +1,63 @@
+2025-05-12 08:11:31 [restartedMain] INFO  c.c.backend.BackendApplication - Starting BackendApplication using Java 22.0.2 with PID 10392 (D:\EntreBicis\Backend\target\classes started by unair in D:\EntreBicis\Backend)
+2025-05-12 08:11:31 [restartedMain] INFO  c.c.backend.BackendApplication - No active profile set, falling back to 1 default profile: "default"
+2025-05-12 08:11:31 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-05-12 08:11:31 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-05-12 08:11:32 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-12 08:11:32 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 86 ms. Found 8 JPA repository interfaces.
+2025-05-12 08:11:33 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8443 (https)
+2025-05-12 08:11:33 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["https-jsse-nio-8443"]
+2025-05-12 08:11:33 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-05-12 08:11:33 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.36]
+2025-05-12 08:11:33 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-05-12 08:11:33 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1768 ms
+2025-05-12 08:11:33 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-12 08:11:33 [restartedMain] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.8.Final
+2025-05-12 08:11:33 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-05-12 08:11:34 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-12 08:11:34 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-05-12 08:11:34 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@50067109
+2025-05-12 08:11:34 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-05-12 08:11:34 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-05-12 08:11:34 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-05-12 08:11:34 [restartedMain] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-12 08:11:35 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-12 08:11:35 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-12 08:11:36 [restartedMain] INFO  c.c.b.B.c.a.ApiRecompensesController - ✅ ApiRecompensesController inicialitzat
+2025-05-12 08:11:36 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-12 08:11:36 [restartedMain] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name validadorUsuaris
+2025-05-12 08:11:37 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2025-05-12 08:11:37 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["https-jsse-nio-8443"]
+2025-05-12 08:11:37 [restartedMain] INFO  o.a.t.u.net.NioEndpoint.certificate - Connector [https-jsse-nio-8443], TLS virtual host [_default_], certificate type [UNDEFINED] configured from keystore [C:\Users\unair\.keystore] using alias [entreBicis] with trust store [null]
+2025-05-12 08:11:37 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8443 (https) with context path '/'
+2025-05-12 08:11:37 [restartedMain] INFO  c.c.backend.BackendApplication - Started BackendApplication in 6.556 seconds (process running for 7.738)
+2025-05-12 08:12:03 [https-jsse-nio-8443-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-05-12 08:12:03 [https-jsse-nio-8443-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-05-12 08:12:03 [https-jsse-nio-8443-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2025-05-12 08:12:03 [https-jsse-nio-8443-exec-2] INFO  c.c.b.B.c.a.ApiReservaController - 🔍 2 reserves trobades
+2025-05-12 08:12:03 [https-jsse-nio-8443-exec-1] INFO  c.c.b.B.c.a.ApiRecompensesController - 🔍 2 recompenses recuperades
+2025-05-12 08:12:05 [https-jsse-nio-8443-exec-4] INFO  c.c.b.B.c.a.ApiRecompensesController - 🔍 2 recompenses recuperades
+2025-05-12 08:12:24 [https-jsse-nio-8443-exec-5] WARN  c.c.b.B.c.web.UsuarisWebController - ✖  Usuario no encontrado → admin@entrbicis.com
+2025-05-12 08:12:36 [https-jsse-nio-8443-exec-7] INFO  c.c.b.B.c.web.UsuarisWebController - ✅  Login correcto → admin@entrebicis.com
+2025-05-12 08:12:36 [https-jsse-nio-8443-exec-9] INFO  c.c.b.B.c.a.ApiRecompensesController - 🔍 2 recompenses recuperades
+2025-05-12 08:13:55 [https-jsse-nio-8443-exec-3] ERROR c.c.b.B.c.web.AuthController - Accés a la pàgina de login.
+2025-05-12 08:13:55 [https-jsse-nio-8443-exec-5] ERROR c.c.b.B.c.web.AuthController - Accés a la pàgina de login.
+2025-05-12 08:14:04 [https-jsse-nio-8443-exec-8] INFO  c.c.b.B.c.web.AuthController - Accés a /home per l'usuari autenticat.
+2025-05-12 08:14:04 [https-jsse-nio-8443-exec-8] WARN  o.t.s.p.AbstractStandardFragmentInsertionTagProcessor - [THYMELEAF][https-jsse-nio-8443-exec-8][home] Deprecated unwrapped fragment expression "barraLateral :: barralateral" found in template home, line 11, col 6. Please use the complete syntax of fragment expressions instead ("~{barraLateral :: barralateral}"). The old, unwrapped syntax for fragment expressions will be removed in future versions of Thymeleaf.
+2025-05-12 08:14:10 [https-jsse-nio-8443-exec-9] WARN  o.t.s.p.AbstractStandardFragmentInsertionTagProcessor - [THYMELEAF][https-jsse-nio-8443-exec-9][rutes] Deprecated unwrapped fragment expression "barraLateral :: barralateral" found in template rutes, line 19, col 6. Please use the complete syntax of fragment expressions instead ("~{barraLateral :: barralateral}"). The old, unwrapped syntax for fragment expressions will be removed in future versions of Thymeleaf.
+2025-05-12 08:14:31 [https-jsse-nio-8443-exec-5] INFO  c.c.b.B.c.web.AuthController - Accés a /home per l'usuari autenticat.
+2025-05-12 08:14:31 [https-jsse-nio-8443-exec-5] WARN  o.t.s.p.AbstractStandardFragmentInsertionTagProcessor - [THYMELEAF][https-jsse-nio-8443-exec-5][home] Deprecated unwrapped fragment expression "barraLateral :: barralateral" found in template home, line 11, col 6. Please use the complete syntax of fragment expressions instead ("~{barraLateral :: barralateral}"). The old, unwrapped syntax for fragment expressions will be removed in future versions of Thymeleaf.
+2025-05-12 08:14:32 [https-jsse-nio-8443-exec-10] WARN  o.t.s.p.AbstractStandardFragmentInsertionTagProcessor - [THYMELEAF][https-jsse-nio-8443-exec-10][rutes] Deprecated unwrapped fragment expression "barraLateral :: barralateral" found in template rutes, line 19, col 6. Please use the complete syntax of fragment expressions instead ("~{barraLateral :: barralateral}"). The old, unwrapped syntax for fragment expressions will be removed in future versions of Thymeleaf.
+2025-05-12 08:14:33 [https-jsse-nio-8443-exec-10] WARN  o.t.s.p.AbstractStandardFragmentInsertionTagProcessor - [THYMELEAF][https-jsse-nio-8443-exec-10][usuaris] Deprecated unwrapped fragment expression "barraLateral :: barralateral" found in template usuaris, line 12, col 6. Please use the complete syntax of fragment expressions instead ("~{barraLateral :: barralateral}"). The old, unwrapped syntax for fragment expressions will be removed in future versions of Thymeleaf.
+2025-05-12 08:14:33 [https-jsse-nio-8443-exec-8] WARN  o.t.s.p.AbstractStandardFragmentInsertionTagProcessor - [THYMELEAF][https-jsse-nio-8443-exec-8][rutes] Deprecated unwrapped fragment expression "barraLateral :: barralateral" found in template rutes, line 19, col 6. Please use the complete syntax of fragment expressions instead ("~{barraLateral :: barralateral}"). The old, unwrapped syntax for fragment expressions will be removed in future versions of Thymeleaf.
+2025-05-12 08:15:12 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-05-12 08:15:12 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-05-12 08:15:12 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-05-12 08:15:12 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-05-12 08:15:12 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

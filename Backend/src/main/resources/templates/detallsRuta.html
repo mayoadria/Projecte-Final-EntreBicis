@@ -45,6 +45,9 @@
                 <div>
                     <strong th:text="${dto.ruta.velMedia}">-</strong> km/h
                 </div>
+                <div>
+                    <strong class="fecha-formateada" th:text="${dto.ruta.getFechaCreacion()}"> - </strong>
+                </div>
             </div>
         </div>
 
@@ -97,3 +100,28 @@
 </div>
 </body>
 </html>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const celdas = document.querySelectorAll(".fecha-formateada");
+
+        celdas.forEach(celda => {
+            const valorOriginal = celda.textContent.trim();
+            if (!valorOriginal) return;
+
+            const fecha = new Date(valorOriginal);
+            if (!isNaN(fecha)) {
+                // Fecha en formato AAAA-MM-DD
+                const fechaStr = fecha.toISOString().split("T")[0];
+                // Hora en formato HH:MM (sin segundos)
+                const hh = fecha.getHours().toString().padStart(2, '0');
+                const mm = fecha.getMinutes().toString().padStart(2, '0');
+                const horaStr = `${hh}:${mm}`;
+
+                celda.innerHTML = `${fechaStr}<br>${horaStr}`;
+            }
+        });
+    });
+</script>
+

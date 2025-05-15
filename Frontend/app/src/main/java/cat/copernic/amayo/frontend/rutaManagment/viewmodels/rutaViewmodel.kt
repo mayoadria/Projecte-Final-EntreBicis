@@ -14,6 +14,8 @@ import cat.copernic.amayo.frontend.rutaManagment.data.remote.RutaApi
 import cat.copernic.amayo.frontend.rutaManagment.data.repositories.RutaRetrofitTLSInstance
 import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.math.*
 
 class RutaViewModel(
@@ -221,6 +223,7 @@ class RutaViewModel(
                 }
 
                 val email = sessionRepository.getCurrentEmail()
+                val now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
 
                 val dto = RutaApi.RutaDto(
                     id            = null,
@@ -235,7 +238,8 @@ class RutaViewModel(
                     velMitja      = stats.velMedKmh,
                     velMitjaKm    = stats.ritmeMinKm,
                     posicions     = posDtos,
-                    emailUsuari   = email
+                    emailUsuari   = email,
+                    fechaCreacion = now
                 )
 
                 try {
