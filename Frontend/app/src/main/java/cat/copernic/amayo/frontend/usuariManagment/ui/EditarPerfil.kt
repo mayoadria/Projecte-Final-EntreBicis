@@ -42,7 +42,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import cat.copernic.amayo.frontend.core.auth.SessionViewModel
+import cat.copernic.amayo.frontend.Session.SessionViewModel
+import cat.copernic.amayo.frontend.core.decodeBase64ToBitmap
 import cat.copernic.amayo.frontend.usuariManagment.viewmodels.ModificarViewModel
 
 
@@ -99,11 +100,14 @@ fun EditarPerfil(
 
                 val selectedImageUri by modificarViewModel.selectedImageUri.collectAsState()
                 val updatedBitmap = remember(selectedImageUri) {
-                    selectedImageUri?.let { uri -> modificarViewModel.loadBitmapFromUri(uri, navController.context.contentResolver) }
+                    selectedImageUri?.let { uri ->
+                        modificarViewModel.loadBitmapFromUri(
+                            uri,
+                            navController.context.contentResolver
+                        )
+                    }
                         ?: bitmap
                 }
-
-// Imagen de perfil clicable
                 Box(
                     modifier = Modifier
                         .size(120.dp)

@@ -30,7 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import cat.copernic.amayo.frontend.core.auth.SessionViewModel
+import cat.copernic.amayo.frontend.Session.SessionViewModel
+import cat.copernic.amayo.frontend.core.decodeBase64ToBitmap
 
 /**
  * Pantalla de perfil del usuario que muestra información como nombre, saldo y foto de perfil.
@@ -40,7 +41,7 @@ import cat.copernic.amayo.frontend.core.auth.SessionViewModel
  * @param navController Controlador de navegación para gestionar el cambio de pantallas.
  */
 @Composable
-fun perfil(sessionViewModel: SessionViewModel,navController: NavController) {
+fun perfil(sessionViewModel: SessionViewModel, navController: NavController) {
     val nom by sessionViewModel.userData.collectAsState()
     val backgroundColor = Color(0xFF89EAF7)
     val iconColor = Color.Black
@@ -189,22 +190,5 @@ fun IconButtonWithText(
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(text = text, fontWeight = FontWeight.SemiBold)
-    }
-}
-
-/**
- * Decodifica una cadena en base64 a un objeto Bitmap.
- *
- * @param base64Str Cadena base64 de la imagen.
- * @return Imagen decodificada como Bitmap o null si falla.
- */
-fun decodeBase64ToBitmap(base64Str: String): android.graphics.Bitmap? {
-    return try {
-        val cleanBase64 = base64Str.substringAfter(",") // por si viene con encabezado
-        val decodedBytes = Base64.decode(cleanBase64, Base64.DEFAULT)
-        BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
     }
 }

@@ -7,13 +7,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import cat.copernic.amayo.frontend.core.auth.SessionRepository
+import cat.copernic.amayo.frontend.Session.SessionRepository
 import cat.copernic.amayo.frontend.dataStore
 import cat.copernic.amayo.frontend.rutaManagment.data.local.*
 import cat.copernic.amayo.frontend.rutaManagment.data.remote.RutaApi
 import cat.copernic.amayo.frontend.rutaManagment.data.repositories.RutaRetrofitTLSInstance
 import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.math.*
 
 class RutaViewModel(
@@ -29,7 +31,7 @@ class RutaViewModel(
     private val rutaApi: RutaApi =
         RutaRetrofitTLSInstance.retrofitTLSInstance.create(RutaApi::class.java)
 
-    /* ---------- Dades per a la UI ---------- */
+    /* ---------- Datos para la UI ---------- */
     private val _routeSegments = mutableStateListOf<MutableList<GeoPoint>>()
     val routeSegments: List<MutableList<GeoPoint>> get() = _routeSegments
 
@@ -39,13 +41,26 @@ class RutaViewModel(
     var nomRuta  : String = "Mi ruta"
     var descRuta : String = "Descripción de ejemplo"
 
-    /* ---------- ACUMULADORS DE MÈTRIQUES ---------- */
+    /* ---------- Acumuladores de métricas ---------- */
     private var startTimeMillis      : Long   = 0L
     private var totalDistanceMeters  : Double = 0.0
     private var totalStoppedMillis   : Long   = 0L
     private var velMax               : Double = 0.0
     private var prevPoint            : GeoPoint? = null
     private var prevTimestampMillis  : Long   = 0L
+    private var punts: Double = 0.0
+
+    /* ---------- Stats pendientes (para el popup) ---------- */
+    data class RouteStats(
+        val distKm:       Double,
+        val totalMillis:  Long,
+        val movingMillis: Long,
+        val stoppedMillis: Long,
+        val velMaxKmh:    Double,
+        val velMedKmh:    Double,
+        val ritmeMinKm:   Double
+    )
+    var pendingStats: RouteStats? by mutableStateOf(null); private set
 
     /* ====================================================================== */
     /* ============================ INICI RUTA ============================== */
@@ -59,7 +74,7 @@ class RutaViewModel(
         _routeSegments.clear()
         _routeSegments.add(mutableListOf())
 
-        /* --- reiniciem acumuladors --- */
+        /* --- reiniciamos acumuladores --- */
         startTimeMillis     = System.currentTimeMillis()
         totalDistanceMeters = 0.0
         totalStoppedMillis  = 0L
@@ -67,33 +82,33 @@ class RutaViewModel(
         prevPoint           = null
         prevTimestampMillis = 0L
 
-        /* --- persistim ruta buida a Room perquè hi pengin les posicions --- */
+        /* --- persistimos ruta vacía a Room para colgar las posiciones --- */
         viewModelScope.launch {
             val newId = dao.insertRoute(RouteEntity(name = name, description = desc))
             currentRouteId = newId
 
             initialLocation?.let {
-                recordPoint(it)                 // també l’emmagatzema a Room
+                recordPoint(it)                 // también la almacena en Room
             }
         }
     }
 
     /* ====================================================================== */
-    /* ============================== NOU PUNT ============================== */
+    /* ============================== NUEVO PUNTO =========================== */
     /* ====================================================================== */
     fun addPoint(point: GeoPoint) {
         if (!isRouting) return
-        recordPoint(point)                      // Desa i actualitza mètriques
+        recordPoint(point)                      // Guarda y actualiza métricas
     }
 
     /**
-     * Desa la posició a Room i actualitza estadístiques en temps real.
+     * Guarda la posición en Room y actualiza estadísticas en tiempo real.
      */
     private fun recordPoint(p: GeoPoint) {
         val rid = currentRouteId ?: return
         val now = System.currentTimeMillis()
 
-        /* ---------- persistim a Room (coroutine IO) ---------- */
+        /* ---------- persistimos en Room (coroutine IO) ---------- */
         viewModelScope.launch {
             dao.insertPosition(
                 PositionEntity(
@@ -105,11 +120,11 @@ class RutaViewModel(
             )
         }
 
-        /* ---------- actualitzem traça per a la UI ---------- */
+        /* ---------- actualizamos traza para la UI ---------- */
         if (_routeSegments.isEmpty()) _routeSegments.add(mutableListOf())
         _routeSegments.last().add(p)
 
-        /* ---------- mètriques ---------- */
+        /* ---------- métricas ---------- */
         prevPoint?.let { prev ->
             val dtMillis = now - prevTimestampMillis
             if (dtMillis > 0) {
@@ -120,7 +135,7 @@ class RutaViewModel(
                 val velInstKmh = (segmentKm * 3_600_000.0) / dtMillis
                 velMax = max(velMax, velInstKmh)
 
-                if (velInstKmh < 1.0) {        // umbral “parat”
+                if (velInstKmh < 1.0) {        // umbral “parado”
                     totalStoppedMillis += dtMillis
                 }
             }
@@ -130,28 +145,73 @@ class RutaViewModel(
     }
 
     /* ====================================================================== */
-    /* ============================ ATURAR RUTA ============================= */
+    /* ============================ PARAR RUTA ============================== */
     /* ====================================================================== */
 
-    fun stopRoute() {
+    /**
+     * Detiene la grabación y deja las estadísticas en `pendingStats`
+     * para que la UI muestre el diálogo de resumen.
+     */
+    fun requestStop() {
         if (!isRouting) return
         isRouting = false
+        pendingStats = computeStats()
+    }
 
-        /* ---------- càlcul final ---------- */
+    /**
+     * Guarda la ruta (lógica antigua) reutilizando las estadísticas calculadas.
+     */
+    fun saveRoute(name: String, desc: String) {
+        val stats = pendingStats ?: return
+        nomRuta  = name
+        descRuta = desc
+        pendingStats = null
+        finalizeRoute(stats, sendToBackend = true)
+    }
+
+    /**
+     * Descarta la ruta: borra BD local y limpia estado.
+     */
+    fun discardRoute() {
+        val stats = pendingStats ?: return      // usamos para saber ID y limpiar
+        pendingStats = null
+        finalizeRoute(stats, sendToBackend = false)
+    }
+
+    /* ====================================================================== */
+    /* ========================== CÁLCULO DE STATS ========================== */
+    /* ====================================================================== */
+    private fun computeStats(): RouteStats {
         val endTimeMillis   = System.currentTimeMillis()
         val totalTimeMillis = endTimeMillis - startTimeMillis
         val movingMillis    = max(0L, totalTimeMillis - totalStoppedMillis)
 
-        val distKm          = totalDistanceMeters / 1_000.0
-        val velMitjaKmh     = if (movingMillis > 0)
+        val distKm      = totalDistanceMeters / 1_000.0
+        val velMedKmh   = if (movingMillis > 0)
             (distKm * 3_600_000.0) / movingMillis else 0.0
-
-        val ritmeMinKm      = if (distKm > 0)
+        val ritmeMinKm  = if (distKm > 0)
             (movingMillis / 60_000.0) / distKm else 0.0
 
-        /* ---------- enviem al backend ---------- */
-        viewModelScope.launch {
-            currentRouteId?.let { rid ->
+        return RouteStats(
+            distKm         = distKm,
+            totalMillis    = totalTimeMillis,
+            movingMillis   = movingMillis,
+            stoppedMillis  = totalStoppedMillis,
+            velMaxKmh      = velMax,
+            velMedKmh      = velMedKmh,
+            ritmeMinKm     = ritmeMinKm
+        )
+    }
+
+    /* ====================================================================== */
+    /* ======================== FINALIZAR / LIMPIAR ========================= */
+    /* ====================================================================== */
+    private fun finalizeRoute(stats: RouteStats, sendToBackend: Boolean) {
+        val rid = currentRouteId
+
+        if (sendToBackend && rid != null) {
+            /* ---------- enviamos al backend ---------- */
+            viewModelScope.launch {
                 val positions = dao.getPositionsForRoute(rid)
                 val firstTs   = positions.firstOrNull()?.timestamp ?: startTimeMillis
 
@@ -164,6 +224,7 @@ class RutaViewModel(
                 }
 
                 val email = sessionRepository.getCurrentEmail()
+                val now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
 
                 val dto = RutaApi.RutaDto(
                     id            = null,
@@ -171,14 +232,16 @@ class RutaViewModel(
                     descripcio    = descRuta,
                     estat         = RutaApi.EstatRutes.INVALIDA,
                     cicloRuta     = RutaApi.CicloRuta.FINALITZADA,
-                    km            = distKm,
-                    temps         = (totalTimeMillis / 1_000).toInt(),
-                    tempsParat    = (totalStoppedMillis / 1_000).toInt(),
-                    velMax        = velMax,
-                    velMitja      = velMitjaKmh,
-                    velMitjaKm    = ritmeMinKm,
+                    km            = stats.distKm,
+                    temps         = (stats.totalMillis / 1_000).toInt(),
+                    tempsParat    = (stats.stoppedMillis / 1_000).toInt(),
+                    velMax        = stats.velMaxKmh,
+                    velMitja      = stats.velMedKmh,
+                    velMitjaKm    = stats.ritmeMinKm,
                     posicions     = posDtos,
-                    emailUsuari   = email
+                    emailUsuari   = email,
+                    fechaCreacion = now,
+                    punts = punts
                 )
 
                 try {
@@ -187,25 +250,31 @@ class RutaViewModel(
                         println("Error HTTP ${resp.code()}: ${resp.errorBody()?.string()}")
                     }
                 } catch (e: Exception) {
-                    println("Excepció en enviar la ruta: $e")
+                    println("Excepción al enviar la ruta: $e")
                 }
 
-                /* ----- netegem BD local ----- */
+                /* ----- limpiamos BD local ----- */
                 dao.deletePositionsForRoute(rid)
                 dao.deleteRoute(rid)
-                currentRouteId = null
+            }
+        } else if (rid != null) {
+            /* ----- solo limpiamos BD local (descartar) ----- */
+            viewModelScope.launch {
+                dao.deletePositionsForRoute(rid)
+                dao.deleteRoute(rid)
             }
         }
 
-        /* ---------- netegem UI ---------- */
+        /* ---------- limpiamos estado UI ---------- */
+        currentRouteId = null
         _routeSegments.clear()
     }
 
     /**
-     * Distància Haversine entre dos GeoPoint en metres.
+     * Distancia Haversine entre dos GeoPoint en metros.
      */
     private fun haversineMeters(a: GeoPoint, b: GeoPoint): Double {
-        val R = 6_371_000.0                    // radi terrestre (m)
+        val R = 6_371_000.0                    // radio terrestre (m)
         val lat1 = Math.toRadians(a.latitude)
         val lat2 = Math.toRadians(b.latitude)
         val dLat = Math.toRadians(b.latitude - a.latitude)

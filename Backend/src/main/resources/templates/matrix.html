@@ -21,31 +21,26 @@
 
             <form class="user-form"
                   th:action="@{/sistema/actualizar}"
-                  th:object="${sistema}"
                   method="post">
 
                 <!-- --- velMax (Double) --- -->
                 <div class="form-field">
-                    <label for="velMax">Velocidad Máxima</label>
+                    <label for="velMax">Velocidad Máxima <small>(km/h)</small></label>
                     <input type="number"
                            id="velMax"
+                           name="velMax"
                            step="0.1"
-                           placeholder="km/h"
-                           th:field="*{velMax}"/>
+                           th:value="${sistema.velMax}"/>
                 </div>
 
                 <!-- --- tempsMaxAturat → minutos --- -->
                 <div class="form-field">
                     <label for="tempsMaxAturat">Tiempo Máx. Parado <small>(min)</small></label>
-
-                    <div class="input-unit">           <!-- contenedor relativo -->
-                        <input type="number"
-                               id="tempsMaxAturat"
-                               name="tempsMaxAturat"
-                               min="0" step="1"
-                               th:value="${sistema.tempsMaxAturat != null ? sistema.tempsMaxAturat.toMinutes() : ''}"/>
-
-                    </div>
+                    <input type="number"
+                           id="tempsMaxAturat"
+                           name="tempsMaxAturat"
+                           min="0" step="1"
+                           th:value="${sistema.tempsMaxAturat != null ? sistema.tempsMaxAturat.toMinutes() : ''}"/>
                 </div>
 
                 <!-- --- conversioSaldo (Integer) --- -->
@@ -53,27 +48,19 @@
                     <label for="conversioSaldo">Conversión Saldo</label>
                     <input type="number"
                            id="conversioSaldo"
-                           th:field="*{conversioSaldo}"/>
+                           name="conversioSaldo"
+                           step="1"
+                           th:value="${sistema.conversioSaldo}"/>
                 </div>
 
-                <!-- --- tempsRecollida → horas (con sufijo “h”) --- -->
+                <!-- --- tempsRecollida → horas --- -->
                 <div class="form-field">
-                    <label for="tempsRecollida">
-                        Tiempo Recogida <small>(h)</small>
-                    </label>
-
-                    <input type="text"
+                    <label for="tempsRecollida">Tiempo Recogida <small>(h)</small></label>
+                    <input type="number"
                            id="tempsRecollida"
                            name="tempsRecollida"
-                           placeholder="ej.: 72h"
-                           th:value="${sistema.tempsRecollida != null
-                    ? sistema.tempsRecollida.toHours() + 'h'
-                    : ''}" />
-
-                    <!-- Aviso en rojo (versión simple con style) -->
-                    <p style="color:#d9534f; margin-top:4px;">
-                        ¡No borres la <strong>h</strong>!
-                    </p>
+                           min="0" step="1"
+                           th:value="${sistema.tempsRecollida != null ? sistema.tempsRecollida.toHours() : ''}"/>
                 </div>
 
                 <button type="submit" class="btn-crear">Guardar</button>

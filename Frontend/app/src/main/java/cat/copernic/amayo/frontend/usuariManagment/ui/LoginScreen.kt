@@ -28,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import cat.copernic.amayo.frontend.core.auth.SessionUser
-import cat.copernic.amayo.frontend.core.auth.SessionViewModel
+import cat.copernic.amayo.frontend.Session.SessionUser
+import cat.copernic.amayo.frontend.Session.SessionViewModel
 import cat.copernic.amayo.frontend.usuariManagment.viewmodels.LoginViewModel
 import kotlinx.coroutines.launch
 

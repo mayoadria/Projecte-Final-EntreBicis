@@ -31,21 +31,16 @@
         <tbody>
         <tr th:each="reserva : ${reservas}">
             <td th:text="${reserva.id}"></td>
-            <td th:text="${reserva.emailUsuari.nom}"></td>
+            <td th:text="${reserva.emailUsuari != null ? reserva.emailUsuari.nom : 'Sense usuari'}"></td>
             <td th:text="${reserva.estat}"></td>
             <td th:text="${reserva.idRecompensa.descripcio}"></td>
             <td class="fecha-formateada" th:text="${reserva.datareserva}"></td>
             <td>
                 <form th:action="@{/reserva/canviarEstat}" method="post" class="acciones">
                     <input type="hidden" name="reservaId" th:value="${reserva.id}" />
-
-                    <!-- Botón de cambio de estado -->
                     <button type="submit"
                             class="btn-accion"
-                            th:text="${reserva.estat == 'ASSIGNADA' ?'Canviar a DESASSIGNADA' :
-                         'Canviar a ASSIGNADA'}"></button>
-
-                    <!-- Botón de borrado -->
+                            th:text="${reserva.estat == 'ASSIGNADA' ?'Canviar a DESASSIGNADA' : 'Canviar a ASSIGNADA'}"></button>
                     <a class="btn-accion btn-delete"
                        th:href="@{/reserva/delete/{id}(id=${reserva.id})}"
                        onclick="return confirm('Estás segur que vols esborrar aquesta reserva?');"
@@ -53,6 +48,7 @@
                 </form>
             </td>
         </tr>
+
         </tbody>
     </table>
     </div>

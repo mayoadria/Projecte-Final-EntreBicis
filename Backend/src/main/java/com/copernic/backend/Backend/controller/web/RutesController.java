@@ -9,6 +9,7 @@ import com.copernic.backend.Backend.entity.Usuari;
 import com.copernic.backend.Backend.entity.enums.CicloRuta;
 import com.copernic.backend.Backend.entity.enums.EstatRutes;
 import com.copernic.backend.Backend.logic.web.RutesLogic;
+import com.copernic.backend.Backend.logic.web.UsuariLogic;
 import com.copernic.backend.Backend.repository.RutesRepository;
 import com.copernic.backend.Backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.Instant;
@@ -38,6 +41,7 @@ public class RutesController {
     private final UserRepository usuariRepository;
     private final RutesLogic       rutesLogic;
     private final RutesRepository rutesRepository;
+    private final UsuariLogic usuariLogic;
 
     /* ======================= Vista de targetes ======================= */
     @GetMapping("/admin/rutes")
@@ -96,51 +100,42 @@ public class RutesController {
     }
 
 
-    /* ====================== API: guardar ruta ======================== */
-    @PostMapping(value = "/api/ruta", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<Void> guardarRuta(@RequestBody RutaDto dto) {
-
-        System.out.println(">>> MÉTODO guardarRuta ACTIVO");
-        System.out.println(dto); // muestra todo lo que Jackson recibe
-
-        Usuari usuari = usuariRepository.findByEmail(dto.getEmailUsuari());
-        if (usuari == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
-        Rutes r = new Rutes();
-        r.setUsuari(usuari);
-        r.setNom(dto.getNom());
-        r.setDescripcio(dto.getDescripcio());
-        r.setEstat(dto.getEstat()      != null ? dto.getEstat()      : EstatRutes.INVALIDA);
-        r.setCicloRuta(dto.getCicloRuta()!= null ? dto.getCicloRuta() : CicloRuta.FINALITZADA);
-
-        /* ── MÉTRICAS ─────────────────────────────────────────── */
-        if (dto.getKm() != null) {
-            // redondear a 3 decimales exactos antes de guardar
-            double kmRounded = Math.round(dto.getKm() * 1_000.0) / 1_000.0;
-            r.setKm(kmRounded);
-        }
-        if (dto.getVelMitja()   != null) r.setVelMedia(dto.getVelMitja());
-        if (dto.getVelMax()     != null) r.setVelMax(dto.getVelMax());
-        if (dto.getVelMitjaKm() != null) r.setVelMitjaKM(dto.getVelMitjaKm());
-        if (dto.getTempsParat() != null) r.setTempsParat(dto.getTempsParat().doubleValue());
-        if (dto.getTemps()      != null) r.setTemps(formatSeconds(dto.getTemps()));
-
-        /* Posicions GPS → CascadeType.ALL */
-        if (dto.getPosicions() != null) {
-            List<Posicio_Gps> pos = dto.getPosicions().stream().map(p -> {
-                Posicio_Gps pg = new Posicio_Gps();
-                pg.setRutes(r);
-                pg.setLatitud(p.getLatitud());
-                pg.setLongitud(p.getLongitud());
-                pg.setTemps(p.getTemps());
-                return pg;
-            }).toList();
-            r.setPosicionsGps(pos);
+    /**
+     * Cambia el estado (VALIDA/INVALIDA) de una ruta.
+     */
+    @PutMapping(value = "/ruta/{id}/estat", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Transactional
+    public void updateEstatRuta(
+            @PathVariable Long id,
+            @RequestBody EstatRutes nouEstat
+    ) {
+        Rutes ruta = rutesLogic.getRutaById(id);
+        if (ruta == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ruta no trobada: " + id);
         }
 
-        rutesRepository.save(r);        // guarda ruta + posicions
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        EstatRutes estatAntic = ruta.getEstat();
+        Usuari usuari = ruta.getUsuari();
+        double puntosRuta = ruta.getPunts() != null ? ruta.getPunts() : 0.0;
+        double saldoActual = usuari.getSaldo();
+
+        // 1) Pasar a VALIDADA: sumamos sólo una vez
+        if (estatAntic != EstatRutes.VALIDA && nouEstat == EstatRutes.VALIDA) {
+            usuari.setSaldo(saldoActual + puntosRuta);
+            usuariLogic.savePerfil(usuari);
+        }
+        // 2) Pasar de VALIDADA a otro estado: restamos sólo si hay saldo suficiente
+        else if (estatAntic == EstatRutes.VALIDA && nouEstat != EstatRutes.VALIDA) {
+            double resta = Math.min(saldoActual, puntosRuta);
+            usuari.setSaldo(saldoActual - resta);
+            usuariLogic.savePerfil(usuari);
+        }
+
+        // 3) Finalmente, actualizamos y guardamos el nuevo estado de la ruta
+        ruta.setEstat(nouEstat);
+        rutesLogic.saveRuta(ruta);
     }
+
 
 }

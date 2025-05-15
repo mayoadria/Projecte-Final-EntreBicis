@@ -58,6 +58,9 @@ dependencies {
     implementation(libs.androidx.foundation.layout.android)
     implementation(libs.androidx.room.common.jvm)
     implementation(libs.androidx.room.runtime.android)
+    implementation(libs.androidx.espresso.core)
+    implementation(libs.androidx.preference.ktx)
+    implementation(libs.androidx.foundation.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -98,6 +101,9 @@ dependencies {
     
     implementation(libs.logging.interceptor)
 
+    implementation (libs.androidx.material.icons.extended)
+
+    implementation (libs.androidx.material3.vltimaversin)
 
 
 
