@@ -9,7 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import cat.copernic.amayo.frontend.core.auth.SessionViewModel
+import cat.copernic.amayo.frontend.Session.SessionViewModel
+import cat.copernic.amayo.frontend.core.HeaderReusable
 import cat.copernic.amayo.frontend.recompensaManagment.viewmodels.ReservaViewmodel
 
 /**
@@ -55,7 +56,8 @@ fun reservesPropies(
             .background(Color(0x9C9CF3FF))
             .statusBarsPadding()
     ) {
-        Header(
+        HeaderReusable(
+            title = "Premis",
             onFilterApplied = { desc, obs, estat ->
                 filtroDesc = desc
                 filtroObs = obs
@@ -65,7 +67,7 @@ fun reservesPropies(
                 ordenarPor = criterio
                 ascendente = asc
             },
-            sessionViewModel
+            sessionViewModel = sessionViewModel
         )
 
         LazyColumn(

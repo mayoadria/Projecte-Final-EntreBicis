@@ -1,4 +1,4 @@
-package cat.copernic.amayo.frontend.core.auth
+package cat.copernic.amayo.frontend.Session
 
 /**
  * Representa les dades de sessió d'un usuari.

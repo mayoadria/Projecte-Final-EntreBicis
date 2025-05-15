@@ -7,8 +7,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import cat.copernic.amayo.frontend.core.auth.SessionViewModel
-import cat.copernic.amayo.frontend.core.auth.SplashScreen
+import cat.copernic.amayo.frontend.Session.SessionViewModel
+import cat.copernic.amayo.frontend.Session.SplashScreen
 import cat.copernic.amayo.frontend.recompensaManagment.ui.DetallsReserva
 import cat.copernic.amayo.frontend.recompensaManagment.ui.RecompensaEntregadaScreen
 import cat.copernic.amayo.frontend.sistemaManagment.ui.BottomNav
@@ -47,55 +47,89 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
     val loginView: LoginViewModel = viewModel()
     val modificarView: ModificarViewModel = viewModel()
     val reservaView: ReservaViewmodel = viewModel()
+
     NavHost(
         navController = navController,
         startDestination = "splash",
         modifier = Modifier.fillMaxSize()
     ) {
         composable("splash") { SplashScreen(navController, sessionViewModel) }
-        composable("login") { LoginScreen(navController, loginView,sessionViewModel) }
-        composable("inici") { BottomNav(navController,sessionViewModel) }
-        composable("rutas") { RutaScreen(navController) }
-        composable("recompensa") { recompensa(viewLlista,navController,sessionViewModel) }
-        composable("recompensaPropias") { reservesPropies(reservaView,navController,sessionViewModel) }
-        composable("perfil") { perfil(sessionViewModel,navController) }
+        composable("login") { LoginScreen(navController, loginView, sessionViewModel) }
+
+        composable("inici") {
+            BottomNav(navController, sessionViewModel)
+        }
+
+        composable("rutas") {
+                RutaScreen(navController)
+        }
+
+        composable("recompensa") {
+            ScaffoldWrapper(navController) {
+                recompensa(viewLlista, navController, sessionViewModel)
+            }
+        }
+
+        composable("recompensaPropias") {
+            ScaffoldWrapper(navController) {
+                reservesPropies(reservaView, navController, sessionViewModel)
+            }
+        }
+
+        composable("perfil") {
+            ScaffoldWrapper(navController) {
+                perfil(sessionViewModel, navController)
+            }
+        }
+
         composable("detalls/{id}") { backStackEntry ->
             val idParam = backStackEntry.arguments?.getString("id")
             val cartId = idParam?.toLongOrNull() ?: return@composable
 
-            val viewModel: llistaViewmodel = viewModel()
-
-            detalls(
-                viewModel,
-                cartId,
-                reservaView,
-                sessionViewModel,
-                modificarView,
-                navController
-            )
+            ScaffoldWrapper(navController) {
+                detalls(
+                    viewLlista,
+                    cartId,
+                    reservaView,
+                    sessionViewModel,
+                    modificarView,
+                    navController
+                )
+            }
         }
 
         composable("detallsReserva/{id}") { backStackEntry ->
             val idParam = backStackEntry.arguments?.getString("id")
             val cartId = idParam?.toLongOrNull() ?: return@composable
 
-
-            DetallsReserva(
-                cartId,
-                reservaView,
-                viewLlista,
-                sessionViewModel,
-                modificarView,
-                navController
-            )
+            ScaffoldWrapper(navController) {
+                DetallsReserva(
+                    cartId,
+                    reservaView,
+                    viewLlista,
+                    sessionViewModel,
+                    modificarView,
+                    navController
+                )
+            }
         }
+
         composable("editar") {
-            EditarPerfil(sessionViewModel,modificarView,navController)
-        }
-        composable("check"){
-            RecompensaEntregadaScreen(navController)
+            ScaffoldWrapper(navController) {
+                EditarPerfil(sessionViewModel, modificarView, navController)
+            }
         }
 
-        composable("changePass") { ChangePasswordScreen(ChangePasswordViewModel(), navController) }
+        composable("check") {
+            ScaffoldWrapper(navController) {
+                RecompensaEntregadaScreen(navController)
+            }
+        }
+
+        composable("changePass") {
+            ScaffoldWrapper(navController) {
+                ChangePasswordScreen(ChangePasswordViewModel(), navController)
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-package cat.copernic.amayo.frontend.core.auth
+package cat.copernic.amayo.frontend.Session
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -27,6 +27,22 @@ class SessionViewModel(private val sessionRepository: SessionRepository) : ViewM
     /** Dades completes de l'usuari carregades des de l'API. */
     private val _userData = MutableStateFlow<Usuari?>(null)
     val userData: StateFlow<Usuari?> get() = _userData
+
+    fun updateSaldo(nuevoSaldo: Double) {
+        val usuarioActual = _userData.value
+        if (usuarioActual != null) {
+            val usuarioActualizado = usuarioActual.copy(saldo = nuevoSaldo)
+            _userData.value = usuarioActualizado
+        }
+    }
+    fun actualizarReserva(valor: Boolean) {
+        val usuarioActual = _userData.value
+        if (usuarioActual != null) {
+            val usuarioActualizado = usuarioActual.copy(reserva = valor)
+            _userData.value = usuarioActualizado
+        }
+    }
+
 
     /** Instància de l'API per recuperar informació de l'usuari. */
     private val userApi: UsuariApi = UsuariRetrofitTLSInstance.retrofitTLSInstance.create(
@@ -68,6 +84,7 @@ class SessionViewModel(private val sessionRepository: SessionRepository) : ViewM
             }
         }
     }
+
 
     /**
      * Actualitza les dades de l'usuari al [StateFlow] local.
