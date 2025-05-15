@@ -61,9 +61,7 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
         }
 
         composable("rutas") {
-            ScaffoldWrapper(navController) {
                 RutaScreen(navController)
-            }
         }
 
         composable("recompensa") {
