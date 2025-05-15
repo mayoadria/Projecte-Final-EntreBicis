@@ -1,4 +1,4 @@
-package cat.copernic.amayo.frontend.core.auth
+package cat.copernic.amayo.frontend.Session
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

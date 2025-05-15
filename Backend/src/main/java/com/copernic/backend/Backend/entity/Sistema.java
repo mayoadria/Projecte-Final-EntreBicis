@@ -48,7 +48,7 @@ public class Sistema {
      * Factor de conversió per transformar valors en saldo d'usuari.
      */
     @Column
-    private int conversioSaldo;
+    private double conversioSaldo;
 
     /**
      * Temps màxim permès per recollir una recompensa (en hores).

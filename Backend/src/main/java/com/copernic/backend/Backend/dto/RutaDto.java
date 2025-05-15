@@ -34,100 +34,153 @@ public class RutaDto {
 
     /** Distància total de la ruta en quilòmetres. */
     private Double km;
+    private Integer temps;        // segons totals
+    private Integer tempsParat;   // segons parat
+    private Double velMax;        // km/h
+    private Double velMitja;      // km/h
+    private Double velMitjaKm;    // min/km
+    private Double punts;    // min/km
 
-    /** Temps total de la ruta en segons. */
-    private Integer temps;
+    private String fechaCreacion;
 
-    /** Temps total aturat durant la ruta (en segons). */
-    private Integer tempsParat;
+    public RutaDto() {
+    }
 
-    /** Velocitat màxima registrada durant la ruta (en km/h). */
-    private Double velMax;
+    public Double getPunts() {
+        return punts;
+    }
 
-    /** Velocitat mitjana de la ruta (en km/h). */
-    private Double velMitja;
+    public void setPunts(Double punts) {
+        this.punts = punts;
+    }
 
-    /** Velocitat mitjana expressada en min/km. */
-    private Double velMitjaKm;
+    public Long getId() {
+        return id;
+    }
 
-    /**
-     * Constructor buit requerit per a la deserialització JSON.
-     */
-    public RutaDto() { }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
+    public String getNom() {
+        return nom;
+    }
 
-    /** @return ID de la ruta. */
-    public Long getId() { return id; }
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
 
-    /** @param id ID de la ruta. */
-    public void setId(Long id) { this.id = id; }
+    public String getDescripcio() {
+        return descripcio;
+    }
 
-    /** @return Nom de la ruta. */
-    public String getNom() { return nom; }
+    public void setDescripcio(String d) {
+        this.descripcio = d;
+    }
 
-    /** @param nom Nom de la ruta. */
-    public void setNom(String nom) { this.nom = nom; }
+    public List<PosicioDto> getPosicions() {
+        return posicions;
+    }
 
-    /** @return Descripció de la ruta. */
-    public String getDescripcio() { return descripcio; }
+    public void setPosicions(List<PosicioDto> p) {
+        this.posicions = p;
+    }
 
-    /** @param d Descripció de la ruta. */
-    public void setDescripcio(String d) { this.descripcio = d; }
+    public EstatRutes getEstat() {
+        return estat;
+    }
 
-    /** @return Llista de posicions GPS de la ruta. */
-    public List<PosicioDto> getPosicions() { return posicions; }
-
-    /** @param p Llista de posicions GPS de la ruta. */
-    public void setPosicions(List<PosicioDto> p) { this.posicions = p; }
-
-    /** @return Estat actual de la ruta. */
-    public EstatRutes getEstat() { return estat; }
-
-    /** @param e Estat de la ruta. */
-    public void setEstat(EstatRutes e) { this.estat = e; }
-
-    /** @return Cicle de la ruta. */
-    public CicloRuta getCicloRuta() { return cicloRuta; }
-
-    /** @param c Cicle de la ruta. */
-    public void setCicloRuta(CicloRuta c) { this.cicloRuta = c; }
-
-    /** @return Email de l'usuari propietari de la ruta. */
-    public String getEmailUsuari() { return emailUsuari; }
-
-    /** @param e Email de l'usuari. */
-    public void setEmailUsuari(String e) { this.emailUsuari = e; }
-
-    /** @return Distància total de la ruta en km. */
-    public Double getKm() { return km; }
-
-    /** @param k Distància total de la ruta en km. */
-    public void setKm(Double k) { this.km = k; }
-
-    /** @return Temps total de la ruta en segons. */
-    public Integer getTemps() { return temps; }
-
-    /** @param t Temps total de la ruta en segons. */
-    public void setTemps(Integer t) { this.temps = t; }
-
+    public void setEstat(EstatRutes e) {
+        this.estat = e;
+    }
     /** @return Temps total aturat en segons. */
     public Integer getTempsParat() { return tempsParat; }
 
     /** @param t Temps aturat en segons. */
     public void setTempsParat(Integer t) { this.tempsParat = t; }
 
+    public CicloRuta getCicloRuta() {
+        return cicloRuta;
+    }
     /** @return Velocitat màxima de la ruta en km/h. */
     public Double getVelMax() { return velMax; }
 
     /** @param v Velocitat màxima en km/h. */
     public void setVelMax(Double v) { this.velMax = v; }
 
+    public void setCicloRuta(CicloRuta c) {
+        this.cicloRuta = c;
+    }
     /** @return Velocitat mitjana en km/h. */
     public Double getVelMitja() { return velMitja; }
 
     /** @param v Velocitat mitjana en km/h. */
     public void setVelMitja(Double v) { this.velMitja = v; }
 
+    public String getEmailUsuari() {
+        return emailUsuari;
+    }
+
+    public void setEmailUsuari(String e) {
+        this.emailUsuari = e;
+    }
+
+
+    public Double getKm() {
+        return km;
+    }
+
+    public void setKm(Double k) {
+        this.km = k;
+    }
+
+    public Integer getTemps() {
+        return temps;
+    }
+
+    public void setTemps(Integer t) {
+        this.temps = t;
+    }
+
+    public Integer getTempsParat() {
+        return tempsParat;
+    }
+
+    public void setTempsParat(Integer t) {
+        this.tempsParat = t;
+    }
+
+    public Double getVelMax() {
+        return velMax;
+    }
+
+    public void setVelMax(Double v) {
+        this.velMax = v;
+    }
+
+    public Double getVelMitja() {
+        return velMitja;
+    }
+
+    public void setVelMitja(Double v) {
+        this.velMitja = v;
+    }
+
+    public Double getVelMitjaKm() {
+        return velMitjaKm;
+    }
+
+    public void setVelMitjaKm(Double v) {
+        this.velMitjaKm = v;
+    }
+
+    public String getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(String fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
     /** @return Velocitat mitjana en min/km. */
     public Double getVelMitjaKm() { return velMitjaKm; }
 

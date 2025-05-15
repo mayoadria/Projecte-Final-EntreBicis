@@ -1,4 +1,4 @@
-package cat.copernic.amayo.frontend.core.auth
+package cat.copernic.amayo.frontend.Session
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*

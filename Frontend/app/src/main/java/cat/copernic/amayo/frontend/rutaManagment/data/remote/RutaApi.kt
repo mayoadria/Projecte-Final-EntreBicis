@@ -2,7 +2,9 @@ package cat.copernic.amayo.frontend.rutaManagment.data.remote
 
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 /**
  * Interfaz para acceder a la API de rutas.
@@ -18,6 +20,14 @@ interface RutaApi {
      */
     @POST("ruta")
     suspend fun saveRuta(@Body rutaDto: RutaDto): Response<RutaDto>
+
+
+    /** Listar rutas de un usuario */
+    @GET("ruta/usuari/{email}")
+    suspend fun getUserRoutes(
+        @Path("email") email: String
+    ): Response<List<RutaDto>>
+
 
     /**
      * DTO que representa una posición GPS con latitud, longitud y tiempo transcurrido.
@@ -74,6 +84,8 @@ interface RutaApi {
         val velMitjaKm:   Double,      // min/km (ritme)
 
         val posicions:    List<PosicioDto>,
-        val emailUsuari:  String
+        val emailUsuari:  String,
+        val fechaCreacion: String = "",
+        val punts: Double
     )
 }
