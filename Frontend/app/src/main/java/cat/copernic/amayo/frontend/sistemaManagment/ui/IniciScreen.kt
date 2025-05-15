@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import cat.copernic.amayo.frontend.core.auth.SessionViewModel
 import cat.copernic.amayo.frontend.rutaManagment.data.remote.RutaApi
 import cat.copernic.amayo.frontend.rutaManagment.viewmodels.Operator
 import cat.copernic.amayo.frontend.rutaManagment.viewmodels.RutesViewmodel

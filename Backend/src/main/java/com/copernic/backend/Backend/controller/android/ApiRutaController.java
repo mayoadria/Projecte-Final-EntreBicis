@@ -44,6 +44,11 @@ public class ApiRutaController {
     @Autowired
     private UsuariLogic usuariLogic;
 
+    @Autowired
+    private SistemaLogic sistemaLogic;
+
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+
     /**
      * Crea una nova ruta amb les seves posicions GPS i l'associa a un usuari.
      * <p>
@@ -55,23 +60,9 @@ public class ApiRutaController {
      * Retorna codi 500 si hi ha un error intern.
      * </p>
      *
-     * @param rutaDto Dades de la ruta a crear, incloent posicions GPS i email de l'usuari.
+     * @param dto Dades de la ruta a crear, incloent posicions GPS i email de l'usuari.
      * @return ResponseEntity amb el DTO de la ruta creada o un missatge d'error.
      */
-    @PostMapping
-    public ResponseEntity<?> createRutaConPosicions(@RequestBody RutaDto rutaDto) {
-        try {
-            // Validación básica del DTO
-            if (rutaDto == null || rutaDto.getEmailUsuari() == null) {
-                logger.warn("❌ RutaDto o email null en la solicitud");
-                return ResponseEntity.badRequest().body("Dades de la ruta no vàlides.");
-            }
-    @Autowired
-    private SistemaLogic sistemaLogic;
-
-    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-
-
     /* ====================== API: guardar ruta ======================== */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -91,8 +82,8 @@ public class ApiRutaController {
         r.setUsuari(usuari);
         r.setNom(dto.getNom());
         r.setDescripcio(dto.getDescripcio());
-        r.setEstat(dto.getEstat()        != null ? dto.getEstat()       : EstatRutes.INVALIDA);
-        r.setCicloRuta(dto.getCicloRuta()!= null ? dto.getCicloRuta(): CicloRuta.FINALITZADA);
+        r.setEstat(dto.getEstat() != null ? dto.getEstat() : EstatRutes.INVALIDA);
+        r.setCicloRuta(dto.getCicloRuta() != null ? dto.getCicloRuta() : CicloRuta.FINALITZADA);
 
         // 3. Métricas kilométricas
         double kmRounded = 0.0;
@@ -100,11 +91,11 @@ public class ApiRutaController {
             kmRounded = Math.round(dto.getKm() * 1_000.0) / 1_000.0;
             r.setKm(kmRounded);
         }
-        if (dto.getVelMitja()   != null) r.setVelMedia(dto.getVelMitja());
-        if (dto.getVelMax()     != null) r.setVelMax(dto.getVelMax());
+        if (dto.getVelMitja() != null) r.setVelMedia(dto.getVelMitja());
+        if (dto.getVelMax() != null) r.setVelMax(dto.getVelMax());
         if (dto.getVelMitjaKm() != null) r.setVelMitjaKM(dto.getVelMitjaKm());
         if (dto.getTempsParat() != null) r.setTempsParat(dto.getTempsParat().doubleValue());
-        if (dto.getTemps()      != null) r.setTemps(formatSeconds(dto.getTemps()));
+        if (dto.getTemps() != null) r.setTemps(formatSeconds(dto.getTemps()));
         // Eliminamos la copia directa de dto.getPunts()
         // if (dto.getPunts() != null) r.setPunts(dto.getPunts());
 
@@ -141,93 +132,88 @@ public class ApiRutaController {
         // 6. Guardamos primero la ruta (que incluye ya puntos) y luego el usuario
         rutesLogic.save(r);
 
-            // Guardado en base de datos
-            logger.info("✅ Ruta guardada amb ID {}", guardada.getId());
+        // Guardado en base de datos
+        logger.info("✅ Ruta guardada amb ID {}", dto.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 
     @GetMapping("/usuari/{email}")
     public ResponseEntity<List<RutaDto>> getRoutesByUser(@PathVariable String email) {
-        // 1) Validamos que exista el usuario
-        usuariLogic.getUsuariByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + email));
+        try {
+            // 1) Validamos que exista el usuario
+            usuariLogic.getUsuariByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + email));
 
-        // 2) Recuperamos todas las entidades
-        List<Rutes> rutas = rutesLogic.findByUsuariEmail(email);
+            // 2) Recuperamos todas las entidades
+            List<Rutes> rutas = rutesLogic.findByUsuariEmail(email);
 
-        // 3) Mapeamos a DTO
-        List<RutaDto> dtos = rutas.stream().map(r -> {
-            RutaDto dto = new RutaDto();
+            // 3) Mapeamos a DTO
+            List<RutaDto> dtos = rutas.stream().map(r -> {
+                RutaDto dto = new RutaDto();
 
-            // — Campos básicos —
-            dto.setId(r.getId());
-            dto.setNom(r.getNom());
-            dto.setDescripcio(r.getDescripcio());
+                // — Campos básicos —
+                dto.setId(r.getId());
+                dto.setNom(r.getNom());
+                dto.setDescripcio(r.getDescripcio());
 
-            // — Métricas de la ruta —
-            dto.setKm(r.getKm());
+                // — Métricas de la ruta —
+                dto.setKm(r.getKm());
 
-            // parseamos el String r.getTemps() a int
-            // RAW = "180 s" o "  180 s  "
-            String raw = r.getTemps();
-            int segundos = 0;
-            if (raw != null) {
-                // 1) Quitamos lo que no sean dígitos
-                String digits = raw.replaceAll("[^0-9]", "");
-                if (!digits.isEmpty()) {
-                    segundos = Integer.parseInt(digits);
+                // parseamos el String r.getTemps() a int
+                String raw = r.getTemps();
+                int segundos = 0;
+                if (raw != null) {
+                    String digits = raw.replaceAll("[^0-9]", "");
+                    if (!digits.isEmpty()) {
+                        segundos = Integer.parseInt(digits);
+                    }
                 }
-            }
-            dto.setTemps(segundos);
+                dto.setTemps(segundos);
 
-            String rawParat = String.valueOf(r.getTempsParat());
-            int parados = 0;
-            if (rawParat != null) {
-                String digitsParat = rawParat.replaceAll("[^0-9]", "");
-                if (!digitsParat.isEmpty()) {
-                    parados = Integer.parseInt(digitsParat);
+                String rawParat = String.valueOf(r.getTempsParat());
+                int parados = 0;
+                if (rawParat != null) {
+                    String digitsParat = rawParat.replaceAll("[^0-9]", "");
+                    if (!digitsParat.isEmpty()) {
+                        parados = Integer.parseInt(digitsParat);
+                    }
                 }
-            }
-            dto.setTempsParat(parados);
+                dto.setTempsParat(parados);
 
+                dto.setVelMax(r.getVelMax());
+                dto.setVelMitja(r.getVelMedia());
+                dto.setVelMitjaKm(r.getVelMitjaKM());
 
-            dto.setVelMax(r.getVelMax());
-            dto.setVelMitja(r.getVelMedia());
-            dto.setVelMitjaKm(r.getVelMitjaKM());
+                // — Estado y ciclo —
+                dto.setEstat(r.getEstat());
+                dto.setCicloRuta(r.getCicloRuta());
 
-            // — Estado y ciclo —
-            dto.setEstat(r.getEstat());
-            dto.setCicloRuta(r.getCicloRuta());
+                // — Posiciones GPS —
+                List<PosicioDto> posDto = r.getPosicionsGps().stream()
+                        .map(p -> {
+                            PosicioDto pd = new PosicioDto();
+                            pd.setLatitud(p.getLatitud());
+                            pd.setLongitud(p.getLongitud());
+                            pd.setTemps(p.getTemps());
+                            return pd;
+                        })
+                        .collect(Collectors.toList());
+                dto.setPosicions(posDto);
 
-            // — Posiciones GPS —
-            List<PosicioDto> posDto = r.getPosicionsGps().stream()
-                    .map(p -> {
-                        PosicioDto pd = new PosicioDto();
-                        pd.setLatitud(p.getLatitud());
-                        pd.setLongitud(p.getLongitud());
-                        pd.setTemps(p.getTemps());
-                        return pd;
-                    })
-                    .collect(Collectors.toList());
-            dto.setPosicions(posDto);
+                // — Metadata —
+                dto.setEmailUsuari(email);
+                dto.setFechaCreacion(r.getFechaCreacion().format(FMT));
 
-            // — Metadata —
-            dto.setEmailUsuari(email);
-            dto.setFechaCreacion(r.getFechaCreacion().format(FMT));
+                return dto;
+            }).toList();
 
-            return dto;
-        }).toList();
-
-            return ResponseEntity.ok(resp);
+            return ResponseEntity.ok(dtos);
 
         } catch (Exception e) {
-            logger.error("❌ Error creant la ruta", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error intern al crear la ruta.");
+            logger.error("❌ Error obtenint les rutes per usuari", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return ResponseEntity.ok(dtos);
     }
-
 
 }
