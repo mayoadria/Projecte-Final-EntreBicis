@@ -19,6 +19,15 @@
         <!-- Formulario de filtros -->
         <form th:action="@{/recompensas/llistar}" method="get">
             <h1>Llista de Recompenses</h1>
+            <!-- Missatge d'èxit -->
+            <div th:if="${successMessage}" class="alert-exit" role="alert">
+                <span th:text="${successMessage}"></span>
+            </div>
+
+            <!-- Missatge d'error -->
+            <div th:if="${error}" class="alert-error" role="alert">
+                <span th:text="${error}"></span>
+            </div>
 
             <a class="btn-crear" th:href="@{/recompensas/crear}">Crear</a>
 
@@ -27,6 +36,7 @@
 
             <!-- Contenedor de filtros -->
             <div class="filter-content">
+
                 <div class="filtre">
                     <label for="nomRecompensa" class="filt-txt">Descripció:</label>
                     <input type="text" id="nomRecompensa" name="nomRecompensa" th:value="${param.nomRecompensa}" class="filt-input">

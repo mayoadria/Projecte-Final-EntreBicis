@@ -329,28 +329,28 @@ private fun BottomControls(
                 Text("📍", fontSize = 30.sp, fontWeight = FontWeight.Bold)
             }
             if (!isRouting) {
-                IconButton(onClick = onStart) {
+                IconButton(onClick = onStart,modifier = Modifier.size(75.dp)) {
                     Icon(
                         painter = painterResource(R.drawable.ic_play),
                         contentDescription = "Iniciar ruta",
-                        modifier = Modifier.size(64.dp),
+                        modifier = Modifier.fillMaxSize(),
                         tint = Unspecified
                     )
                 }
-                IconButton(onClick = {}, enabled = false) {
+                IconButton(onClick = {}, enabled = false,modifier = Modifier.size(75.dp)) {
                     Icon(
                         painter = painterResource(R.drawable.ic_stop),
                         contentDescription = "Detener ruta",
-                        modifier = Modifier.size(64.dp),
+                        modifier = Modifier.fillMaxSize(),
                         tint = Unspecified
                     )
                 }
             } else {
-                IconButton(onClick = onStop) {
+                IconButton(onClick = onStop,modifier = Modifier.size(75.dp)) {
                     Icon(
                         painter = painterResource(R.drawable.ic_stop),
                         contentDescription = "Detener ruta",
-                        modifier = Modifier.size(64.dp),
+                        modifier = Modifier.fillMaxSize(),
                         tint = Unspecified
                     )
                 }

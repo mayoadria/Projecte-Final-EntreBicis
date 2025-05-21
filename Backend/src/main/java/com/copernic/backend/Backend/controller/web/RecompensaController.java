@@ -186,34 +186,35 @@ public class RecompensaController {
      */
     @PostMapping("/guardar")
     public String guardarRecompensa(@ModelAttribute("recompensas") Recompensas recompensa,
-                                    @RequestParam("bescanvi") Long puntBescanviId, Model model,
-                                    @RequestParam(value = "fileFoto", required = false) MultipartFile fileFoto
-    ) {
+                                    @RequestParam("bescanvi") Long puntBescanviId,
+                                    Model model,
+                                    @RequestParam(value = "fileFoto", required = false) MultipartFile fileFoto,
+                                    RedirectAttributes redirectAttributes) {
         try {
-            // Buscar el Punto de Bescanvi en la base de datos
             PuntBescanvi bescanvi = puntBescanviLogic.findByID(puntBescanviId);
             if (fileFoto != null && !fileFoto.isEmpty()) {
                 String base64Foto = Base64.getEncoder().encodeToString(fileFoto.getBytes());
                 recompensa.setFoto(base64Foto);
             }
-            // Asignarlo a la recompensa
             recompensa.setPuntBescanviId(bescanvi);
             recompensa.setDataCreacio(LocalDateTime.now());
+
             if (recompensa.getEstat() == Estat.ASSIGNADES) {
                 recompensa.setDataAsignacio(LocalDateTime.now());
-            } else {
-                recompensa.setDataAsignacio(null);
             }
 
-            // Guardar la recompensa
             logic.guardarRecompensa(recompensa);
 
+            // ✅ Afegeix missatge flash
+            redirectAttributes.addFlashAttribute("successMessage", "Recompensa creada correctament.");
             return "redirect:/recompensas/llistar";
+
         } catch (Exception e) {
             logger.error("Error al crear una recompensa", e);
             return "error";
         }
     }
+
     /**
      * Elimina una recompensa identificada pel seu ID.
      *
@@ -278,7 +279,7 @@ public class RecompensaController {
     public String guardarCambios(@ModelAttribute Recompensas recompensa,
                                  @RequestParam("puntBescanviId") Long puntBescanviId,
                                  Model model,
-                                 @RequestParam(value = "fileFoto", required = false) MultipartFile fileFoto) throws IOException {
+                                 @RequestParam(value = "fileFoto", required = false) MultipartFile fileFoto, RedirectAttributes redirectAttributes) throws IOException {
 
         try{
         // Lógica de actualización de recompensa
@@ -313,11 +314,11 @@ public class RecompensaController {
 
                 // Guardar la recompensa modificada
                 logic.modificarRecompensa(recompensaExiste);
-
+                redirectAttributes.addFlashAttribute("successMessage", "Recompensa modificada correctament.");
                 return "redirect:/recompensas/llistar";
 
             } else {
-                model.addAttribute("error", "La recompensa está " + recompensaExiste.getEstat());
+                model.addAttribute("error", "La recompensa no es pot modificar perquè està en estat " + recompensaExiste.getEstat().toString().toLowerCase());
                 model.addAttribute("recompensas", recompensaExiste);
                 model.addAttribute("estat", Estat.values());
                 model.addAttribute("puntBescanviId", puntBescanviLogic.llistarBescanvi());
