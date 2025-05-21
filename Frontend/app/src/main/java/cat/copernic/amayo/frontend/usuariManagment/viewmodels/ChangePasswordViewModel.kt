@@ -150,7 +150,7 @@ class ChangePasswordViewModel : ViewModel() {
                             "LoginViewModel",
                             "No s'ha trobat el correu: ${response.errorBody()?.string()} "
                         )
-                        _emailNotFoundError.value = "Correu electònic no registrat!"
+                        _emailNotFoundError.value = "Aquest correu no està registrat"
                         _realCodeAuth.value = ""
                     } else if (response.code() == 500) {
                         Logger.guardarLog(context, "Error intern al enviar el correu a: ${email.value}")
@@ -158,7 +158,7 @@ class ChangePasswordViewModel : ViewModel() {
                             "LoginViewModel",
                             "No s'ha enviat el correu: ${response.errorBody()?.string()} "
                         )
-                        _emailError.value = "No s'ha pogut enviar el correu!"
+                        _emailError.value = "Error enviant el correu. Torna-ho a provar"
                         _realCodeAuth.value = ""
                     }
                 }
@@ -222,7 +222,7 @@ class ChangePasswordViewModel : ViewModel() {
                             "ChangePasswordViewModel",
                             "No s'ha trobat el correu: ${codeValidate.errorBody()?.string()} "
                         )
-                        _emailError.value = "Correu de verificació incorrecte!"
+                        _emailError.value = "Codi incorrecte"
                         _isUserPassUpdated.value = false
                     } else if (codeValidate.code() == 401) {
                         Logger.guardarLog(context, "Codi caducat per ${email.value}")
@@ -259,12 +259,12 @@ class ChangePasswordViewModel : ViewModel() {
     private fun comprovarEmail(): Boolean {
         var valid = true
         if (email.value.isEmpty()) {
-            _emptyEmailError.value = "El camp no pot estar buit!"
+            _emptyEmailError.value = "Introdueix el correu,el camp no pot estar buit!"
             valid = false
         }
 
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email.value).matches()) {
-            _emailError.value = "El correu electrònic no és vàlid!"
+            _emailError.value = "Format de correu incorrecte"
             valid = false
         }
 
@@ -280,27 +280,27 @@ class ChangePasswordViewModel : ViewModel() {
         var valid = true
 
         if (codeAuth.value.isEmpty()) {
-            _emptyCodeAuthError.value = "El camp no pot estar buit!"
+            _emptyCodeAuthError.value = "Introdueix el codi, el camp no pot estar buit!"
             valid = false
         }
 
         if (newContra.value.isEmpty()) {
-            _emptyNewContraError.value = "El camp no pot estar buit!"
+            _emptyNewContraError.value = "Introdueix la nova contrasenya, el camp no pot estar buït!"
             valid = false
         }
 
         if (repNewContra.value.isEmpty()) {
-            _emptyRepNewContraError.value = "El camp no pot estar buit!"
+            _emptyRepNewContraError.value = "Les contrasenyes no coincideixen "
             valid = false
         }
 
         if (newContra.value.length < 8) {
-            _contraError.value = "La contrasenya ha de tenir almenys 8 caràcters!"
+            _contraError.value = "La contrasenya ha de tenir minim 8 caràcters!"
             valid = false
         }
 
         if (newContra.value != repNewContra.value) {
-            _contraError.value = "Les contrasenyes han de coincidir!"
+            _contraError.value = "Les contrasenyes no coincideixen"
             valid = false
         }
 

@@ -113,33 +113,10 @@ fun ChangePasswordScreen(viewModel: ChangePasswordViewModel, navController: NavC
                                         cursorColor = Color.Gray
                                     )
                                 )
-                                emptyEmailError?.let {
+                                listOfNotNull(emptyEmailError, emailError, emailNotFound, emailSuccess).forEach {
                                     Text(
                                         text = it,
-                                        color = Color.Red,
-                                        style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold),
-                                        modifier = Modifier.padding(start = 12.dp)
-                                    )
-                                }
-                                emailError?.let {
-                                    Text(
-                                        text = it,
-                                        color = Color.Red,
-                                        style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold),
-                                        modifier = Modifier.padding(start = 12.dp)
-                                    )
-                                }
-                                emailNotFound?.let {
-                                    Text(
-                                        text = it,
-                                        color = Color.Red,
-                                        style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold),
-                                        modifier = Modifier.padding(start = 12.dp)
-                                    )
-                                }
-                                emailSuccess?.let {
-                                    Text(
-                                        text = it,
+                                        color = if (it == emailSuccess) Color(0xFF2E7D32) else Color.Red,
                                         style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold),
                                         modifier = Modifier.padding(start = 12.dp)
                                     )
@@ -188,6 +165,14 @@ fun ChangePasswordScreen(viewModel: ChangePasswordViewModel, navController: NavC
                                         cursorColor = Color.Gray
                                     )
                                 )
+                                listOfNotNull(emptyCodeAuthError, codeError).forEach {
+                                    Text(
+                                        text = it,
+                                        color = Color.Red,
+                                        style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold),
+                                        modifier = Modifier.padding(start = 12.dp)
+                                    )
+                                }
                             }
 
                             Column(modifier = Modifier.padding(top = 4.dp)) {
@@ -216,7 +201,14 @@ fun ChangePasswordScreen(viewModel: ChangePasswordViewModel, navController: NavC
                                         cursorColor = Color.Gray
                                     )
                                 )
-
+                                listOfNotNull(emptyNewContraError, contraError).forEach {
+                                    Text(
+                                        text = it,
+                                        color = Color.Red,
+                                        style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold),
+                                        modifier = Modifier.padding(start = 12.dp)
+                                    )
+                                }
                             }
 
                             Column(modifier = Modifier.padding(top = 4.dp)) {
@@ -245,7 +237,14 @@ fun ChangePasswordScreen(viewModel: ChangePasswordViewModel, navController: NavC
                                         cursorColor = Color.Gray
                                     )
                                 )
-
+                                emptyRepNewContraError?.let {
+                                    Text(
+                                        text = it,
+                                        color = Color.Red,
+                                        style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold),
+                                        modifier = Modifier.padding(start = 12.dp)
+                                    )
+                                }
                             }
 
                             Button(
