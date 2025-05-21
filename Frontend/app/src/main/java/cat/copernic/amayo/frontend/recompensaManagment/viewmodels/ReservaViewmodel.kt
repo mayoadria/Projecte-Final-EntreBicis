@@ -1,11 +1,13 @@
 package cat.copernic.amayo.frontend.recompensaManagment.viewmodels
 
 import android.content.ContentResolver
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cat.copernic.amayo.frontend.core.Logger
 import cat.copernic.amayo.frontend.recompensaManagment.data.repositories.ReservaRetrofitTLSInstance
 import cat.copernic.amayo.frontend.recompensaManagment.model.Recompensa
 import cat.copernic.amayo.frontend.recompensaManagment.model.Reserva
@@ -45,43 +47,42 @@ class ReservaViewmodel : ViewModel(){
     private val _deleteSuccess = mutableStateOf(false) // Estado para controlar la eliminación
     val deleteSuccess: State<Boolean> = _deleteSuccess
 
-    init {
-        LlistarReservas()
-    }
 
     /**
      * Crea una nueva reserva en la API.
      *
      * @param reserva La reserva que se desea crear.
      */
-    fun crearReserva(reserva: Reserva){
+    fun crearReserva(reserva: Reserva, context: Context) {
         viewModelScope.launch {
             val response = reservaApi.save(reserva)
             if (response.isSuccessful) {
                 val savedCarta = response.body()
-                Log.d("CrearReservaViewModel", "Reserva guardada con éxito: $savedCarta")
+                Logger.guardarLog(context, "Reserva creada amb èxit: $savedCarta")
             } else {
-                Log.e("CrearReservaViewModel", "Error al guardar la reserva: ${response.errorBody()?.string()}")
+                Logger.guardarLog(context, "Error creant la reserva: ${response.errorBody()?.string()}")
             }
         }
     }
+
 
     /**
      * Carga los detalles de una reserva específica a partir de su ID.
      *
      * @param id El ID de la reserva que se desea cargar.
      */
-    fun listar(id: Long) {
+    fun listar(id: Long, context: Context) {
         viewModelScope.launch {
             try {
                 val response = reservaApi.getById(id)
                 if (response.isSuccessful) {
                     _reservaD.value = response.body()
+                    Logger.guardarLog(context, "Reserva carregada: ${_reservaD.value}")
                 } else {
-                    println("Error: ${response.errorBody()?.string()}")
+                    Logger.guardarLog(context, "Error carregant reserva $id: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
-                println("Error: ${e.message}")
+                Logger.guardarLog(context, "Excepció carregant reserva $id: ${e.message}")
             }
         }
     }
@@ -89,18 +90,18 @@ class ReservaViewmodel : ViewModel(){
      * Carga todas las reservas disponibles desde la API.
      * Los resultados se almacenan en el estado `reserva`.
      */
-    fun LlistarReservas() {
+    fun LlistarReservas(context: Context) {
         viewModelScope.launch {
             try {
                 val response = reservaApi.findAll()
                 if (response.isSuccessful) {
                     _reserva.value = response.body() ?: emptyList()
+                    Logger.guardarLog(context, "Reserves carregades: ${_reserva.value.size} elements")
                 } else {
-                    println("Error!!")
+                    Logger.guardarLog(context, "Error carregant reserves: ${response.code()}")
                 }
-
             } catch (e: Exception) {
-                println("Error: ${e.message}")
+                Logger.guardarLog(context, "Excepció carregant reserves: ${e.message}")
             }
         }
     }
@@ -109,22 +110,17 @@ class ReservaViewmodel : ViewModel(){
      *
      * @param client La reserva con los nuevos datos que se deben guardar.
      */
-    fun updateReserva(client: Reserva) {
+    fun updateReserva(client: Reserva, context: Context) {
         viewModelScope.launch {
             try {
-
-                // Llamada al nuevo endpoint sin clientId separado
                 val response = reservaApi.update(client)
                 if (response.isSuccessful) {
-                    Log.d("ModificarViewModel", "Reserva actualizada con éxito")
+                    Logger.guardarLog(context, "Reserva actualitzada amb èxit: ${client.id}")
                 } else {
-                    Log.e(
-                        "ModificarViewModel",
-                        "Error al actualizar la Reserva: ${response.errorBody()?.string()}"
-                    )
+                    Logger.guardarLog(context, "Error actualitzant reserva: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
-                Log.e("ModificarViewModel", "Excepción al actualizar la Reserva: ${e.message}")
+                Logger.guardarLog(context, "Excepció actualitzant reserva: ${e.message}")
             }
         }
     }
@@ -133,18 +129,19 @@ class ReservaViewmodel : ViewModel(){
      *
      * @param cartaId El ID de la reserva que se desea eliminar.
      */
-    fun borrar(cartaId: Long) {
+    fun borrar(cartaId: Long, context: Context) {
         viewModelScope.launch {
             try {
                 val response = reservaApi.deleteById(cartaId)
                 if (response.isSuccessful) {
                     _deleteSuccess.value = true
-                    LlistarReservas()// Marcamos como exitosa la eliminación
+                    Logger.guardarLog(context, "Reserva eliminada: ID $cartaId")
+                    LlistarReservas(context) // Tornem a carregar
                 } else {
-                    println("Error: ${response.errorBody()?.string()}")
+                    Logger.guardarLog(context, "Error eliminant reserva $cartaId: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
-                println("Error: ${e.message}")
+                Logger.guardarLog(context, "Excepció eliminant reserva $cartaId: ${e.message}")
             }
         }
     }

@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import cat.copernic.amayo.frontend.core.Logger
 import cat.copernic.amayo.frontend.rutaManagment.data.remote.RutaApi
 import cat.copernic.amayo.frontend.rutaManagment.data.repositories.RutaRetrofitTLSInstance
 import kotlinx.coroutines.launch
@@ -41,9 +42,15 @@ class RutesViewmodel(app: Application) : AndroidViewModel(app) {
     /** Carga las rutas del servidor y aplica filtros iniciales */
     fun loadRoutes(email: String) {
         viewModelScope.launch {
-            api.getUserRoutes(email).takeIf { it.isSuccessful }?.body()?.let { list ->
-                _allRoutes = list
+            Logger.guardarLog(getApplication(), "Iniciant càrrega de rutes per a: $email")
+            val response = api.getUserRoutes(email)
+
+            if (response.isSuccessful) {
+                _allRoutes = response.body().orEmpty()
+                Logger.guardarLog(getApplication(), "S'han carregat ${_allRoutes.size} rutes per a $email")
                 applyFilters()
+            } else {
+                Logger.guardarLog(getApplication(), "Error carregant rutes per a $email: HTTP ${response.code()}")
             }
         }
     }
@@ -61,6 +68,10 @@ class RutesViewmodel(app: Application) : AndroidViewModel(app) {
                     && matchesTiempo(ruta, maxHrs)
                     && matchesVelMedia(ruta)
         })
+        Logger.guardarLog(
+            getApplication(),
+            "Aplicats filtres: estat=${filtroEstado}, km=${filtroKmRange}, temps=${filtroTimeRange}, vel=${filtroVelMedia} → ${_routes.size} resultats"
+        )
     }
 
     private fun matchesEstado(r: RutaApi.RutaDto): Boolean =
@@ -113,6 +124,7 @@ class RutesViewmodel(app: Application) : AndroidViewModel(app) {
         filtroKmRange    = 0f..50f
         filtroTimeRange  = 0f..5f
         filtroVelMedia   = null
+        Logger.guardarLog(getApplication(), "Filtres reiniciats")
         applyFilters()
     }
 }

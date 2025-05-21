@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,6 +53,7 @@ fun perfil(sessionViewModel: SessionViewModel, navController: NavController) {
     val bitmap = remember(nom?.foto) {
         nom?.foto?.let { decodeBase64ToBitmap(it) }
     }
+    val context = LocalContext.current
 
 
     Column(
@@ -148,7 +150,7 @@ fun perfil(sessionViewModel: SessionViewModel, navController: NavController) {
                     text = "Sortir",
                     iconColor = iconColor,
                     onClick = {
-                        sessionViewModel.logout()
+                        sessionViewModel.logout(context)
                         navController.navigate("splash") {
                             popUpTo(0) { inclusive = true }
                         }

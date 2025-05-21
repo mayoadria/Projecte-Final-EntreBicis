@@ -67,16 +67,18 @@ fun detalls(
     val bitmap = remember(recompensa?.foto) {
         recompensa?.foto?.let { decodeBase64ToBitmap(it) }
     }
+    val context = LocalContext.current
     LaunchedEffect(recompensaId) {
-        viewmodel.listar(recompensaId)
+        viewmodel.listar(recompensaId,context)
     }
 
-    val context = LocalContext.current
+
     val puedeReservar =
         nom != null && recompensa != null && nom!!.saldo!! >= recompensa.cost!! && !nom!!.reserva
     val tieneReservas = nom != null && recompensa != null && !nom!!.reserva
 
     val scrollState = rememberScrollState()
+
 
     Column(
         modifier = Modifier
@@ -183,20 +185,22 @@ fun detalls(
                             usuario.reserva = true
                             val saldoActual = usuario.saldo ?: 0.0
                             val coste = recompensa?.cost ?: 0
-                            sessionViewModel.updateSaldo(saldoActual - coste)
+                            sessionViewModel.updateSaldo(saldoActual - coste,context)
                             modificarViewModel.updateClient(
                                 client = usuario,
-                                contentResolver = navController.context.contentResolver
+                                contentResolver = navController.context.contentResolver,
+                                context
                             )
                         }
 
                         recompensa?.let { recompensa ->
-                            recompensa.estat = Estat.RESERVADES
+                            recompensa.estat = Estat.RESERVADA
                             recompensa.usuariRecompensa = nom
                             recompensa.dataReserva = fecha
                             viewmodel.updateRecompensa(
                                 client = recompensa,
-                                contentResolver = navController.context.contentResolver
+                                contentResolver = navController.context.contentResolver,
+                                context
                             )
                         }
 
@@ -207,7 +211,7 @@ fun detalls(
                             datareserva = fecha,
                             estat = EstatReserva.RESERVADA
                         )
-                        reservaViewmodel.crearReserva(nuevaReserva)
+                        reservaViewmodel.crearReserva(nuevaReserva,context)
 
                         navController.navigate("recompensa") {
                             popUpTo("detallsRecompensa") { inclusive = true }

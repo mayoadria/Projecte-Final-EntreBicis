@@ -12,7 +12,7 @@ enum class Estat {
     DISPONIBLES,
 
     /** La recompensa ha estat reservada per un usuari. */
-    RESERVADES,
+    RESERVADA,
 
     /** La recompensa ha estat assignada a un usuari. */
     ASSIGNADES,

@@ -48,7 +48,7 @@ fun DetallsReserva(
     }
 
     LaunchedEffect(reservaId) {
-        reservaViewmodel.listar(reservaId)
+        reservaViewmodel.listar(reservaId,context)
     }
 
     val scrollState = rememberScrollState()
@@ -83,7 +83,7 @@ fun DetallsReserva(
                     Text("Reservat per: $it", fontSize = 16.sp)
                 }
                 val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale("es", "ES"))
-                if (recompensa?.estat == Estat.RESERVADES) {
+                if (recompensa?.estat == Estat.RESERVADA) {
                     recompensa.dataReserva?.let {
                         val fechaReservaFormateada = it.format(formatter)
                         Text("Data de Reserva: $fechaReservaFormateada", fontSize = 18.sp)
@@ -161,7 +161,8 @@ fun DetallsReserva(
                         usuario.reserva = false
                         modificarViewModel.updateClient(
                             client = usuario,
-                            contentResolver = navController.context.contentResolver
+                            contentResolver = navController.context.contentResolver,
+                            context
                         )
                     }
                     reserva?.let {
@@ -171,9 +172,10 @@ fun DetallsReserva(
 
                         llistaViewmodel.updateRecompensa(
                             recompensa,
-                            contentResolver = navController.context.contentResolver
+                            contentResolver = navController.context.contentResolver,
+                            context
                         )
-                        reservaViewmodel.updateReserva(reserva)
+                        reservaViewmodel.updateReserva(reserva,context)
 
                         Toast.makeText(context, "Recompensa per Recollir!", Toast.LENGTH_SHORT).show()
                         navController.popBackStack()
@@ -201,9 +203,10 @@ fun DetallsReserva(
 
                         llistaViewmodel.updateRecompensa(
                             recompensa,
-                            contentResolver = navController.context.contentResolver
+                            contentResolver = navController.context.contentResolver,
+                            context
                         )
-                        reservaViewmodel.updateReserva(reserva)
+                        reservaViewmodel.updateReserva(reserva,context)
 
                         Toast.makeText(context, "Recompensa recollida!", Toast.LENGTH_SHORT).show()
                         navController.navigate("check")
@@ -218,30 +221,32 @@ fun DetallsReserva(
             }
         }
 
-        if (recompensa?.estat == Estat.RESERVADES) {
+        if (recompensa?.estat == Estat.RESERVADA) {
             Spacer(modifier = Modifier.height(12.dp))
             Button(
                 onClick = {
                     nom?.let { usuario ->
                         val saldoActual = usuario.saldo ?: 0.0
                         val coste = recompensa?.cost ?: 0
-                        sessionViewModel.updateSaldo(saldoActual + coste)
+                        sessionViewModel.updateSaldo(saldoActual + coste,context)
 
                         usuario.reserva = false
                         modificarViewModel.updateClient(
                             client = usuario,
-                            contentResolver = navController.context.contentResolver
+                            contentResolver = navController.context.contentResolver,
+                            context
                         )
-                        sessionViewModel.actualizarReserva(false)
+                        sessionViewModel.actualizarReserva(false,context)
                     }
                     reserva?.let {
                         recompensa.estat = Estat.DISPONIBLES
 
                         llistaViewmodel.updateRecompensa(
                             recompensa,
-                            contentResolver = navController.context.contentResolver
+                            contentResolver = navController.context.contentResolver,
+                            context
                         )
-                        reservaViewmodel.borrar(reservaId)
+                        reservaViewmodel.borrar(reservaId,context)
 
                         Toast.makeText(context, "Recompensa Cancelada!", Toast.LENGTH_SHORT).show()
                         navController.navigate("recompensaPropias")

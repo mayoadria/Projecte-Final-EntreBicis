@@ -146,7 +146,7 @@ fun ChangePasswordScreen(viewModel: ChangePasswordViewModel, navController: NavC
                                 }
                             }
 
-                            Button(onClick = { viewModel.enviarEmail() }) {
+                            Button(onClick = { viewModel.enviarEmail(context) }) {
                                 Text("Enviar")
                             }
                         }
@@ -253,7 +253,7 @@ fun ChangePasswordScreen(viewModel: ChangePasswordViewModel, navController: NavC
                                     .align(Alignment.CenterHorizontally)
                                     .padding(top = 16.dp),
                                 onClick = {
-                                    viewModel.changePass()
+                                    viewModel.changePass(context)
                                 }
                             ) {
                                 Text("Canviar contrasenya")
