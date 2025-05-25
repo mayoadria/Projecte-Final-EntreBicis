@@ -100,7 +100,7 @@ public class ComerçosController {
             }
             puntBescanviLogic.guardarComerc(puntBescanvi);
             logger.info("PuntBescanvi creado: {}", puntBescanvi.getNom());
-            redirectAttributes.addFlashAttribute("success", "Punto de bescanvi creado correctamente.");
+            redirectAttributes.addFlashAttribute("success", "Punt de bescanvi creat correctament.");
             return "redirect:/bescanvi/llistar";
 
         } catch (Exception e) {
@@ -121,7 +121,7 @@ public class ComerçosController {
         try {
             puntBescanviLogic.eliminarBescanvi(id);
             logger.info("PuntBescanvi eliminado con ID: {}", id);
-            redirectAttributes.addFlashAttribute("success", "Punto de bescanvi eliminado correctamente.");
+            redirectAttributes.addFlashAttribute("success", "Punt de bescanvi eliminat correctament.");
         } catch (Exception e) {
             logger.error("Error al eliminar punto de bescanvi con ID: {}", id, e);
             redirectAttributes.addFlashAttribute("error", "Error al eliminar, el punt de bescanvi té recompenses assignades.");
@@ -141,7 +141,7 @@ public class ComerçosController {
             PuntBescanvi punt = puntBescanviLogic.findByID(id);
             if (punt == null) {
                 logger.error("Intento de edición de punto no existente, ID: {}", id);
-                model.addAttribute("error", "El punto de bescanvi no existe.");
+                model.addAttribute("error", "El punt de bescanvi no existeix.");
                 return "redirect:/bescanvi/llistar";
             }
 
@@ -181,7 +181,7 @@ public class ComerçosController {
         PuntBescanvi existente = puntBescanviLogic.findByID(form.getId());
         if (existente == null) {
             logger.error("Intento de actualizar un punto inexistente: ID {}", form.getId());
-            model.addAttribute("error", "El punto de bescanvi no existe o no es válido.");
+            model.addAttribute("error", "El punt de bescanvi no existeix o no es válid.");
             return "modificarComerc";
         }
 
@@ -201,7 +201,7 @@ public class ComerçosController {
             puntBescanviLogic.modificarRecompensa(existente);
             logger.info("PuntBescanvi actualizado: ID {}", existente.getId());
 
-            redirectAttributes.addFlashAttribute("success", "Punto de bescanvi actualizado correctamente.");
+            redirectAttributes.addFlashAttribute("success", "Punt de bescanvi actualizat correctament.");
             return "redirect:/bescanvi/llistar";
 
         } catch (Exception e) {
