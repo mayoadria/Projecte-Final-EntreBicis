@@ -82,7 +82,7 @@ fun FiltersDialog(
                                     routesVM.applyFilters()
                                 },
                                 cal.get(Calendar.YEAR),
-                                calw.get(Calendar.MONTH),
+                                cal.get(Calendar.MONTH),
                                 cal.get(Calendar.DAY_OF_MONTH)
                             ).show()
                         },

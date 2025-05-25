@@ -22,31 +22,40 @@
             <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" />
             <div class="form-field">
                 <label for="nom">Punt de Bescanvi:</label>
-                <input type="text" id="nom" th:field="*{nom}" required>
+                <input type="text" id="nom" th:field="*{nom}" required minlength="3" maxlength="255"
+                       title="El nom ha de tenir entre 3 i 255 caràcters.">
             </div>
             <div class="form-field">
                 <label for="email">Email</label>
-                <input type="text" id="email" th:field="*{email}" required>
+                <input type="email" id="email" th:field="*{email}" required>
             </div>
             <div class="form-field">
                 <label for="codiPostal">Codi Postal</label>
-                <input type="text" id="codiPostal" th:field="*{codiPostal}" required>
+                <input type="text" id="codiPostal" th:field="*{codiPostal}" pattern="\d{6}" minlength="6"
+                       maxlength="6" inputmode="numeric" title="Introdueix un número de 6 dígits"
+                       required>
             </div>
             <div class="form-field">
                 <label for="observacions">Observacions</label>
-                <input type="text" id="observacions" th:field="*{observacions}" required>
+                <input type="text" id="observacions" th:field="*{observacions}" required minlength="1" maxlength="255"
+                       title="Les observacions han de tenir entre 1 i 255 caràcters.">
             </div>
             <div class="form-field">
                 <label for="telefon">Telefon</label>
-                <input type="text" id="telefon" th:field="*{telefon}" required>
+                <input type="text" id="telefon" th:field="*{telefon}"
+                       pattern="\d{9}" minlength="9" maxlength="9" inputmode="numeric" title="S'han d'introduir 9 digits"
+                       required>
             </div>
             <div class="form-field">
                 <label for="personaContacte">Persona de Contacte</label>
-                <input type="text" id="personaContacte" th:field="*{personaContacte}" required>
+                <input type="text" id="personaContacte" th:field="*{personaContacte}" required
+                       minlength="1" maxlength="255"
+                       title="El nom de la persona de contacte han de tenir entre 1 i 255 caràcters.">
             </div>
             <div class="form-field full-width">
                 <label for="adreca">Adreça</label>
-                <input type="text" id="adreca" th:field="*{adreca}" required>
+                <input type="text" id="adreca" th:field="*{adreca}" required minlength="1" maxlength="255"
+                       title="El nom de la adreça ha de tenir entre 1 i 255 caràcters.">
             </div>
             <button type="submit" class="btn-crear">Guardar Comerç</button>
         </form>

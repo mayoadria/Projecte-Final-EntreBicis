@@ -23,14 +23,14 @@
 
             <div class="form-field">
                 <label for="descripcio">Descripció</label>
-                <input type="text" id="descripcio" th:field="*{descripcio}" required minlength="3" maxlength="255"
-                       title="La descripció ha de tenir entre 3 i 255 caràcters.">
+                <input type="text" id="descripcio" th:field="*{descripcio}" required minlength="1" maxlength="255"
+                       title="La descripció ha de tenir entre 1 i 255 caràcters.">
             </div>
 
             <div class="form-field">
                 <label for="observacions">Observacions</label>
-                <textarea id="observacions" th:field="*{observacions}" required minlength="5" maxlength="500"
-                          title="Les observacions han de tenir entre 5 i 500 caràcters."></textarea>
+                <textarea id="observacions" th:field="*{observacions}" required minlength="1" maxlength="255"
+                          title="Les observacions han de tenir entre 1 i 255 caràcters."></textarea>
             </div>
 
             <div class="form-field">
