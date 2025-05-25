@@ -160,7 +160,7 @@ public class TestRecompensas {
                 .descripcio("Recompensa modificada")
                 .observacions("Observación modificada")
                 .cost(20)
-                .estat(Estat.RESERVADES)                    // pongo otro estado para ver el cambio
+                .estat(Estat.RESERVADA)                    // pongo otro estado para ver el cambio
                 // fechas: conservamos las existentes (o cámbialas si procede)
                 .dataCreacio(original.getDataCreacio())
                 .dataAsignacio(original.getDataAsignacio())

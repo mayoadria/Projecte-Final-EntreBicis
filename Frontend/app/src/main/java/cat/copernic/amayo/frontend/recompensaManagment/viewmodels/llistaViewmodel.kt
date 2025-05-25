@@ -1,12 +1,14 @@
 package cat.copernic.amayo.frontend.recompensaManagment.viewmodels
 
 import android.content.ContentResolver
+import android.content.Context
 import android.util.Base64
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cat.copernic.amayo.frontend.core.Logger
 import cat.copernic.amayo.frontend.recompensaManagment.data.repositories.RecompensaRetrofitTLSInstance
 import cat.copernic.amayo.frontend.recompensaManagment.model.Recompensa
 import cat.copernic.amayo.frontend.rutaManagment.model.Estat
@@ -38,9 +40,10 @@ import kotlinx.coroutines.launch
  */
 class llistaViewmodel : ViewModel() {
 
-    private val recompensaApi: RecompensasApiRest = RecompensaRetrofitTLSInstance.retrofitTLSInstance.create(
-        RecompensasApiRest::class.java
-    )
+    private val recompensaApi: RecompensasApiRest =
+        RecompensaRetrofitTLSInstance.retrofitTLSInstance.create(
+            RecompensasApiRest::class.java
+        )
 
     private val _descripcio = MutableStateFlow("")
     val descripcio: StateFlow<String> = _descripcio
@@ -59,25 +62,28 @@ class llistaViewmodel : ViewModel() {
 
     private val _recompensaD = mutableStateOf<Recompensa?>(null)
     val recompensaD: State<Recompensa?> = _recompensaD
-    init {
-        LlistarRecompenses()
-    }
+
     /**
      * Carga todas las recompensas disponibles desde la API.
      * Los resultados se almacenan en el estado `recompesa`.
      */
-    fun LlistarRecompenses() {
+    fun LlistarRecompenses(context: Context) {
         viewModelScope.launch {
             try {
+                Logger.guardarLog(context, "Iniciant càrrega de recompenses")
                 val response = recompensaApi.findAll()
                 if (response.isSuccessful) {
                     _recompesa.value = response.body() ?: emptyList()
+                    Logger.guardarLog(
+                        context,
+                        "Recompenses carregades correctament: ${_recompesa.value.size} elements"
+                    )
                 } else {
-                    println("Error!!")
+                    Logger.guardarLog(context, "Error carregant recompenses: ${response.code()}")
                 }
 
             } catch (e: Exception) {
-                println("Error: ${e.message}")
+                Logger.guardarLog(context, "Excepció a LlistarRecompenses: ${e.message}")
             }
         }
     }
@@ -88,44 +94,45 @@ class llistaViewmodel : ViewModel() {
      *
      * @param id El ID de la recompensa que se desea cargar.
      */
-    fun listar(id: Long) {
+    fun listar(id: Long, context: Context) {
         viewModelScope.launch {
             try {
+                Logger.guardarLog(context, "Carregant detall de recompensa amb ID: $id")
                 val response = recompensaApi.getById(id)
                 if (response.isSuccessful) {
                     _recompensaD.value = response.body()
-                } else {
-                    println("Error: ${response.errorBody()?.string()}")
-                }
-            } catch (e: Exception) {
-                println("Error: ${e.message}")
-            }
-        }
-    }
-
-    /**
-     * Actualiza la información de una recompensa en la API.
-     *
-     * @param client La recompensa con los nuevos datos que se deben guardar.
-     * @param contentResolver El `ContentResolver` utilizado para acceder a los datos del cliente.
-     */
-    fun updateRecompensa(client: Recompensa, contentResolver: ContentResolver) {
-        viewModelScope.launch {
-            try {
-
-                // Llamada al nuevo endpoint sin clientId separado
-                val response = recompensaApi.update(client)
-                if (response.isSuccessful) {
-                    Log.d("ModificarViewModel", "Usuario actualizado con éxito")
-                } else {
-                    Log.e(
-                        "ModificarViewModel",
-                        "Error al actualizar el usuario: ${response.errorBody()?.string()}"
+                    Logger.guardarLog(
+                        context,
+                        "Recompensa carregada: ${_recompensaD.value?.descripcio}"
                     )
+                } else {
+                    Logger.guardarLog(context, "Error carregant recompensa $id: ${response.code()}")
                 }
             } catch (e: Exception) {
-                Log.e("ModificarViewModel", "Excepción al actualizar el usuario: ${e.message}")
+                Logger.guardarLog(context, "Excepció a listar($id): ${e.message}")
             }
         }
     }
+        /**
+         * Actualiza la información de una recompensa en la API.
+         *
+         * @param client La recompensa con los nuevos datos que se deben guardar.
+         * @param contentResolver El `ContentResolver` utilizado para acceder a los datos del cliente.
+         */
+        fun updateRecompensa(client: Recompensa, contentResolver: ContentResolver, context: Context) {
+            viewModelScope.launch {
+                try {
+                    Logger.guardarLog(context, "Actualitzant recompensa amb ID: ${client.id}")
+                    val response = recompensaApi.update(client)
+                    if (response.isSuccessful) {
+                        Logger.guardarLog(context, "Recompensa actualitzada correctament")
+                    } else {
+                        Logger.guardarLog(context, "Error actualitzant recompensa: ${response.errorBody()?.string()}")
+                    }
+                } catch (e: Exception) {
+                    Logger.guardarLog(context, "Excepció a updateRecompensa: ${e.message}")
+                }
+            }
+        }
+
 }

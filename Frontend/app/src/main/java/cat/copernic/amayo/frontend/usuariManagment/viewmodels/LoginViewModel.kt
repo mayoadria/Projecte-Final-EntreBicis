@@ -1,7 +1,9 @@
 package cat.copernic.amayo.frontend.usuariManagment.viewmodels
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import cat.copernic.amayo.frontend.core.Logger
 import cat.copernic.amayo.frontend.rutaManagment.model.Estat
 import cat.copernic.amayo.frontend.usuariManagment.data.remote.UsuariApi
 import cat.copernic.amayo.frontend.usuariManagment.model.Usuari
@@ -87,8 +89,8 @@ class LoginViewModel : ViewModel() {
      * Controla l'estat de l'usuari i gestiona possibles errors.
      * @return Usuari autenticat o null si ha fallat.
      */
-    suspend fun login(): Usuari? = withContext(Dispatchers.IO) {
-        _authError.value = null               // limpia errores de intentos previos
+    suspend fun login(context: Context): Usuari? = withContext(Dispatchers.IO) {
+        _authError.value = null
         var loggedUser: Usuari? = null
 
         try {
@@ -97,41 +99,46 @@ class LoginViewModel : ViewModel() {
 
                 if (response.isSuccessful) {
                     val user = response.body()
-
                     when (user?.estat) {
                         Estat.ACTIU -> {
                             _usuari.value = user
                             _isUserLoged.value = true
                             loggedUser = user
+                            Logger.guardarLog(context, "Login correcte per a: ${email.value}")
                         }
 
                         Estat.INACTIU -> {
                             _isUserLoged.value = false
                             _authError.value = "Compte no activat! Comprova el teu correu."
+                            Logger.guardarLog(context, "Login fallit (usuari inactiu): ${email.value}")
                         }
 
                         else -> {
                             _isUserLoged.value = false
                             _authError.value = "No s'ha pogut iniciar sessió."
+                            Logger.guardarLog(context, "Login fallit (estat desconegut): ${email.value}")
                         }
                     }
-                } else {                       // códigos ≠ 2xx
+                } else {
                     _isUserLoged.value = false
                     _authError.value = when (response.code()) {
                         401 -> "Correu o contrasenya incorrectes!"
                         404 -> "El correu no existeix!"
                         else -> "Error ${response.code()}: ${response.message()}"
                     }
+                    Logger.guardarLog(context, "Login fallit [${response.code()}]: ${email.value}")
                 }
             }
         } catch (e: Exception) {
             Log.e("LoginViewModel", "Excepció al login: ${e.localizedMessage}")
             _isUserLoged.value = false
             _authError.value = "Error inesperat: ${e.localizedMessage}"
+            Logger.guardarLog(context, "Login fallit per excepció: ${e.localizedMessage}")
         }
 
         loggedUser
     }
+
 
     /**
      * Comprova si els camps email i contrasenya compleixen les validacions bàsiques.
