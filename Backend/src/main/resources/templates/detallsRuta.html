@@ -26,61 +26,83 @@
         <div class="route-header">
             <span class="route-title" th:text="${dto.ruta.nom}">Nom ruta</span>
 
-            <div class="switch-container">
-                <label class="switch" title="Validar ruta">
-                    <input type="checkbox"
-                           th:checked="${dto.ruta.estat == T(com.copernic.backend.Backend.entity.enums.EstatRutes).VALIDA}"
-                           th:onchange="|toggleEstat(${dto.ruta.id}, this.checked)|"/>
-                    <span class="slider"></span>
-                </label>
-                <span class="switch-text">Validar ruta</span>
-            </div>
-
             <div class="route-stats">
                 <div class="stat">
-                    <strong class="route-km"
-                            th:attr="data-km=${dto.ruta.km}">0,00</strong>
+                    <strong class="route-km" th:attr="data-km=${dto.ruta.km}">0,00</strong>
                     <span class="unit">Km</span>
                 </div>
                 <div class="stat">
-                    <strong class="route-time"
-                            th:attr="data-seconds=${dto.ruta.temps}">00:00:00</strong>
+                    <strong class="route-time" th:attr="data-seconds=${dto.ruta.temps}">00:00:00</strong>
                 </div>
                 <div class="stat">
-                    <strong class="route-speed"
-                            th:attr="data-speed=${dto.ruta.velMedia}">0,00</strong>
+                    <strong class="route-speed" th:attr="data-speed=${dto.ruta.velMedia}">0,00</strong>
                     <span class="unit">km/h</span>
                 </div>
                 <div class="stat">
                     <strong class="fecha-formateada"
-                            th:attr="data-fecha=${dto.ruta.getFechaCreacion()}">
-                        01/01/1970 00:00
-                    </strong>
+                            th:attr="data-fecha=${dto.ruta.getFechaCreacion()}">01/01/1970 00:00</strong>
                 </div>
+            </div>
+
+            <div class="switch-container">
+                <label class="switch" title="Validar ruta">
+                    <input type="checkbox"
+                           th:checked="${dto.ruta.estat == T(com.copernic.backend.Backend.entity.enums.EstatRutes).VALIDA}"
+                           th:onchange="|handleToggle(this, ${dto.ruta.id})|"/>
+                    <span class="slider"></span>
+                </label>
+                <span class="switch-text">Validar ruta</span>
             </div>
         </div>
 
-        <!-- Nuevo campo de descripción -->
         <div class="route-description" th:if="${dto.ruta.descripcio}">
-            <p th:text="${dto.ruta.descripcio}">Aquesta és la descripció de la ruta.</p>
+            <p th:text="${dto.ruta.descripcio}">Descripció de la ruta.</p>
         </div>
 
         <div th:attr="id=${'map-' + dto.ruta.id}" class="map"></div>
 
         <script th:inline="javascript">
             /*<![CDATA[*/
+            function handleToggle(el, id) {
+                const isValid = el.checked;
+                if (!isValid) {
+                    if (!confirm('Estàs segur que vols desactivar la ruta?')) {
+                        el.checked = true;
+                        return;
+                    }
+                }
+                toggleEstat(id, isValid);
+            }
+
+            function toggleEstat(id, isValid) {
+                const estat = isValid ? 'VALIDA' : 'INVALIDA';
+                fetch('/ruta/' + id + '/estat', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(estat)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            alert('Error actualitzant estat');
+                        }
+                    })
+                    .catch(() => {
+                        alert('No s\'ha pogut connectar al servidor');
+                    });
+            }
+
             (function() {
                 const coords = /*[[${dto.coords}]]*/ [];
-                const id     = /*[[${dto.ruta.id}]]*/ 'x';
-                const mapId  = 'map-' + id;
+                const id = /*[[${dto.ruta.id}]]*/ 'x';
+                const mapId = 'map-' + id;
                 if (!coords.length) return;
 
-                // Mapa Leaflet
                 const map = L.map(mapId);
                 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
                     attribution: '© OpenStreetMap'
                 }).addTo(map);
+
                 const poly = L.polyline(coords, { color: '#0077ff' }).addTo(map);
                 coords.forEach(c => {
                     const m = L.circleMarker(c, {
@@ -94,10 +116,7 @@
                 });
                 map.fitBounds(poly.getBounds());
 
-                // Formateos
                 const card = document.getElementById(mapId).closest('.route-card');
-
-                // Km y velocidad
                 const kmEl = card.querySelector('.route-km');
                 kmEl.textContent = (parseFloat(kmEl.dataset.km)||0)
                     .toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -105,20 +124,18 @@
                 spEl.textContent = (parseFloat(spEl.dataset.speed)||0)
                     .toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
 
-                // Tiempo hh:mm:ss
                 const tEl = card.querySelector('.route-time');
                 let secs = parseInt(tEl.dataset.seconds,10)||0;
                 const h = Math.floor(secs/3600),
                     m = Math.floor((secs%3600)/60),
                     s = secs%60;
-                const pad = v=>String(v).padStart(2,'0');
+                const pad = v => String(v).padStart(2,'0');
                 tEl.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
 
-                // Fecha dd/mm/aaaa hh:mm
                 const dEl = card.querySelector('.fecha-formateada');
                 const raw = dEl.dataset.fecha||'';
                 const [dp,tp] = raw.split('T');
-                if(dp && tp) {
+                if (dp && tp) {
                     const [y,mo,da] = dp.split('-');
                     const [hh,mi] = tp.split(':');
                     dEl.textContent = `${da}/${mo}/${y} ${hh}:${mi}`;
@@ -129,23 +146,5 @@
 
     </div>
 </div>
-
-<!-- PUT para cambiar estado -->
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    function toggleEstat(id, isValid) {
-        const estat = isValid ? 'VALIDA' : 'INVALIDA';
-        fetch('/ruta/' + id + '/estat', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(estat)
-        }).then(r => {
-            if (!r.ok) alert('Error al actualitzar l\'estat de la ruta');
-        }).catch(() => {
-            alert('No s\'ha pogut connectar al servidor');
-        });
-    }
-    /*]]>*/
-</script>
 </body>
 </html>
