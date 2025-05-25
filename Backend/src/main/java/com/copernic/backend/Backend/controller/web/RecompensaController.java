@@ -62,7 +62,8 @@ public class RecompensaController {
             @RequestParam(name = "nomRecompensa", required = false) String nomRecompensa,
             @RequestParam(name = "puntBescanvi", required = false) String puntBescanvi,
             @RequestParam(name = "nomUsuari", required = false) String nomUsuari,
-            @RequestParam(name = "rangPunts", required = false) String rangPunts,
+            @RequestParam(name = "minPunts", required = false) Integer minPunts,
+            @RequestParam(name = "maxPunts", required = false) Integer maxPunts,
             @RequestParam(name = "estat", required = false) Estat estat,
             @RequestParam(name = "ordenarPor", required = false) String ordenarPor,
             @RequestParam(name = "orden", required = false) String orden,
@@ -91,18 +92,13 @@ public class RecompensaController {
                         .collect(Collectors.toList());
             }
 
-            if (rangPunts != null && !rangPunts.isEmpty()) {
-                try {
-                    String[] rang = rangPunts.split("-");
-                    int min = Integer.parseInt(rang[0].trim());
-                    int max = Integer.parseInt(rang[1].trim());
+            if (minPunts != null || maxPunts != null) {
+                int min = (minPunts != null) ? minPunts : Integer.MIN_VALUE;
+                int max = (maxPunts != null) ? maxPunts : Integer.MAX_VALUE;
 
-                    recompensa = recompensa.stream()
-                            .filter(r -> r.getCost() >= min && r.getCost() <= max)
-                            .collect(Collectors.toList());
-                } catch (Exception e) {
-                    System.out.println("Error en el formato del rango de puntos");
-                }
+                recompensa = recompensa.stream()
+                        .filter(r -> r.getCost() >= min && r.getCost() <= max)
+                        .collect(Collectors.toList());
             }
 
             if (estat != null) {
@@ -222,17 +218,17 @@ public class RecompensaController {
      * @return Redirecció al llistat de recompenses o pàgina d'error.
      */
     @GetMapping("/delete/{id}")
-    public String deleteRecompensa(@PathVariable Long id) {
-        try{
-        logic.eliminarRecompensa(id);
-
-        return "redirect:/recompensas/llistar";
+    public String deleteRecompensa(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            logic.eliminarRecompensa(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Recompensa eliminada correctament.");
         } catch (Exception e) {
             logger.error("Error al eliminar una recompensa", e);
-            return "error";
+            redirectAttributes.addFlashAttribute("error", "No s'ha pogut eliminar la recompensa. Pot estar assignada o vinculada.");
         }
-
+        return "redirect:/recompensas/llistar";
     }
+
     /**
      * Mostra el formulari per editar una recompensa.
      *

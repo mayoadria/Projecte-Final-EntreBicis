@@ -23,12 +23,12 @@ class RutesViewmodel(app: Application) : AndroidViewModel(app) {
     private val _routes = mutableStateListOf<RutaApi.RutaDto>()
     val routes: List<RutaApi.RutaDto> get() = _routes
 
-    var filtroEstado     by mutableStateOf<RutaApi.EstatRutes?>(null)
+    var filtroEstado by mutableStateOf<RutaApi.EstatRutes?>(null)
     var filtroFechaDesde by mutableStateOf<LocalDate?>(null)
     var filtroFechaHasta by mutableStateOf<LocalDate?>(null)
-    var filtroKmRange    by mutableStateOf(0f..50f)
-    var filtroTimeRange  by mutableStateOf(0f..5f)
-    var filtroVelMedia   by mutableStateOf<Pair<Operator, Float>?>(null)
+    var filtroKmRange by mutableStateOf(0f..50f)
+    var filtroTimeRange by mutableStateOf(0f..5f)
+    var filtroVelMedia by mutableStateOf<Pair<Operator, Float>?>(null)
 
     fun loadRoutes(email: String) {
         viewModelScope.launch {
@@ -37,18 +37,25 @@ class RutesViewmodel(app: Application) : AndroidViewModel(app) {
 
             if (response.isSuccessful) {
                 _allRoutes = response.body().orEmpty()
-                Logger.guardarLog(getApplication(), "S'han carregat ${_allRoutes.size} rutes per a $email")
-            api.getUserRoutes(email).takeIf { it.isSuccessful }?.body()?.let {
-                _allRoutes = it
-                applyFilters()
-            } else {
-                Logger.guardarLog(getApplication(), "Error carregant rutes per a $email: HTTP ${response.code()}")
+                Logger.guardarLog(
+                    getApplication(),
+                    "S'han carregat ${_allRoutes.size} rutes per a $email"
+                )
+                api.getUserRoutes(email).takeIf { it.isSuccessful }?.body()?.let {
+                    _allRoutes = it
+                    applyFilters()
+                }
+            }else {
+                Logger.guardarLog(
+                    getApplication(),
+                    "Error carregant rutes per a $email: HTTP ${response.code()}"
+                )
             }
         }
     }
 
     fun applyFilters() {
-        val maxKm  = filtroKmRange.endInclusive
+        val maxKm = filtroKmRange.endInclusive
         val maxHrs = filtroTimeRange.endInclusive
 
         _routes.clear()
@@ -83,7 +90,7 @@ class RutesViewmodel(app: Application) : AndroidViewModel(app) {
             .getOrNull() ?: return false
 
         filtroFechaDesde?.let { if (date.isBefore(it)) return false }
-        filtroFechaHasta?.let { if (date.isAfter(it))  return false }
+        filtroFechaHasta?.let { if (date.isAfter(it)) return false }
         return true
     }
 
@@ -100,18 +107,19 @@ class RutesViewmodel(app: Application) : AndroidViewModel(app) {
     private fun matchesVelMedia(r: RutaApi.RutaDto) =
         filtroVelMedia?.let { (op, lim) ->
             if (op == Operator.GREATER) r.velMitja >= lim
-            else                                  r.velMitja <= lim
+            else r.velMitja <= lim
         } ?: true
 
     /** Restablece todos los filtros y refresca la lista */
     fun clearFilters() {
-        filtroEstado     = null
+        filtroEstado = null
         filtroFechaDesde = null
         filtroFechaHasta = null
-        filtroKmRange    = 0f..50f
-        filtroTimeRange  = 0f..5f
-        filtroVelMedia   = null
+        filtroKmRange = 0f..50f
+        filtroTimeRange = 0f..5f
+        filtroVelMedia = null
         Logger.guardarLog(getApplication(), "Filtres reiniciats")
         applyFilters()
     }
 }
+
