@@ -51,7 +51,16 @@ body {
     font-weight: 700;
 }
 
-/* Estadísticas */
+/* Switch / stats */
+.switch-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.switch-text {
+    font-size: 14px;
+    color: #fff;
+}
 .route-stats {
     display: flex;
     gap: 24px;
@@ -71,26 +80,24 @@ body {
     font-size: 14px;
 }
 
-/* Switch de validación */
-.switch-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.switch-text {
+/* Nuevo estilo de descripción */
+.route-description {
+    padding: 8px 16px;
     font-size: 14px;
-    color: #fff;
+    color: #003550;
+    background: #e0f7ff;
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
 }
+
+/* Switch */
 .switch {
     position: relative;
     display: inline-block;
     width: 42px;
     height: 24px;
 }
-/* AHORA el <input> ocupa TODO el área del switch */
 .switch input {
     position: absolute;
-    top: 0; left: 0;
     width: 100%;
     height: 100%;
     opacity: 0;
