@@ -39,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -76,6 +77,7 @@ fun EditarPerfil(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri -> modificarViewModel.updateSelectedImage(uri) }
     )
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -103,7 +105,8 @@ fun EditarPerfil(
                     selectedImageUri?.let { uri ->
                         modificarViewModel.loadBitmapFromUri(
                             uri,
-                            navController.context.contentResolver
+                            navController.context.contentResolver,
+                            context
                         )
                     }
                         ?: bitmap
@@ -176,7 +179,8 @@ fun EditarPerfil(
 
                             modificarViewModel.updateClient(
                                 client = usuario,
-                                contentResolver = navController.context.contentResolver
+                                contentResolver = navController.context.contentResolver,
+                                context
                             )
 
                             navController.navigate("perfil")

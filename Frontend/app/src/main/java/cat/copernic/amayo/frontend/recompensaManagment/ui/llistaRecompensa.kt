@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cat.copernic.amayo.frontend.Session.SessionViewModel
@@ -41,9 +42,10 @@ fun recompensa(
     navController: NavController,
     sessionViewModel: SessionViewModel
 ) {
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
 
-        llistaViewmodel.LlistarRecompenses()
+        llistaViewmodel.LlistarRecompenses(context)
 
     }
     var filtroDesc by remember { mutableStateOf("") }

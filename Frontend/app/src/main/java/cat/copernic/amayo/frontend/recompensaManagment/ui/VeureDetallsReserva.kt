@@ -4,6 +4,8 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -28,21 +30,6 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-/**
- * Composable que muestra los detalles de una reserva de recompensa. Incluye información sobre
- * el estado de la reserva, los detalles de la recompensa, el punto de intercambio y las acciones
- * disponibles, como cambiar el estado de la recompensa o cancelarla.
- *
- * Dependiendo del estado de la recompensa, se activan diferentes botones de acción, como pasar a
- * "Per Recollir", "Recollir Recompensa" o "Cancelar Recompensa".
- *
- * @param reservaId El ID de la reserva cuya información se va a mostrar.
- * @param reservaViewmodel El ViewModel encargado de manejar las reservas.
- * @param llistaViewmodel El ViewModel encargado de manejar las recompensas.
- * @param sessionViewModel El ViewModel que gestiona la sesión del usuario.
- * @param modificarViewModel El ViewModel que gestiona la modificación de datos del usuario.
- * @param navController El controlador de navegación para gestionar la navegación entre pantallas.
- */
 @Composable
 fun DetallsReserva(
     reservaId: Long,
@@ -61,12 +48,15 @@ fun DetallsReserva(
     }
 
     LaunchedEffect(reservaId) {
-        reservaViewmodel.listar(reservaId)
+        reservaViewmodel.listar(reservaId,context)
     }
+
+    val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(scrollState)
             .background(Color(0xFFE3F2FD))
             .padding(16.dp)
             .statusBarsPadding(),
@@ -93,8 +83,7 @@ fun DetallsReserva(
                     Text("Reservat per: $it", fontSize = 16.sp)
                 }
                 val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale("es", "ES"))
-                // RESERVADA
-                if (recompensa?.estat == Estat.RESERVADES) {
+                if (recompensa?.estat == Estat.RESERVADA) {
                     recompensa.dataReserva?.let {
                         val fechaReservaFormateada = it.format(formatter)
                         Text("Data de Reserva: $fechaReservaFormateada", fontSize = 18.sp)
@@ -112,7 +101,6 @@ fun DetallsReserva(
                         Text("Data d'Entrega: $fechaEntregaFormateada", fontSize = 18.sp)
                     }
                 }
-
             }
         }
 
@@ -148,7 +136,6 @@ fun DetallsReserva(
                     Text("Contacte: ${punt.personaContacte}", fontSize = 14.sp)
                     Text("Telèfon: ${punt.telefon}", fontSize = 14.sp)
                 }
-
             }
         }
 
@@ -167,7 +154,6 @@ fun DetallsReserva(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botón para pasar de ASSIGNADES a PER_RECOLLIR
         if (recompensa?.estat == Estat.ASSIGNADES) {
             Button(
                 onClick = {
@@ -175,7 +161,8 @@ fun DetallsReserva(
                         usuario.reserva = false
                         modificarViewModel.updateClient(
                             client = usuario,
-                            contentResolver = navController.context.contentResolver
+                            contentResolver = navController.context.contentResolver,
+                            context
                         )
                     }
                     reserva?.let {
@@ -185,9 +172,10 @@ fun DetallsReserva(
 
                         llistaViewmodel.updateRecompensa(
                             recompensa,
-                            contentResolver = navController.context.contentResolver
+                            contentResolver = navController.context.contentResolver,
+                            context
                         )
-                        reservaViewmodel.updateReserva(reserva)
+                        reservaViewmodel.updateReserva(reserva,context)
 
                         Toast.makeText(context, "Recompensa per Recollir!", Toast.LENGTH_SHORT).show()
                         navController.popBackStack()
@@ -202,7 +190,6 @@ fun DetallsReserva(
             }
         }
 
-        // Botón para pasar de PER_RECOLLIR a RECOLLIDA
         if (recompensa?.estat == Estat.PER_RECOLLIR) {
             Spacer(modifier = Modifier.height(12.dp))
             Button(
@@ -214,12 +201,12 @@ fun DetallsReserva(
                         recompensa.dataEntrega = fecha
                         recompensa.usuariRecompensa = nom
 
-
                         llistaViewmodel.updateRecompensa(
                             recompensa,
-                            contentResolver = navController.context.contentResolver
+                            contentResolver = navController.context.contentResolver,
+                            context
                         )
-                        reservaViewmodel.updateReserva(reserva)
+                        reservaViewmodel.updateReserva(reserva,context)
 
                         Toast.makeText(context, "Recompensa recollida!", Toast.LENGTH_SHORT).show()
                         navController.navigate("check")
@@ -234,31 +221,32 @@ fun DetallsReserva(
             }
         }
 
-        if (recompensa?.estat == Estat.RESERVADES) {
+        if (recompensa?.estat == Estat.RESERVADA) {
             Spacer(modifier = Modifier.height(12.dp))
             Button(
                 onClick = {
                     nom?.let { usuario ->
-
                         val saldoActual = usuario.saldo ?: 0.0
                         val coste = recompensa?.cost ?: 0
-                        sessionViewModel.updateSaldo(saldoActual + coste)
+                        sessionViewModel.updateSaldo(saldoActual + coste,context)
 
                         usuario.reserva = false
                         modificarViewModel.updateClient(
                             client = usuario,
-                            contentResolver = navController.context.contentResolver
+                            contentResolver = navController.context.contentResolver,
+                            context
                         )
-                        sessionViewModel.actualizarReserva(false)
+                        sessionViewModel.actualizarReserva(false,context)
                     }
                     reserva?.let {
                         recompensa.estat = Estat.DISPONIBLES
 
                         llistaViewmodel.updateRecompensa(
                             recompensa,
-                            contentResolver = navController.context.contentResolver
+                            contentResolver = navController.context.contentResolver,
+                            context
                         )
-                        reservaViewmodel.borrar(reservaId)
+                        reservaViewmodel.borrar(reservaId,context)
 
                         Toast.makeText(context, "Recompensa Cancelada!", Toast.LENGTH_SHORT).show()
                         navController.navigate("recompensaPropias")

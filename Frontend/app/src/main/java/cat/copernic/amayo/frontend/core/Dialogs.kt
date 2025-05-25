@@ -3,8 +3,10 @@ package cat.copernic.amayo.frontend.core
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -37,11 +39,18 @@ fun FilterDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Filtres de Recompenses") },
+        title = {
+            Text(
+                text = "Filtres de Recompenses",
+                style = MaterialTheme.typography.titleLarge
+            )
+        },
         text = {
             Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxWidth()
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
             ) {
                 OutlinedTextField(
                     value = filterDesc,
@@ -79,7 +88,9 @@ fun FilterDialog(
         confirmButton = {
             Button(
                 onClick = { onApplyFilter(filterDesc, filterObs, filterCost, filterEstat) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
             ) {
                 Text("Aplicar filtres")
             }
@@ -87,13 +98,16 @@ fun FilterDialog(
         dismissButton = {
             TextButton(
                 onClick = onDismiss,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
             ) {
                 Text("Tancar")
             }
         }
     )
 }
+
 
 /**
  * Diàleg per seleccionar criteris d'ordenació de la llista de recompenses.
@@ -111,11 +125,18 @@ fun SortDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Ordenar Recompenses") },
+        title = {
+            Text(
+                text = "Ordenar Recompenses",
+                style = MaterialTheme.typography.titleLarge
+            )
+        },
         text = {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth()
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
             ) {
                 Button(
                     onClick = { onSortSelected("descripcio", true) },
@@ -149,7 +170,9 @@ fun SortDialog(
         confirmButton = {
             TextButton(
                 onClick = onDismiss,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
             ) {
                 Text("Tancar")
             }

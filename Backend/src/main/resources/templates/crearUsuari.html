@@ -31,17 +31,17 @@
 
       <div class="form-field">
         <label for="nom">Nom</label>
-        <input type="text" id="nom" th:field="*{nom}" placeholder="Nombre" required />
+        <input type="text" id="nom" th:field="*{nom}" placeholder="Nom" required />
       </div>
 
       <div class="form-field">
         <label for="cognom">Cognom</label>
-        <input type="text" id="cognom" th:field="*{cognom}" placeholder="Apellido" />
+        <input type="text" id="cognom" th:field="*{cognom}" placeholder="Cognom" required/>
       </div>
 
       <div class="form-field">
         <label for="telefon">Telèfon</label>
-        <input type="text" id="telefon" th:field="*{telefon}" placeholder="Número de teléfono" pattern="\d{9}" minlength="9" maxlength="9" inputmode="numeric" title="Introduce un número de 9 dígitos" required />
+        <input type="text" id="telefon" th:field="*{telefon}" placeholder="Número de teléfon" pattern="\d{9}" minlength="9" maxlength="9" inputmode="numeric" title="Introdueix un número de 9 dígits" required />
       </div>
 
       <div class="form-field">
@@ -51,12 +51,19 @@
 
       <div class="form-field">
         <label for="poblacio">Població</label>
-        <input type="text" id="poblacio" th:field="*{poblacio}" placeholder="Ciudad" />
+        <input type="text" id="poblacio" th:field="*{poblacio}" placeholder="Ciudad" minlength="1" maxlength="255"
+               title="La població ha de tenir entre 1 i 255 caràcters." required>
       </div>
 
       <div class="form-field full-width">
         <label for="contra">Contrasenya provisional</label>
-        <input type="text" id="contra" th:field="*{contra}" placeholder="Contraseña provisional" required />
+        <input type="text" id="contra" th:field="*{contra}" placeholder="Contrasenya provisional" required />
+      </div>
+      <div class="form-field full-width">
+        <label for="obs">Observacions</label>
+        <input type="text" id="obs" th:field="*{observaciones}" placeholder="Observacions" required
+               minlength="1" maxlength="255"
+               title="Les observacions han de tenir entre 1 i 255 caràcters.">
       </div>
       <div th:if="${error}" style="color: red;">
         <p th:text="${error}"></p>

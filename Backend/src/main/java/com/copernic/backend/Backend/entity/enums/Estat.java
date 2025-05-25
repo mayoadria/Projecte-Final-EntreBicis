@@ -14,7 +14,7 @@ public enum Estat {
     /**
      * La recompensa ha estat reservada per un usuari però encara no assignada.
      */
-    RESERVADES,
+    RESERVADA,
 
     /**
      * La recompensa ha estat assignada a un usuari i està pendent de recollida.
