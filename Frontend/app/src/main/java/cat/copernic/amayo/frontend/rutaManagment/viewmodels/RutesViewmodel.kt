@@ -12,6 +12,8 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 enum class Operator { GREATER, LESS }
+enum class SortField { DATE, KM, TIME, SPEED }
+enum class SortOrder { ASC, DESC }
 
 class RutesViewmodel(app: Application) : AndroidViewModel(app) {
 
@@ -26,9 +28,12 @@ class RutesViewmodel(app: Application) : AndroidViewModel(app) {
     var filtroEstado by mutableStateOf<RutaApi.EstatRutes?>(null)
     var filtroFechaDesde by mutableStateOf<LocalDate?>(null)
     var filtroFechaHasta by mutableStateOf<LocalDate?>(null)
-    var filtroKmRange by mutableStateOf(0f..50f)
-    var filtroTimeRange by mutableStateOf(0f..5f)
-    var filtroVelMedia by mutableStateOf<Pair<Operator, Float>?>(null)
+    var filtroKmRange    by mutableStateOf(0f..50f)
+    var filtroTimeRange  by mutableStateOf(0f..5f)
+    var filtroVelMedia   by mutableStateOf<Pair<Operator, Float>?>(null)
+    var sortField by mutableStateOf<SortField?>(null)
+    var sortOrder by mutableStateOf<SortOrder?>(null)
+
 
     fun loadRoutes(email: String) {
         viewModelScope.launch {
@@ -55,7 +60,7 @@ class RutesViewmodel(app: Application) : AndroidViewModel(app) {
     }
 
     fun applyFilters() {
-        val maxKm = filtroKmRange.endInclusive
+        val maxKm  = filtroKmRange.endInclusive
         val maxHrs = filtroTimeRange.endInclusive
 
         _routes.clear()
@@ -90,7 +95,7 @@ class RutesViewmodel(app: Application) : AndroidViewModel(app) {
             .getOrNull() ?: return false
 
         filtroFechaDesde?.let { if (date.isBefore(it)) return false }
-        filtroFechaHasta?.let { if (date.isAfter(it)) return false }
+        filtroFechaHasta?.let { if (date.isAfter(it))  return false }
         return true
     }
 

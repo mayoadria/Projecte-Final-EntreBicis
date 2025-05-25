@@ -6,7 +6,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -33,6 +32,17 @@ fun FiltersDialog(
     val displayFmt = remember { DateTimeFormatter.ofPattern("dd/MM/yyyy") }
     var velInput by remember { mutableStateOf(routesVM.filtroVelMedia?.second?.toString() ?: "") }
 
+    fun clearAll() {
+        routesVM.filtroEstado = null
+        routesVM.filtroFechaDesde = null
+        routesVM.filtroFechaHasta = null
+        routesVM.filtroKmRange = 0f..100f
+        routesVM.filtroTimeRange = 0f..10f
+        routesVM.filtroVelMedia = null
+        routesVM.applyFilters()
+        velInput = ""
+    }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Filtres de rutes") },
@@ -43,7 +53,7 @@ fun FiltersDialog(
                     .verticalScroll(rememberScrollState())
                     .padding(end = 8.dp)
             ) {
-                // — Estado
+                // — Estat
                 Text("Estat", style = MaterialTheme.typography.labelMedium)
                 Spacer(Modifier.height(6.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -63,15 +73,15 @@ fun FiltersDialog(
 
                 Spacer(Modifier.height(12.dp))
 
-                // — Fecha creación
-                Text("Data creació", style = MaterialTheme.typography.labelMedium)
+                // — Data creació
+                Text("Data de creació", style = MaterialTheme.typography.labelMedium)
                 Spacer(Modifier.height(6.dp))
                 Row(
                     Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    // Desde
+                    // Des de
                     OutlinedButton(
                         onClick = {
                             val cal = Calendar.getInstance()
@@ -95,16 +105,8 @@ fun FiltersDialog(
                             overflow = TextOverflow.Ellipsis
                         )
                     }
-                    if (routesVM.filtroFechaDesde != null) {
-                        IconButton(onClick = {
-                            routesVM.filtroFechaDesde = null
-                            routesVM.applyFilters()
-                        }) {
-                            Icon(Icons.Default.Close, contentDescription = "Limpiar Desde")
-                        }
-                    }
 
-                    // Hasta
+                    // Fins a
                     OutlinedButton(
                         onClick = {
                             val cal = Calendar.getInstance()
@@ -123,24 +125,16 @@ fun FiltersDialog(
                         shape = RectangleShape
                     ) {
                         Text(
-                            text = routesVM.filtroFechaHasta?.format(displayFmt) ?: "Fins",
+                            text = routesVM.filtroFechaHasta?.format(displayFmt) ?: "Fins a",
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
-                    }
-                    if (routesVM.filtroFechaHasta != null) {
-                        IconButton(onClick = {
-                            routesVM.filtroFechaHasta = null
-                            routesVM.applyFilters()
-                        }) {
-                            Icon(Icons.Default.Close, contentDescription = "Limpiar Hasta")
-                        }
                     }
                 }
 
                 Spacer(Modifier.height(12.dp))
 
-                // — Kilómetros
+                // — Quilòmetres (km)
                 Text("Quilòmetres (km)", style = MaterialTheme.typography.labelMedium)
                 Spacer(Modifier.height(4.dp))
                 RangeSlider(
@@ -164,7 +158,7 @@ fun FiltersDialog(
 
                 Spacer(Modifier.height(12.dp))
 
-                // — Tiempo (h)
+                // — Temps (h)
                 Text("Temps (h)", style = MaterialTheme.typography.labelMedium)
                 Spacer(Modifier.height(4.dp))
                 RangeSlider(
@@ -192,8 +186,8 @@ fun FiltersDialog(
 
                 Spacer(Modifier.height(12.dp))
 
-                // — Velocidad media
-                Text("Velocitat mitja (km/h)", style = MaterialTheme.typography.labelMedium)
+                // — Velocitat mitjana (km/h)
+                Text("Velocitat mitjana (km/h)", style = MaterialTheme.typography.labelMedium)
                 Spacer(Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     OutlinedTextField(
@@ -218,10 +212,22 @@ fun FiltersDialog(
                         }
                     }) { Text("Menys") }
                 }
+
+                Spacer(Modifier.height(16.dp))
+
+                // — Botó per netejar tots els filtres
+                Button(
+                    onClick = { clearAll() },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Neteja filtres")
+                }
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) { Text("Tancar") }
+            TextButton(onClick = onDismiss) {
+                Text("Tancar")
+            }
         }
     )
 }
