@@ -36,7 +36,7 @@
 
       <div class="form-field">
         <label for="cognom">Cognom</label>
-        <input type="text" id="cognom" th:field="*{cognom}" placeholder="Cognom" />
+        <input type="text" id="cognom" th:field="*{cognom}" placeholder="Cognom" required/>
       </div>
 
       <div class="form-field">
@@ -52,18 +52,18 @@
       <div class="form-field">
         <label for="poblacio">Població</label>
         <input type="text" id="poblacio" th:field="*{poblacio}" placeholder="Ciudad" minlength="1" maxlength="255"
-               title="La població ha de tenir entre 1 i 255 caràcters.">/>
+               title="La població ha de tenir entre 1 i 255 caràcters." required>
       </div>
 
       <div class="form-field full-width">
         <label for="contra">Contrasenya provisional</label>
-        <input type="text" id="contra" th:field="*{contra}" placeholder="Contraseña provisional" required />
+        <input type="text" id="contra" th:field="*{contra}" placeholder="Contrasenya provisional" required />
       </div>
       <div class="form-field full-width">
         <label for="obs">Observacions</label>
         <input type="text" id="obs" th:field="*{observaciones}" placeholder="Observacions" required
                minlength="1" maxlength="255"
-               title="Les observacions han de tenir entre 1 i 255 caràcters.">/>
+               title="Les observacions han de tenir entre 1 i 255 caràcters.">
       </div>
       <div th:if="${error}" style="color: red;">
         <p th:text="${error}"></p>
