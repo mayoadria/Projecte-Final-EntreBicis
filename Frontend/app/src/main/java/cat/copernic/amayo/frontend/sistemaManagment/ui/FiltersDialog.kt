@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import cat.copernic.amayo.frontend.rutaManagment.data.remote.RutaApi
 import cat.copernic.amayo.frontend.rutaManagment.viewmodels.Operator
 import cat.copernic.amayo.frontend.rutaManagment.viewmodels.RutesViewmodel
+import cat.copernic.amayo.frontend.rutaManagment.viewmodels.SortField
+import cat.copernic.amayo.frontend.rutaManagment.viewmodels.SortOrder
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
@@ -39,6 +41,8 @@ fun FiltersDialog(
         routesVM.filtroKmRange = 0f..100f
         routesVM.filtroTimeRange = 0f..10f
         routesVM.filtroVelMedia = null
+        routesVM.sortField = null
+        routesVM.sortOrder = null
         routesVM.applyFilters()
         velInput = ""
     }
@@ -175,8 +179,9 @@ fun FiltersDialog(
                 ) {
                     fun Float.toHourMin(): String {
                         val tm = (this * 60).roundToInt()
-                        return "${tm/60}h${(tm%60).toString().padStart(2,'0')}"
+                        return "${tm / 60}h${(tm % 60).toString().padStart(2, '0')}"
                     }
+
                     Text(routesVM.filtroTimeRange.start.toHourMin())
                     Text(
                         if (routesVM.filtroTimeRange.endInclusive >= 10f) "sense límit"
@@ -215,6 +220,40 @@ fun FiltersDialog(
 
                 Spacer(Modifier.height(16.dp))
 
+                // — Ordenació
+                Text("Ordenar per", style = MaterialTheme.typography.labelMedium)
+                Spacer(Modifier.height(6.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    SortField.values().forEach { field ->
+                        FilterChip(
+                            selected = routesVM.sortField == field,
+                            onClick = {
+                                routesVM.sortField = field
+                                routesVM.applyFilters()
+                            },
+                            label = { Text(field.name.lowercase().replaceFirstChar { it.uppercase() }) }
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(8.dp))
+                Text("Ordre", style = MaterialTheme.typography.labelMedium)
+                Spacer(Modifier.height(6.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    SortOrder.values().forEach { order ->
+                        FilterChip(
+                            selected = routesVM.sortOrder == order,
+                            onClick = {
+                                routesVM.sortOrder = order
+                                routesVM.applyFilters()
+                            },
+                            label = { Text(order.name.lowercase().replaceFirstChar { it.uppercase() }) }
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(16.dp))
+
                 // — Botó per netejar tots els filtres
                 Button(
                     onClick = { clearAll() },
@@ -231,3 +270,4 @@ fun FiltersDialog(
         }
     )
 }
+

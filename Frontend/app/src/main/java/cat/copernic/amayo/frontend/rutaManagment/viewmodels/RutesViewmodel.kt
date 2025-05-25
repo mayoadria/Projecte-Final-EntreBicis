@@ -71,11 +71,29 @@ class RutesViewmodel(app: Application) : AndroidViewModel(app) {
                     && matchesTiempo(ruta, maxHrs)
                     && matchesVelMedia(ruta)
         })
+
+        // Aplicar ordenació si s'ha seleccionat camp i ordre
+        if (sortField != null && sortOrder != null) {
+            _routes.sortWith(compareBy { ruta ->
+                when (sortField) {
+                    SortField.DATE -> ruta.fechaCreacion
+                    SortField.KM -> ruta.km
+                    SortField.TIME -> ruta.temps
+                    SortField.SPEED -> ruta.velMitja
+                    null -> null
+                }
+            })
+            if (sortOrder == SortOrder.DESC) {
+                _routes.reverse()
+            }
+        }
+
         Logger.guardarLog(
             getApplication(),
-            "Aplicats filtres: estat=${filtroEstado}, km=${filtroKmRange}, temps=${filtroTimeRange}, vel=${filtroVelMedia} → ${_routes.size} resultats"
+            "Aplicats filtres: estat=${filtroEstado}, km=${filtroKmRange}, temps=${filtroTimeRange}, vel=${filtroVelMedia}, ordre=$sortField/$sortOrder → ${_routes.size} resultats"
         )
     }
+
 
     private fun matchesEstado(r: RutaApi.RutaDto) =
         filtroEstado?.let { it == r.estat } ?: true
