@@ -6,7 +6,7 @@
 
     <!-- CSS propis -->
     <link rel="stylesheet" href="/styles/barraLateral.css"/>
-    <link rel="stylesheet" href="/styles/tablas.css"/>  <!-- Para filtros -->
+    <link rel="stylesheet" href="/styles/tablas.css"/>  <!-- Per estil de filtres -->
     <link rel="stylesheet" href="/styles/detallsRuta.css"/>
 
     <!-- Leaflet -->
@@ -87,20 +87,16 @@
          ">
         <div class="route-header">
             <span class="route-title" th:text="${dto.ruta.nom}">Nom ruta</span>
-
             <div class="route-stats">
                 <div class="stat">
-                    <strong class="route-km"
-                            th:attr="data-km=${dto.ruta.km}">0,00</strong>
+                    <strong class="route-km" th:attr="data-km=${dto.ruta.km}">0,00</strong>
                     <span class="unit">Km</span>
                 </div>
                 <div class="stat">
-                    <strong class="route-time"
-                            th:attr="data-seconds=${dto.ruta.temps}">00:00:00</strong>
+                    <strong class="route-time" th:attr="data-seconds=${dto.ruta.temps}">00:00:00</strong>
                 </div>
                 <div class="stat">
-                    <strong class="route-speed"
-                            th:attr="data-speed=${dto.ruta.velMedia}">0,00</strong>
+                    <strong class="route-speed" th:attr="data-speed=${dto.ruta.velMedia}">0,00</strong>
                     <span class="unit">km/h</span>
                 </div>
                 <div class="stat">
@@ -108,7 +104,6 @@
                             th:attr="data-fecha=${dto.ruta.getFechaCreacion()}">01/01/1970 00:00</strong>
                 </div>
             </div>
-
             <div class="switch-container">
                 <label class="switch" title="Validar ruta">
                     <input type="checkbox"
@@ -125,28 +120,67 @@
         </div>
 
         <div th:attr="id=${'map-' + dto.ruta.id}" class="map"></div>
+
         <script th:inline="javascript">
             /*<![CDATA[*/
             (function() {
                 const coords = /*[[${dto.coords}]]*/ [];
                 const mapId = 'map-' + /*[[${dto.ruta.id}]]*/ 'x';
-                if (!coords.length) return;
-                const map = L.map(mapId);
-                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
-                const poly = L.polyline(coords,{color:'#0077ff'}).addTo(map);
-                coords.forEach(c=>{
-                    L.circleMarker(c,{
-                        radius:5, fillColor:'transparent',
-                        color:'red', weight:2, fillOpacity:0
-                    })
-                        .addTo(map)
-                        .bindTooltip(
-                            `Lat: ${c[0].toFixed(6)}, Lon: ${c[1].toFixed(6)}`,
-                            {direction:'top', offset:[0,-5]}
-                        );
-                });
-                map.fitBounds(poly.getBounds());
-                // formateja km, temps i data...
+                const card = document.getElementById(mapId).closest('.route-card');
+
+                // Inicialització de Leaflet
+                if (coords.length) {
+                    const map = L.map(mapId);
+                    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19})
+                        .addTo(map);
+                    const poly = L.polyline(coords,{ color: '#0077ff' }).addTo(map);
+                    coords.forEach(c => {
+                        L.circleMarker(c, {
+                            radius: 5,
+                            fillColor: 'transparent',
+                            color: 'red',
+                            weight: 2,
+                            fillOpacity: 0
+                        })
+                            .addTo(map)
+                            .bindTooltip(
+                                `Lat: ${c[0].toFixed(6)}, Lon: ${c[1].toFixed(6)}`,
+                                { direction: 'top', offset: [0, -5] }
+                            );
+                    });
+                    map.fitBounds(poly.getBounds());
+                } else {
+                    card.querySelector('.map').textContent = 'Sense coordenades';
+                }
+
+                // Formatejar Km
+                const kmEl = card.querySelector('.route-km');
+                const kmVal = parseFloat(kmEl.dataset.km) || 0;
+                kmEl.textContent = kmVal.toFixed(2).replace('.', ',');
+
+                // Formatejar Velocitat Mitjana
+                const spEl = card.querySelector('.route-speed');
+                const spVal = parseFloat(spEl.dataset.speed) || 0;
+                spEl.textContent = spVal.toFixed(2).replace('.', ',');
+
+                // Formatejar Temps (hh:mm:ss)
+                const tEl = card.querySelector('.route-time');
+                let secs = parseInt(tEl.dataset.seconds, 10) || 0;
+                const h = Math.floor(secs / 3600);
+                const m = Math.floor((secs % 3600) / 60);
+                const s = secs % 60;
+                const pad = v => String(v).padStart(2, '0');
+                tEl.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+
+                // Formatejar Data (dd/mm/aaaa hh:mm)
+                const dEl = card.querySelector('.fecha-formateada');
+                const raw = dEl.dataset.fecha || '';
+                const [datePart, timePart] = raw.split('T');
+                if (datePart) {
+                    const [y, mo, da] = datePart.split('-');
+                    const [hh, mm] = (timePart || '').split(':');
+                    dEl.textContent = `${da}/${mo}/${y} ${pad(hh || 0)}:${pad(mm || 0)}`;
+                }
             })();
             /*]]>*/
         </script>
@@ -155,14 +189,14 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Mostrar/ocultar filtros
-        document.querySelector('.filter-toggle').addEventListener('click', function(e){
+        // Mostrar/ocultar filtres
+        document.querySelector('.filter-toggle').addEventListener('click', function(e) {
             e.preventDefault();
             document.querySelector('.filter-content').classList.toggle('active');
         });
 
-        // Filtrar en cliente
-        document.getElementById('btn-filtrar').addEventListener('click', function(){
+        // Filtrar en client
+        document.getElementById('btn-filtrar').addEventListener('click', function() {
             const nom = document.getElementById('f_nomRuta').value.toLowerCase();
             const estat = document.getElementById('f_estat').value;
             const desde = document.getElementById('f_dataDesde').value;
@@ -176,21 +210,20 @@
 
             document.querySelectorAll('.route-card').forEach(card => {
                 let ok = true;
-                if(nom && !card.dataset.nom.toLowerCase().includes(nom)) ok = false;
-                if(estat && card.dataset.estat !== estat) ok = false;
+                if (nom && !card.dataset.nom.toLowerCase().includes(nom)) ok = false;
+                if (estat && card.dataset.estat !== estat) ok = false;
                 const fecha = card.dataset.fecha.split('T')[0];
-                if(desde && fecha < desde) ok = false;
-                if(hasta && fecha > hasta) ok = false;
+                if (desde && fecha < desde) ok = false;
+                if (hasta && fecha > hasta) ok = false;
                 const km = parseFloat(card.dataset.km);
-                if(km < kmMin || km > kmMax) ok = false;
-                const secs = card.dataset.temps.split(':').reduce((a,v,i)=>
-                    i===0?parseInt(v)*3600:a + (i===1?parseInt(v)*60:parseInt(v)),0);
-                if(tMin && secs < tMin.split(':').reduce((a,v,i)=>
-                    i===0?parseInt(v)*3600:a + (i===1?parseInt(v)*60:parseInt(v)),0)) ok = false;
-                if(tMax && secs > tMax.split(':').reduce((a,v,i)=>
-                    i===0?parseInt(v)*3600:a + (i===1?parseInt(v)*60:parseInt(v)),0)) ok = false;
+                if (km < kmMin || km > kmMax) ok = false;
+                const secs = card.dataset.temps
+                    .split(':')
+                    .reduce((a,v,i) => i===0 ? Number(v)*3600 : a + Number(v)*[60,1][i-1], 0);
+                if (tMin && secs < tMin.split(':').reduce((a,v,i)=> i===0?Number(v)*3600:a + Number(v)*[60,1][i-1],0)) ok = false;
+                if (tMax && secs > tMax.split(':').reduce((a,v,i)=> i===0?Number(v)*3600:a + Number(v)*[60,1][i-1],0)) ok = false;
                 const vel = parseFloat(card.dataset.vel);
-                if(vel < velMin || vel > velMax) ok = false;
+                if (vel < velMin || vel > velMax) ok = false;
                 card.style.display = ok ? '' : 'none';
             });
         });
@@ -199,15 +232,20 @@
 
 <!-- PUT per validar/invalida -->
 <script th:inline="javascript">
+    /*<![CDATA[*/
     function toggleEstat(id, isValid) {
+        const estat = isValid ? 'VALIDA' : 'INVALIDA';
         fetch('/ruta/' + id + '/estat', {
-            method:'PUT',
-            headers:{'Content-Type':'application/json'},
-            body: JSON.stringify(isValid ? 'VALIDA' : 'INVALIDA')
-        }).then(r=>{
-            if(!r.ok) alert('Error actualitzant estat');
-        }).catch(()=>alert('No s\'ha pogut connectar'));
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(estat)
+        }).then(r => {
+            if (!r.ok) alert('Error actualitzant estat');
+        }).catch(() => {
+            alert('No s\'ha pogut connectar');
+        });
     }
+    /*]]>*/
 </script>
 </body>
 </html>
