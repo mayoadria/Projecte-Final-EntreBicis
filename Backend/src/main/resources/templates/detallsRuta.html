@@ -8,90 +8,137 @@
     <link rel="stylesheet" href="/styles/barraLateral.css"/>
     <link rel="stylesheet" href="/styles/detallsRuta.css"/>
 
-    <!-- Leaflet (sense integrity per evitar l’error CSP) -->
-    <link  rel="stylesheet"
-           href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-           crossorigin="anonymous">
+    <!-- Leaflet -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          crossorigin="anonymous">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             crossorigin="anonymous"></script>
-
-    <style>
-        .map { width: 100%; height: 320px; margin-bottom: 1.5rem; }
-    </style>
 </head>
 <body>
-<!-- barra lateral -->
 <div th:replace="~{barraLateral :: barralateral}"></div>
 
 <div class="main-content">
     <h1>Rutes de l'usuari</h1>
 
-    <!-- una card per a cada ruta -->
     <div th:each="dto : ${rutes}" class="route-card">
 
-        <!-- capçalera -->
         <div class="route-header">
             <span class="route-title" th:text="${dto.ruta.nom}">Nom ruta</span>
 
-            <!-- SWITCH VALIDAR / INVALIDAR -->
-            <label class="switch">
-                <input
-                        type="checkbox"
-                        th:checked="${dto.ruta.estat == T(com.copernic.backend.Backend.entity.enums.EstatRutes).VALIDA}"
-                        th:onchange="|toggleEstat(${dto.ruta.id}, this.checked)|"
-                />
-
-                <span class="slider"></span>
-            </label>
-
             <div class="route-stats">
-                <div>
-                    <strong th:text="${#numbers.formatDecimal(dto.ruta.km,1,3)}">0,0</strong> Km
+                <div class="stat">
+                    <strong class="route-km" th:attr="data-km=${dto.ruta.km}">0,00</strong>
+                    <span class="unit">Km</span>
                 </div>
-                <div th:text="${dto.ruta.temps}">00:00</div>
-                <div>
-                    <strong th:text="${dto.ruta.velMedia}">-</strong> km/h
+                <div class="stat">
+                    <strong class="route-time" th:attr="data-seconds=${dto.ruta.temps}">00:00:00</strong>
                 </div>
-                <div>
-                    <strong class="fecha-formateada" th:text="${dto.ruta.getFechaCreacion()}"> - </strong>
+                <div class="stat">
+                    <strong class="route-speed" th:attr="data-speed=${dto.ruta.velMedia}">0,00</strong>
+                    <span class="unit">km/h</span>
                 </div>
+                <div class="stat">
+                    <strong class="fecha-formateada"
+                            th:attr="data-fecha=${dto.ruta.getFechaCreacion()}">01/01/1970 00:00</strong>
+                </div>
+            </div>
+
+            <div class="switch-container">
+                <label class="switch" title="Validar ruta">
+                    <input type="checkbox"
+                           th:checked="${dto.ruta.estat == T(com.copernic.backend.Backend.entity.enums.EstatRutes).VALIDA}"
+                           th:onchange="|handleToggle(this, ${dto.ruta.id})|"/>
+                    <span class="slider"></span>
+                </label>
+                <span class="switch-text">Validar ruta</span>
             </div>
         </div>
 
-        <!-- contenidor del mapa -->
-        <div th:attr="id=${'map-' + dto.ruta.id}" class="map"></div>
-
-        <!-- peu -->
-        <div class="route-footer">
-            <span th:text="${dto.ruta.usuari.nom + ' ' + dto.ruta.usuari.cognom}">
-                Nom Usuari
-            </span>
+        <div class="route-description" th:if="${dto.ruta.descripcio}">
+            <p th:text="${dto.ruta.descripcio}">Descripció de la ruta.</p>
         </div>
 
-        <!-- script que pinta aquesta ruta -->
+        <div th:attr="id=${'map-' + dto.ruta.id}" class="map"></div>
+
         <script th:inline="javascript">
             /*<![CDATA[*/
-            (() => {
-                const coords = /*[[${dto.coords}]]*/ [];
-                const mapId  = 'map-' + /*[[${dto.ruta.id}]]*/ 'x';
-                if (coords.length) {
-                    const map = L.map(mapId);
-                    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        maxZoom: 19,
-                        attribution: '© OpenStreetMap'
-                    }).addTo(map);
-                    const poly = L.polyline(coords, { color: '#0077ff' }).addTo(map);
-                    map.fitBounds(poly.getBounds());
-                    coords.forEach(p => {
-                        L.circleMarker(p, { radius: 4, color: '#e74c3c', weight: 1 })
-                            .addTo(map)
-                            .bindTooltip(
-                                `Lat: ${p[0].toFixed(5)}  Lon: ${p[1].toFixed(5)}`,
-                                { direction: 'top', sticky: true }
-                            );
+            function handleToggle(el, id) {
+                const isValid = el.checked;
+                if (!isValid) {
+                    if (!confirm('Estàs segur que vols desactivar la ruta?')) {
+                        el.checked = true;
+                        return;
+                    }
+                }
+                toggleEstat(id, isValid);
+            }
+
+            function toggleEstat(id, isValid) {
+                const estat = isValid ? 'VALIDA' : 'INVALIDA';
+                fetch('/ruta/' + id + '/estat', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(estat)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            alert('Error actualitzant estat');
+                        }
+                    })
+                    .catch(() => {
+                        alert('No s\'ha pogut connectar al servidor');
                     });
-                } else {
-                    document.getElementById(mapId).textContent = 'Sense coordenades';
+            }
+
+            (function() {
+                const coords = /*[[${dto.coords}]]*/ [];
+                const id = /*[[${dto.ruta.id}]]*/ 'x';
+                const mapId = 'map-' + id;
+                if (!coords.length) return;
+
+                const map = L.map(mapId);
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+
+                const poly = L.polyline(coords, { color: '#0077ff' }).addTo(map);
+                coords.forEach(c => {
+                    const m = L.circleMarker(c, {
+                        radius: 5, fillColor: 'transparent',
+                        color: 'red', weight: 2, fillOpacity: 0
+                    }).addTo(map);
+                    m.bindTooltip(
+                        `Lat: ${c[0].toFixed(6)}, Lon: ${c[1].toFixed(6)}`,
+                        { direction: 'top', offset: [0, -5] }
+                    );
+                });
+                map.fitBounds(poly.getBounds());
+
+                const card = document.getElementById(mapId).closest('.route-card');
+                const kmEl = card.querySelector('.route-km');
+                kmEl.textContent = (parseFloat(kmEl.dataset.km)||0)
+                    .toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
+                const spEl = card.querySelector('.route-speed');
+                spEl.textContent = (parseFloat(spEl.dataset.speed)||0)
+                    .toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+                const tEl = card.querySelector('.route-time');
+                let secs = parseInt(tEl.dataset.seconds,10)||0;
+                const h = Math.floor(secs/3600),
+                    m = Math.floor((secs%3600)/60),
+                    s = secs%60;
+                const pad = v => String(v).padStart(2,'0');
+                tEl.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+
+                const dEl = card.querySelector('.fecha-formateada');
+                const raw = dEl.dataset.fecha||'';
+                const [dp,tp] = raw.split('T');
+                if (dp && tp) {
+                    const [y,mo,da] = dp.split('-');
+                    const [hh,mi] = tp.split(':');
+                    dEl.textContent = `${da}/${mo}/${y} ${hh}:${mi}`;
                 }
             })();
             /*]]>*/
@@ -99,45 +146,5 @@
 
     </div>
 </div>
-
-<!-- Script para formatear fecha y manejar el switch -->
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    document.addEventListener("DOMContentLoaded", function () {
-        // Formatear fechas
-        document.querySelectorAll(".fecha-formateada").forEach(celda => {
-            const valor = celda.textContent.trim();
-            if (!valor) return;
-            const fecha = new Date(valor);
-            if (!isNaN(fecha)) {
-                const fechaStr = fecha.toISOString().split("T")[0];
-                const hh = fecha.getHours().toString().padStart(2, '0');
-                const mm = fecha.getMinutes().toString().padStart(2, '0');
-                celda.innerHTML = `${fechaStr}<br>${hh}:${mm}`;
-            }
-        });
-    });
-
-    // Función que llama al endpoint PUT para cambiar estat
-    function toggleEstat(id, isValid) {
-        const estat = isValid ? 'VALIDA' : 'INVALIDA';
-        fetch('/ruta/' + id + '/estat', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(estat)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    alert('Error al actualitzar l\'estat de la ruta');
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                alert('No s\'ha pogut connectar al servidor');
-            });
-    }
-    /*]]>*/
-</script>
-
 </body>
 </html>
