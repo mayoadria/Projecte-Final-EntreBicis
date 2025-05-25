@@ -122,7 +122,7 @@ fun RutaScreen(navController: NavController) {
                     controller.setZoom(zoomLevelDouble)
                 }
                 removeCurrentLocationMarker(this)
-                addMarker(this, loc, "Ubicación actual", context)
+                addMarker(this, loc, "Ubicació actual", context)
                 if (isRouting) {
                     rutaVM.addPoint(loc)
                     clearPolylines(this)
@@ -182,7 +182,8 @@ fun RutaScreen(navController: NavController) {
             ) {
                 BottomControls(
                     isRouting  = isRouting,
-                    onStart    = { rutaVM.startRoute("Mi ruta", "Salida en bici", userLocation) },
+                    onStart    = { rutaVM.startRoute(
+                        "La meva ruta", "Sortida en bici", userLocation) },
                     onStop     = { rutaVM.requestStop() },
                     onRecenter = {
                         userLocation?.let {
@@ -202,7 +203,7 @@ fun RutaScreen(navController: NavController) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        "Cargando mapa…",
+                        "Carregant mapa…",
                         color = Color.White,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
@@ -231,8 +232,8 @@ fun RutaScreen(navController: NavController) {
             if (showDiscardConfirm) {
                 AlertDialog(
                     onDismissRequest = { showDiscardConfirm = false },
-                    title            = { Text("Confirmar descarte") },
-                    text             = { Text("¿Seguro que quieres descartar la ruta?") },
+                    title            = { Text("Confirmar descart") },
+                    text             = { Text("Segur que vols eliminar la ruta?") },
                     confirmButton    = {
                         TextButton(onClick = {
                             rutaVM.discardRoute()
@@ -285,7 +286,7 @@ private fun removeCurrentLocationMarker(map: MapView) {
     val it = map.overlayManager.iterator()
     while (it.hasNext()) {
         val o = it.next()
-        if (o is Marker && o.title == "Ubicación actual") it.remove()
+        if (o is Marker && o.title == "Ubicació actual") it.remove()
     }
 }
 

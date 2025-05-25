@@ -35,7 +35,7 @@ fun FiltersDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Filtros de rutas") },
+        title = { Text("Filtres de rutes") },
         text = {
             Column(
                 Modifier
@@ -44,7 +44,7 @@ fun FiltersDialog(
                     .padding(end = 8.dp)
             ) {
                 // — Estado
-                Text("Estado", style = MaterialTheme.typography.labelMedium)
+                Text("Estat", style = MaterialTheme.typography.labelMedium)
                 Spacer(Modifier.height(6.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     listOf<RutaApi.EstatRutes?>(null)
@@ -56,7 +56,7 @@ fun FiltersDialog(
                                     routesVM.filtroEstado = est
                                     routesVM.applyFilters()
                                 },
-                                label = { Text(est?.name ?: "Todas") }
+                                label = { Text(est?.name ?: "Totes") }
                             )
                         }
                 }
@@ -64,7 +64,7 @@ fun FiltersDialog(
                 Spacer(Modifier.height(12.dp))
 
                 // — Fecha creación
-                Text("Fecha creación", style = MaterialTheme.typography.labelMedium)
+                Text("Data creació", style = MaterialTheme.typography.labelMedium)
                 Spacer(Modifier.height(6.dp))
                 Row(
                     Modifier.fillMaxWidth(),
@@ -90,7 +90,7 @@ fun FiltersDialog(
                         shape = RectangleShape
                     ) {
                         Text(
-                            text = routesVM.filtroFechaDesde?.format(displayFmt) ?: "Desde",
+                            text = routesVM.filtroFechaDesde?.format(displayFmt) ?: "Des de",
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -123,7 +123,7 @@ fun FiltersDialog(
                         shape = RectangleShape
                     ) {
                         Text(
-                            text = routesVM.filtroFechaHasta?.format(displayFmt) ?: "Hasta",
+                            text = routesVM.filtroFechaHasta?.format(displayFmt) ?: "Fins",
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -141,7 +141,7 @@ fun FiltersDialog(
                 Spacer(Modifier.height(12.dp))
 
                 // — Kilómetros
-                Text("Kilómetros (km)", style = MaterialTheme.typography.labelMedium)
+                Text("Quilòmetres (km)", style = MaterialTheme.typography.labelMedium)
                 Spacer(Modifier.height(4.dp))
                 RangeSlider(
                     value = routesVM.filtroKmRange,
@@ -157,7 +157,7 @@ fun FiltersDialog(
                 ) {
                     Text("${routesVM.filtroKmRange.start.toInt()} km")
                     Text(
-                        if (routesVM.filtroKmRange.endInclusive >= 100f) "sin límite"
+                        if (routesVM.filtroKmRange.endInclusive >= 100f) "sense límit"
                         else "${routesVM.filtroKmRange.endInclusive.toInt()} km"
                     )
                 }
@@ -165,7 +165,7 @@ fun FiltersDialog(
                 Spacer(Modifier.height(12.dp))
 
                 // — Tiempo (h)
-                Text("Tiempo (h)", style = MaterialTheme.typography.labelMedium)
+                Text("Temps (h)", style = MaterialTheme.typography.labelMedium)
                 Spacer(Modifier.height(4.dp))
                 RangeSlider(
                     value = routesVM.filtroTimeRange,
@@ -185,7 +185,7 @@ fun FiltersDialog(
                     }
                     Text(routesVM.filtroTimeRange.start.toHourMin())
                     Text(
-                        if (routesVM.filtroTimeRange.endInclusive >= 10f) "sin límite"
+                        if (routesVM.filtroTimeRange.endInclusive >= 10f) "sense límit"
                         else routesVM.filtroTimeRange.endInclusive.toHourMin()
                     )
                 }
@@ -193,7 +193,7 @@ fun FiltersDialog(
                 Spacer(Modifier.height(12.dp))
 
                 // — Velocidad media
-                Text("Velocidad media (km/h)", style = MaterialTheme.typography.labelMedium)
+                Text("Velocitat mitja (km/h)", style = MaterialTheme.typography.labelMedium)
                 Spacer(Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     OutlinedTextField(
@@ -209,19 +209,19 @@ fun FiltersDialog(
                             routesVM.filtroVelMedia = Operator.GREATER to it
                             routesVM.applyFilters()
                         }
-                    }) { Text("Más") }
+                    }) { Text("Més") }
                     Spacer(Modifier.width(4.dp))
                     Button(onClick = {
                         velInput.toFloatOrNull()?.let {
                             routesVM.filtroVelMedia = Operator.LESS to it
                             routesVM.applyFilters()
                         }
-                    }) { Text("Menos") }
+                    }) { Text("Menys") }
                 }
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) { Text("Cerrar") }
+            TextButton(onClick = onDismiss) { Text("Tancar") }
         }
     )
 }

@@ -34,13 +34,14 @@ fun inici(
 ) {
     val ctx = LocalContext.current
 
-    // recogemos email y cargamos rutas
+    // Recollim l'email i carreguem les rutes
     val user by sessionViewModel.userData.collectAsState()
     val email = user?.email
     val routesVM: RutesViewmodel = viewModel(
         factory = ViewModelProvider.AndroidViewModelFactory(ctx.applicationContext as Application)
     )
     val routes by remember { derivedStateOf { routesVM.routes } }
+
     LaunchedEffect(email) {
         email?.let { routesVM.loadRoutes(it) }
     }
@@ -51,14 +52,17 @@ fun inici(
     Scaffold(
         containerColor = Color(0x9C9CF3FF),
         floatingActionButton = {
-            FloatingActionButton(onClick = { navController.navigate("rutas") }) {
-                Icon(Icons.Default.Add, contentDescription = "Iniciar ruta")
+            FloatingActionButton(onClick = {
+                // Naveguem a "rutas", coincidint amb el NavHost :contentReference[oaicite:1]{index=1}
+                navController.navigate("rutas")
+            }) {
+                Icon(Icons.Default.Add, contentDescription = "Inicia ruta")
             }
         }
     ) { innerPadding ->
         Box(Modifier.fillMaxSize().padding(innerPadding)) {
             Column {
-                // Botón que abre el popup
+                // Botó per obrir el popup de filtres
                 Row(
                     Modifier
                         .fillMaxWidth()
@@ -68,13 +72,13 @@ fun inici(
                 ) {
                     Icon(Icons.Default.FilterList, contentDescription = null)
                     Spacer(Modifier.width(8.dp))
-                    Text("Filtros", style = MaterialTheme.typography.titleMedium)
+                    Text("Filtres", style = MaterialTheme.typography.titleMedium)
                 }
 
-                // lista de rutas
+                // Llista de rutes o missatge si està buida
                 if (routes.isEmpty()) {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("No hay rutas.", textAlign = TextAlign.Center)
+                        Text("No hi ha rutes.", textAlign = TextAlign.Center)
                     }
                 } else {
                     LazyColumn(
@@ -89,7 +93,7 @@ fun inici(
                 }
             }
 
-            // Popup de filtros
+            // Mostrem el dialog de filtres
             if (showFilters) {
                 FiltersDialog(
                     routesVM = routesVM,
@@ -99,7 +103,7 @@ fun inici(
         }
     }
 
-    // Popup de detalles
+    // Popup de detalls de ruta
     selected?.let {
         RouteDetailsDialog(ruta = it) { selected = null }
     }
@@ -115,26 +119,20 @@ private fun RouteCard(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            contentColor   = MaterialTheme.colorScheme.onPrimaryContainer
         )
     ) {
         Row(
             Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment   = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
-                Text(
-                    ruta.nom,
-                    style = MaterialTheme.typography.titleMedium
-                )
+                Text(ruta.nom, style = MaterialTheme.typography.titleMedium)
                 Spacer(Modifier.height(4.dp))
-                Text(
-                    "%.1f km".format(ruta.km),
-                    style = MaterialTheme.typography.bodySmall
-                )
+                Text("%.1f km".format(ruta.km), style = MaterialTheme.typography.bodySmall)
                 Spacer(Modifier.height(2.dp))
                 val secs = ruta.temps.toLong()
                 val hh = secs / 3600
@@ -148,7 +146,7 @@ private fun RouteCard(
             IconButton(onClick = { onViewDetails(ruta) }) {
                 Icon(
                     Icons.Default.Visibility,
-                    contentDescription = "Ver detalles",
+                    contentDescription = "Mostra detalls",
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
