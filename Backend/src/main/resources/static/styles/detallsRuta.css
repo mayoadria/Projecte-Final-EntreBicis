@@ -64,18 +64,20 @@ body {
     border-radius: 5px;
     font-size: 14px;
 }
-.btn-filtrar {
+/* Botó Filtrar */
+.btn-crear {
     background-color: #0099cc;
     color: #fff;
     padding: 8px 16px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    align-self: flex-end;
+    float: right;
+    margin-bottom: 10px;
     font-size: 16px;
     text-decoration: none;
 }
-.btn-filtrar:hover {
+.btn-crear:hover {
     background-color: #008bb3;
 }
 
@@ -103,13 +105,6 @@ body {
     color: #fff;
 }
 
-/* Títol */
-.route-title {
-    font-size: 18px;
-    font-weight: 700;
-    white-space: nowrap;
-}
-
 /* Estadístiques centrades */
 .route-stats {
     display: flex;
@@ -131,7 +126,7 @@ body {
     white-space: nowrap;
 }
 
-/* Switch a la dreta */
+/* Switch de validació */
 .switch-container {
     display: flex;
     align-items: center;
