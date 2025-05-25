@@ -32,7 +32,7 @@
             <a class="btn-crear" th:href="@{/recompensas/crear}">Crear</a>
 
             <!-- Botón para desplegar filtros -->
-            <button class="filter-toggle">Mostrar Filtros</button>
+            <button class="filter-toggle">Mostrar Filtres</button>
 
             <!-- Contenedor de filtros -->
             <div class="filter-content">
@@ -72,28 +72,28 @@
                 </div>
 
                 <div class="filtre">
-                    <label for="estat" class="filt-txt">Estado:</label>
+                    <label for="estat" class="filt-txt">Estat:</label>
                     <select id="estat" name="estat" class="filt-input">
-                        <option value="">Todos</option>
+                        <option value="">Tots</option>
                         <option th:each="estat : ${estats}" th:value="${estat}" th:text="${estat}"
                                 th:selected="${param.estat == estat}"></option>
                     </select>
                 </div>
 
                 <div class="filtre">
-                    <label for="ordenarPor" class="filt-txt">Ordenar por:</label>
+                    <label for="ordenarPor" class="filt-txt">Ordenar per:</label>
                     <select name="ordenarPor" id="ordenarPor" class="filt-input">
-                        <option value="cost" th:selected="${param.ordenarPor == 'cost'}">Costo</option>
-                        <option value="dataAsignacio" th:selected="${param.ordenarPor == 'dataAsignacio'}">Fecha de Asignación</option>
-                        <option value="dataCreacio" th:selected="${param.ordenarPor == 'dataCreacio'}">Fecha de Creación</option>
+                        <option value="cost" th:selected="${param.ordenarPor == 'cost'}">Cost</option>
+                        <option value="dataAsignacio" th:selected="${param.ordenarPor == 'dataAsignacio'}">Data d'Assignació</option>
+                        <option value="dataCreacio" th:selected="${param.ordenarPor == 'dataCreacio'}">Data de Creació</option>
                     </select>
                 </div>
 
                 <div class="filtre">
-                    <label for="orden" class="filt-txt">Orden:</label>
+                    <label for="orden" class="filt-txt">Ordre:</label>
                     <select name="orden" id="orden" class="filt-input">
-                        <option value="asc" th:selected="${param.orden == 'asc'}">Ascendente</option>
-                        <option value="desc" th:selected="${param.orden == 'desc'}">Descendente</option>
+                        <option value="asc" th:selected="${param.orden == 'asc'}">Ascendent</option>
+                        <option value="desc" th:selected="${param.orden == 'desc'}">Descendent</option>
                     </select>
                 </div>
 
@@ -112,9 +112,6 @@
                 <th>Estat</th>
                 <th>Email Usuari</th>
                 <th>Data Creació</th>
-                <th>Data Reserva</th>
-                <th>Data Assignació</th>
-                <th>Data Entrega</th>
                 <th>Accions</th>
             </tr>
             </thead>
@@ -127,9 +124,6 @@
                 <td th:text="${recompensa.estat}"></td>
                 <td th:text="${recompensa.usuariRecompensa != null ? recompensa.usuariRecompensa.nom : ''}"></td>
                 <td class="fecha-formateada" th:text="${recompensa.dataCreacio}"></td>
-                <td class="fecha-formateada" th:text="${recompensa.dataReserva}"></td>
-                <td class="fecha-formateada" th:text="${recompensa.dataAsignacio}"></td>
-                <td class="fecha-formateada" th:text="${recompensa.dataEntrega}"></td>
                 <td>
                     <a class="btn-view" th:href="@{/recompensas/visualizar/{id}(id=${recompensa.id})}">👁️</a>
                     <a class="btn-edit" th:href="@{/recompensas/edit/{id}(id=${recompensa.id})}">✏️</a>
