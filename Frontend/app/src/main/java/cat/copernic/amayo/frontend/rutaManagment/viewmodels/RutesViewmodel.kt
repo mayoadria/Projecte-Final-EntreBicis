@@ -11,6 +11,8 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 enum class Operator { GREATER, LESS }
+enum class SortField { DATE, KM, TIME, SPEED }
+enum class SortOrder { ASC, DESC }
 
 class RutesViewmodel(app: Application) : AndroidViewModel(app) {
 
@@ -28,6 +30,9 @@ class RutesViewmodel(app: Application) : AndroidViewModel(app) {
     var filtroKmRange    by mutableStateOf(0f..50f)
     var filtroTimeRange  by mutableStateOf(0f..5f)
     var filtroVelMedia   by mutableStateOf<Pair<Operator, Float>?>(null)
+    var sortField by mutableStateOf<SortField?>(null)
+    var sortOrder by mutableStateOf<SortOrder?>(null)
+
 
     fun loadRoutes(email: String) {
         viewModelScope.launch {
