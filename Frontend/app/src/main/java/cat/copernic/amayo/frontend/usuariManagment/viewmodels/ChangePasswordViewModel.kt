@@ -1,8 +1,10 @@
 package cat.copernic.amayo.frontend.usuariManagment.viewmodels
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cat.copernic.amayo.frontend.core.Logger
 import cat.copernic.amayo.frontend.usuariManagment.data.remote.UsuariApi
 import cat.copernic.amayo.frontend.usuariManagment.data.repositories.UsuariRetrofitTLSInstance
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -132,32 +134,36 @@ class ChangePasswordViewModel : ViewModel() {
      * Envia un correu de verificació al correu introduït.
      * Comprova prèviament si l’email és vàlid.
      */
-    fun enviarEmail() {
+    fun enviarEmail(context : Context) {
         viewModelScope.launch {
             try {
                 val isValid = comprovarEmail()
                 if (isValid) {
                     val response = usuariApi.sendEmail(email.value)
                     if (response.isSuccessful) {
+                        Logger.guardarLog(context, "Correu de verificació enviat correctament a: ${email.value}")
                         Log.d("ChangePasswordViewModel", "Correu enviat amb éxit!")
                         _emailSuccess.value = "Correu enviat amb éxit!"
                     } else if (response.code() == 404) {
+                        Logger.guardarLog(context, "Correu no trobat: ${email.value}")
                         Log.e(
                             "LoginViewModel",
                             "No s'ha trobat el correu: ${response.errorBody()?.string()} "
                         )
-                        _emailNotFoundError.value = "Correu electònic no registrat!"
+                        _emailNotFoundError.value = "Aquest correu no està registrat"
                         _realCodeAuth.value = ""
                     } else if (response.code() == 500) {
+                        Logger.guardarLog(context, "Error intern al enviar el correu a: ${email.value}")
                         Log.e(
                             "LoginViewModel",
                             "No s'ha enviat el correu: ${response.errorBody()?.string()} "
                         )
-                        _emailError.value = "No s'ha pogut enviar el correu!"
+                        _emailError.value = "Error enviant el correu. Torna-ho a provar"
                         _realCodeAuth.value = ""
                     }
                 }
             } catch (e: Exception) {
+                Logger.guardarLog(context, "Excepció al enviar el correu a ${email.value}: ${e.message}")
                 Log.e("CrearCartaViewModel", "Exepció al enviar el Correu: ${e.message}")
             }
         }
@@ -167,7 +173,7 @@ class ChangePasswordViewModel : ViewModel() {
      * Canvia la contrasenya de l’usuari després de validar el codi d’autenticació.
      * Comprova que totes les dades siguin vàlides abans d’enviar la sol·licitud.
      */
-    fun changePass() {
+    fun changePass(context: Context) {
         viewModelScope.launch {
             try {
 
@@ -189,9 +195,11 @@ class ChangePasswordViewModel : ViewModel() {
                             if (response != null) {
                                 if (response.isSuccessful) {
                                     val savedUser = response.body()
+                                    Logger.guardarLog(context, "Contrasenya actualitzada per a ${email.value}")
                                     Log.d("ChangePasswordViewModel", "Client modificat amb éxit:  $savedUser")
                                     _isUserPassUpdated.value = true
                                 } else {
+                                    Logger.guardarLog(context, "Error al modificar la contrasenya de ${email.value}")
                                     Log.e(
                                         "ChangePasswordViewModel",
                                         "Error al modificar el Client: ${response.errorBody()?.string()} "
@@ -201,6 +209,7 @@ class ChangePasswordViewModel : ViewModel() {
                             }
                         }
                     }else if (codeValidate.code() == 404) {
+                        Logger.guardarLog(context, "Codi incorrecte per ${email.value}")
                         Log.e(
                             "ChangePasswordViewModel",
                             "No s'ha trobat el token: ${codeValidate.errorBody()?.string()} "
@@ -208,13 +217,15 @@ class ChangePasswordViewModel : ViewModel() {
                         _codeError.value = "Codi de verificació incorrecte!"
                         _isUserPassUpdated.value = false
                     } else if (codeValidate.code() == 400) {
+                        Logger.guardarLog(context, "Correu de verificació incorrecte: ${email.value}")
                         Log.e(
                             "ChangePasswordViewModel",
                             "No s'ha trobat el correu: ${codeValidate.errorBody()?.string()} "
                         )
-                        _emailError.value = "Correu de verificació incorrecte!"
+                        _emailError.value = "Codi incorrecte"
                         _isUserPassUpdated.value = false
                     } else if (codeValidate.code() == 401) {
+                        Logger.guardarLog(context, "Codi caducat per ${email.value}")
                         Log.e(
                             "ChangePasswordViewModel",
                             "Codi caducat: ${codeValidate.errorBody()?.toString()}"
@@ -223,15 +234,18 @@ class ChangePasswordViewModel : ViewModel() {
                         _isUserPassUpdated.value = false
                     }
                     else {
+                        Logger.guardarLog(context, "Error desconegut al verificar el token per ${email.value}")
                         Log.e("CrearClientViewModel", "Error al verificar el token!")
                         _codeError.value = "Codi de verificació incorrecte!"
                         _isUserPassUpdated.value = false
                     }
                 } else {
+                    Logger.guardarLog(context, "Intent fallit de canvi de contrasenya: camps invàlids")
                     Log.e("CrearClientViewModel", "Error al modificar el Client, Camps Buits!")
                     _isUserPassUpdated.value = false
                 }
             } catch (e: Exception) {
+                Logger.guardarLog(context, "Excepció al canviar la contrasenya de ${email.value}: ${e.message}")
                 Log.e("CrearCartaViewModel", "Exepció al crear el Client: ${e.message}")
                 _isUserPassUpdated.value = false
             }
@@ -245,12 +259,12 @@ class ChangePasswordViewModel : ViewModel() {
     private fun comprovarEmail(): Boolean {
         var valid = true
         if (email.value.isEmpty()) {
-            _emptyEmailError.value = "El camp no pot estar buit!"
+            _emptyEmailError.value = "Introdueix el correu,el camp no pot estar buit!"
             valid = false
         }
 
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email.value).matches()) {
-            _emailError.value = "El correu electrònic no és vàlid!"
+            _emailError.value = "Format de correu incorrecte"
             valid = false
         }
 
@@ -266,27 +280,27 @@ class ChangePasswordViewModel : ViewModel() {
         var valid = true
 
         if (codeAuth.value.isEmpty()) {
-            _emptyCodeAuthError.value = "El camp no pot estar buit!"
+            _emptyCodeAuthError.value = "Introdueix el codi, el camp no pot estar buit!"
             valid = false
         }
 
         if (newContra.value.isEmpty()) {
-            _emptyNewContraError.value = "El camp no pot estar buit!"
+            _emptyNewContraError.value = "Introdueix la nova contrasenya, el camp no pot estar buït!"
             valid = false
         }
 
         if (repNewContra.value.isEmpty()) {
-            _emptyRepNewContraError.value = "El camp no pot estar buit!"
+            _emptyRepNewContraError.value = "Les contrasenyes no coincideixen "
             valid = false
         }
 
         if (newContra.value.length < 8) {
-            _contraError.value = "La contrasenya ha de tenir almenys 8 caràcters!"
+            _contraError.value = "La contrasenya ha de tenir minim 8 caràcters!"
             valid = false
         }
 
         if (newContra.value != repNewContra.value) {
-            _contraError.value = "Les contrasenyes han de coincidir!"
+            _contraError.value = "Les contrasenyes no coincideixen"
             valid = false
         }
 

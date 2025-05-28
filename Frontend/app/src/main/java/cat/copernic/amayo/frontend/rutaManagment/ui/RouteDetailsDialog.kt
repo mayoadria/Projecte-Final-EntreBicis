@@ -136,14 +136,14 @@ fun RouteDetailsDialog(
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        "Guardado el: ${ruta.fechaCreacion}",
+                        "Desat el: ${ruta.fechaCreacion}",
                         style = MaterialTheme.typography.labelSmall
                     )
                 }
                 IconButton(onClick = { showMarkers = !showMarkers }) {
                     Icon(
                         imageVector = if (showMarkers) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                        contentDescription = if (showMarkers) "Ocultar puntos" else "Mostrar puntos"
+                        contentDescription = if (showMarkers) "Ocultar punts" else "Mostrar punts"
                     )
                 }
             }
@@ -220,18 +220,18 @@ fun RouteDetailsDialog(
 
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     MetricCard("Distancia", "%.2f km".format(ruta.km), Modifier.weight(1f))
-                    MetricCard("Tiempo", formatSecToTime(ruta.temps), Modifier.weight(1f))
+                    MetricCard("Temps", formatSecToTime(ruta.temps), Modifier.weight(1f))
                 }
                 Spacer(Modifier.height(8.dp))
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    MetricCard("Vel. media", "%.2f km/h".format(ruta.velMitja), Modifier.weight(1f))
-                    MetricCard("Pausas", formatSecToTime(ruta.tempsParat), Modifier.weight(1f))
+                    MetricCard("Vel. mitja", "%.2f km/h".format(ruta.velMitja), Modifier.weight(1f))
+                    MetricCard("Pausa", formatSecToTime(ruta.tempsParat), Modifier.weight(1f))
                 }
             }
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("CERRAR", fontWeight = FontWeight.SemiBold)
+                Text("TANCAR", fontWeight = FontWeight.SemiBold)
             }
         }
     )
