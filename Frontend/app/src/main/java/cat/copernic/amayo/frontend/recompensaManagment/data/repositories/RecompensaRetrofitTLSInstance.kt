@@ -30,8 +30,8 @@ import javax.net.ssl.X509TrustManager
  * @property retrofitTLSInstance Instància única de [Retrofit] inicialitzada de forma lazy amb configuració TLS relaxada.
  */
 object RecompensaRetrofitTLSInstance {
-    private const val BASE_URL = "https://10.0.2.2:8443/api/recompensa/"
-    //private const val BASE_URL = "https://entrebicis.hopto.org:8443/api/recompensa/"
+    //private const val BASE_URL = "https://10.0.2.2:8443/api/recompensa/"
+    private const val BASE_URL = "https://entrebicis.hopto.org:8443/api/recompensa/"
 
     /**
      * Instància de [Retrofit] configurada per a connexions HTTPS sense validació estricta de certificats.

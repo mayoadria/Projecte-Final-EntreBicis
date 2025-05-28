@@ -17,8 +17,8 @@ import javax.net.ssl.X509TrustManager
  * pero no es recomendable para producción.
  */
 object UsuariRetrofitTLSInstance {
-    private const val BASE_URL = "https://10.0.2.2:8443/api/usuari/"
-    //private const val BASE_URL = "https://entrebicis.hopto.org:8443/api/usuari/"
+    //private const val BASE_URL = "https://10.0.2.2:8443/api/usuari/"
+    private const val BASE_URL = "https://entrebicis.hopto.org:8443/api/usuari/"
 
     /**
      * Instancia de Retrofit inicializada de forma perezosa con configuración TLS que acepta cualquier certificado.
