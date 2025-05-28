@@ -1,0 +1,165 @@
+/* Reinicio básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Layout general */
+body {
+    display: flex;
+    height: 100vh;
+    background-color: #3fa6c2; /* Color de fondo */
+}
+
+/* Barra lateral */
+.sidebar {
+    width: 200px;
+    background-color: #85d3f2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.profile {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile img {
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+}
+
+.profile h3 {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+nav ul {
+    list-style: none;
+    width: 100%;
+    text-align: left;
+}
+
+nav ul li a {
+    display: block;
+    padding: 10px 20px;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+nav ul li a:hover {
+    background-color: #72c0de;
+}
+
+.icon {
+    margin-right: 8px;
+}
+
+.logout {
+    margin-top: auto;
+    margin-bottom: 20px;
+}
+
+.logout a {
+    display: block;
+    padding: 10px 20px;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.logout a:hover {
+    background-color: #72c0de;
+}
+
+/* Contenido principal */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra el contenido horizontalmente */
+    justify-content: center; /* Centra verticalmente */
+    text-align: center;
+    position: relative; /* Permite posicionar el título de forma independiente */
+}
+
+/* Alinear el título a la izquierda */
+.main-content h1 {
+    position: absolute;
+    top: 20px; /* Ajusta según necesidad */
+    left: 20px;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: left;
+}
+
+a{
+    text-decoration: none;
+}
+
+.card-container {
+     display: grid;
+     grid-template-columns: repeat(4, 1fr); /* 4 columnas de igual tamaño */
+     gap: 20px; /* Espacio entre tarjetas */
+     justify-items: center; /* Centrar elementos en la cuadrícula */
+     text-align: center; /* Asegurar que los textos estén centrados */
+ }
+
+.card-item {
+    display: flex;
+    flex-direction: column; /* Apilar los elementos verticalmente */
+    align-items: center; /* Centrar horizontalmente */
+    text-decoration: none; /* Eliminar subrayados en enlaces */
+    color: inherit; /* Mantener el color del texto */
+}
+
+.card {
+    width: 175px;
+    height: 175px;
+    background-color: #85d3f2;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 100px;
+    transition: background-color 0.3s;
+}
+
+.card:hover {
+    background-color: #ffffff;
+}
+
+.card-item p {
+    margin-top: 10px; /* Espacio entre la tarjeta y el texto */
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+
+.foto {
+    width: 120px;
+    height: 120px;
+    background-color: #aeefff; /* Igual que el fondo para que se mezcle */
+    border-radius: 8px;
+    transition: background-image 0.3s ease; /* Transición suave al cambiar la imagen */
+    /* Opcional: Ocultar el texto interno para que no se note */
+    color: transparent;
+    margin-top: 100px;
+}
+
+/* Al pasar el ratón, se muestra la imagen */
+.foto:hover {
+    background-image: url("images/Carme Muñoz.png"); /* Reemplaza con la ruta de tu imagen */
+    background-size: cover;
+    background-position: center;
+}
+

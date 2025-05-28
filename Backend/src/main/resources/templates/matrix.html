@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Parámetros del Sistema</title>
+
+    <link rel="stylesheet" href="/styles/matrix.css"/>
+    <link rel="stylesheet" href="/styles/barraLateral.css"/>
+</head>
+
+<body>
+<!-- Barra lateral -->
+<div th:replace="barraLateral :: barralateral"></div>
+
+<div class="main-content">
+    <h1>Parámetros del Sistema</h1>
+
+    <div class="form-wrapper">
+        <div class="form-container">
+
+            <form class="user-form"
+                  th:action="@{/sistema/actualizar}"
+                  method="post">
+
+                <!-- --- velMax (Double) --- -->
+                <div class="form-field">
+                    <label for="velMax">Velocidad Máxima <small>(km/h)</small></label>
+                    <input type="number"
+                           id="velMax"
+                           name="velMax"
+                           step="0.1"
+                           th:value="${sistema.velMax}"/>
+                </div>
+
+                <!-- --- tempsMaxAturat → minutos --- -->
+                <div class="form-field">
+                    <label for="tempsMaxAturat">Tiempo Máx. Parado <small>(min)</small></label>
+                    <input type="number"
+                           id="tempsMaxAturat"
+                           name="tempsMaxAturat"
+                           min="0" step="1"
+                           th:value="${sistema.tempsMaxAturat != null ? sistema.tempsMaxAturat.toMinutes() : ''}"/>
+                </div>
+
+                <!-- --- conversioSaldo (Integer) --- -->
+                <div class="form-field">
+                    <label for="conversioSaldo">Conversión Saldo</label>
+                    <input type="number"
+                           id="conversioSaldo"
+                           name="conversioSaldo"
+                           step="1"
+                           th:value="${sistema.conversioSaldo}"/>
+                </div>
+
+                <!-- --- tempsRecollida → horas --- -->
+                <div class="form-field">
+                    <label for="tempsRecollida">Tiempo Recogida <small>(h)</small></label>
+                    <input type="number"
+                           id="tempsRecollida"
+                           name="tempsRecollida"
+                           min="0" step="1"
+                           th:value="${sistema.tempsRecollida != null ? sistema.tempsRecollida.toHours() : ''}"/>
+                </div>
+
+                <button type="submit" class="btn-crear">Guardar</button>
+            </form>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

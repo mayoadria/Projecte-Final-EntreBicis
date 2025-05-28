@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <!-- Tamaño algo mayor para realzar el efecto 3D -->
+    <size
+        android:width="28dp"
+        android:height="28dp" />
+
+    <!-- Gradiente radial para simular una iluminación en el centro -->
+    <gradient
+        android:type="radial"
+        android:gradientRadius="18dp"
+        android:centerColor="@android:color/holo_blue_bright"
+        android:startColor="@android:color/holo_blue_light"
+        android:endColor="@android:color/holo_blue_dark" />
+
+    <!-- Borde blanco para dar sensación de relieve -->
+    <stroke
+        android:width="2dp"
+        android:color="@android:color/white" />
+</shape>

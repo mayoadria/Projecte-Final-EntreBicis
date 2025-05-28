@@ -1,12 +1,17 @@
 package com.copernic.backend.Backend.entity;
 
-import com.copernic.backend.Backend.entity.enums.Estat;
+import com.copernic.backend.Backend.entity.enums.EstatRutes;
+import com.copernic.backend.Backend.entity.enums.CicloRuta;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -22,29 +27,46 @@ public class Rutes {
 
     @Column
     private String nom;
+
     @Column
     private String descripcio;
-    @Column
-    private int km;
+
+    @Column(name = "km", columnDefinition = "DECIMAL(7,3)") // 4 enteros + 3 decimales de precisión
+    private double km;
+
     @Enumerated(EnumType.STRING)
-    private Estat estat;
+    private EstatRutes estat;         // VALIDA / INVALIDA
+
+    @Enumerated(EnumType.STRING)
+    private CicloRuta cicloRuta;      // INICIADA / PAUSADA / FINALITZADA
+
     @Column
     private Double velMedia;
+
     @Column
     private Double velMax;
+
     @Column
     private Double velMitjaKM;
+
     @Column
     private Double tempsParat;
+
     @Column
     private String temps;
+    @Column
+    private Double punts;
+
+    @CreationTimestamp
+    @Column(name = "fecha_creacion", updatable = false)
+    private LocalDateTime fechaCreacion;
 
     @ManyToOne
     @JoinColumn(name = "usuari_email", nullable = false)
+    @JsonBackReference
     private Usuari usuari;
 
     @OneToMany(mappedBy = "rutes", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Posicio_Gps> posicionsGps;
-
-
 }

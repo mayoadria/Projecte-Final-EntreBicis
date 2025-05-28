@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${visualizar} ? 'Detalls del Punt de Bescanvi' : 'Modificar Punt de Bescanvi'"></title>
+    <link rel="stylesheet" href="/styles/crearUsuari.css">
+    <link rel="stylesheet" href="/styles/barraLateral.css">
+</head>
+<body>
+<!-- Barra lateral -->
+<div th:replace="barraLateral :: barralateral"></div>
+
+<div class="main-content">
+    <h1 th:text="${visualizar} ? 'Detalls del Punt de Bescanvi' : 'Modificar Punt de Bescanvi'"></h1>
+    <div class="create-user-container">
+        <div class="profile-picture" id="profilePicture">
+            <img id="fotoPreview" th:src="${fotoDataUrl != null ? fotoDataUrl : 'https://via.placeholder.com/150'}" />
+        </div>
+        <form class="user-form" th:action="@{/bescanvi/editar}" th:object="${bescanvi}" method="post" enctype="multipart/form-data">
+            <input type="hidden" th:field="*{id}">
+            <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" th:disabled="${visualizar}"/>
+            <div class="form-field">
+                <label for="nom">Punt de Bescanvi:</label>
+                <input type="text" id="nom" th:field="*{nom}" th:readonly="${visualizar}" required minlength="3" maxlength="255"
+                       title="El nom ha de tenir entre 3 i 255 caràcters.">>
+            </div>
+            <div class="form-field">
+                <label for="email">Email</label>
+                <input type="email" id="email" th:field="*{email}" th:readonly="${visualizar}" required>
+            </div>
+            <div class="form-field">
+                <label for="codiPostal">Codi Postal</label>
+                <input type="text" id="codiPostal" th:field="*{codiPostal}" th:readonly="${visualizar}" pattern="\d{5}" minlength="5"
+                       maxlength="5" inputmode="numeric" title="Introdueix un número de 5 dígits">
+            </div>
+            <div class="form-field">
+                <label for="observacions">Observacions</label>
+                <input type="text" id="observacions" th:field="*{observacions}" th:readonly="${visualizar}" required minlength="1" maxlength="255"
+                       title="Les observacions han de tenir entre 1 i 255 caràcters.">>
+            </div>
+            <div class="form-field">
+                <label for="telefon">Telefon</label>
+                <input type="text" id="telefon" th:field="*{telefon}" th:readonly="${visualizar}" pattern="\d{9}" minlength="9" maxlength="9" inputmode="numeric" title="Introdueix un número de 9 dígits">
+            </div>
+            <div class="form-field">
+                <label for="personaContacte">Persona de Contacte</label>
+                <input type="text" id="personaContacte" th:field="*{personaContacte}" th:readonly="${visualizar}" required
+                       minlength="1" maxlength="255"
+                       title="El nom de la persona de contacte han de tenir entre 1 i 255 caràcters.">>
+            </div>
+            <div class="form-field full-width">
+                <label for="adreca">Adreça</label>
+                <input type="text" id="adreca" th:field="*{adreca}" th:readonly="${visualizar}" required minlength="1" maxlength="255"
+                       title="El nom de la adreça ha de tenir entre 1 i 255 caràcters.">
+            </div>
+            <div class="form-actions" th:if="${!visualizar}">
+                <button type="submit">Guardar</button>
+            </div>
+
+            <div class="form-actions" th:if="${visualizar}">
+                <a class="btn-crear"
+                   th:href="@{/recompensas/punt/{puntId}(puntId=${bescanvi.id})}">
+                    Veure Recompenses
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    // Al hacer clic en el contenedor de foto se abre el selector de archivos
+    document.getElementById('profilePicture').addEventListener('click', function() {
+        document.getElementById('fotoInput').click();
+    });
+    // Previsualización de la foto seleccionada
+
+    document.getElementById('fotoInput').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('fotoPreview').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Recompensas</title>
+    <link rel="stylesheet" href="/styles/barraLateral.css">
+    <link rel="stylesheet" href="/styles/tablas.css">
+</head>
+<body>
+
+<!-- Barra lateral -->
+<div th:replace="barraLateral :: barralateral"></div>
+
+<!-- Contenido principal -->
+<div class="main-content">
+    <div class="content-wrapper">
+
+        <!-- Formulario de filtros -->
+        <form th:action="@{/recompensas/llistar}" method="get">
+            <h1>Llista de Recompenses</h1>
+            <!-- Missatge d'èxit -->
+            <div th:if="${successMessage}" class="alert-exit" role="alert">
+                <span th:text="${successMessage}"></span>
+            </div>
+
+            <!-- Missatge d'error -->
+            <div th:if="${error}" class="alert-error" role="alert">
+                <span th:text="${error}"></span>
+            </div>
+
+            <a class="btn-crear" th:href="@{/recompensas/crear}">Crear</a>
+
+            <!-- Botón para desplegar filtros -->
+            <button class="filter-toggle">Mostrar Filtres</button>
+
+            <!-- Contenedor de filtros -->
+            <div class="filter-content">
+
+                <div class="filtre">
+                    <label for="nomRecompensa" class="filt-txt">Descripció:</label>
+                    <input type="text" id="nomRecompensa" name="nomRecompensa" th:value="${param.nomRecompensa}" class="filt-input">
+                </div>
+
+                <div class="filtre">
+                    <label for="puntBescanvi" class="filt-txt">Punt de Bescanvi:</label>
+                    <input type="text" id="puntBescanvi" name="puntBescanvi" th:value="${param.puntBescanvi}" class="filt-input">
+                </div>
+
+                <div class="filtre">
+                    <label for="nomUsuari" class="filt-txt">Usuari:</label>
+                    <input type="text" id="nomUsuari" name="nomUsuari" th:value="${param.nomUsuari}" class="filt-input">
+                </div>
+
+                <!-- Sustituye el bloque antiguo de rango de puntos -->
+                <div class="filtre">
+                    <label for="minPunts" class="filt-txt">Punts mínims:</label>
+                    <input type="number"
+                           id="minPunts"
+                           name="minPunts"
+                           th:value="${param.minPunts}"
+                           class="filt-input">
+                </div>
+
+                <div class="filtre">
+                    <label for="maxPunts" class="filt-txt">Punts màxims:</label>
+                    <input type="number"
+                           id="maxPunts"
+                           name="maxPunts"
+                           th:value="${param.maxPunts}"
+                           class="filt-input">
+                </div>
+
+                <div class="filtre">
+                    <label for="estat" class="filt-txt">Estat:</label>
+                    <select id="estat" name="estat" class="filt-input">
+                        <option value="">Tots</option>
+                        <option th:each="estat : ${estats}" th:value="${estat}" th:text="${estat}"
+                                th:selected="${param.estat == estat}"></option>
+                    </select>
+                </div>
+
+                <div class="filtre">
+                    <label for="ordenarPor" class="filt-txt">Ordenar per:</label>
+                    <select name="ordenarPor" id="ordenarPor" class="filt-input">
+                        <option value="cost" th:selected="${param.ordenarPor == 'cost'}">Cost</option>
+                        <option value="dataAsignacio" th:selected="${param.ordenarPor == 'dataAsignacio'}">Data d'Assignació</option>
+                        <option value="dataCreacio" th:selected="${param.ordenarPor == 'dataCreacio'}">Data de Creació</option>
+                    </select>
+                </div>
+
+                <div class="filtre">
+                    <label for="orden" class="filt-txt">Ordre:</label>
+                    <select name="orden" id="orden" class="filt-input">
+                        <option value="asc" th:selected="${param.orden == 'asc'}">Ascendent</option>
+                        <option value="desc" th:selected="${param.orden == 'desc'}">Descendent</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-crear">Filtrar</button>
+            </div>
+        </form>
+
+        <!-- Tabla de recompensas -->
+        <table class="users-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Descripció</th>
+                <th>Punt de Bescanvi</th>
+                <th>Cost</th>
+                <th>Estat</th>
+                <th>Email Usuari</th>
+                <th>Data Creació</th>
+                <th>Accions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="recompensa : ${recompensas}">
+                <td th:text="${recompensa.id}"></td>
+                <td th:text="${recompensa.descripcio}"></td>
+                <td th:text="${recompensa.puntBescanviId?.nom}"></td>
+                <td th:text="${recompensa.cost}"></td>
+                <td th:text="${recompensa.estat}"></td>
+                <td th:text="${recompensa.usuariRecompensa != null ? recompensa.usuariRecompensa.nom : ''}"></td>
+                <td class="fecha-formateada" th:text="${recompensa.dataCreacio}"></td>
+                <td>
+                    <a class="btn-view" th:href="@{/recompensas/visualizar/{id}(id=${recompensa.id})}">👁️</a>
+                    <a class="btn-edit" th:href="@{/recompensas/edit/{id}(id=${recompensa.id})}">✏️</a>
+                    <a class="btn-delete" th:href="@{/recompensas/delete/{id}(id=${recompensa.id})}"
+                       onclick="return confirm('Estás segur que vols esborrar aquesta recompensa?');">🗑️</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<!-- Mostrar y ocultar filtros -->
+<script>
+    const filterToggle = document.querySelector('.filter-toggle');
+    const filterContent = document.querySelector('.filter-content');
+
+    filterToggle.addEventListener('click', function (event) {
+        event.preventDefault();
+        filterContent.classList.toggle('active');
+    });
+</script>
+
+<!-- Formateo de fechas -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const celdas = document.querySelectorAll(".fecha-formateada");
+
+        celdas.forEach(celda => {
+            const valorOriginal = celda.textContent.trim();
+            if (!valorOriginal) return;
+
+            const fecha = new Date(valorOriginal);
+            if (!isNaN(fecha)) {
+                const fechaStr = fecha.toISOString().split("T")[0];
+                const horaStr = fecha.toTimeString().split(" ")[0];
+                celda.innerHTML = `${fechaStr}<br>${horaStr}`;
+            }
+        });
+    });
+</script>
+</body>
+</html>

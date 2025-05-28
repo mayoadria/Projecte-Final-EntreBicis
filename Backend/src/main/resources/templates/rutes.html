@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <title>Rutes</title>
+
+    <!-- Estils propis -->
+    <link rel="stylesheet" href="/styles/rutes.css"/>
+    <link rel="stylesheet" href="/styles/barraLateral.css"/>
+
+    <!-- Petits retocs visuals per a targetes “sense ruta” -->
+    <style>
+        .route-card          { cursor: pointer; }
+        .route-card.disabled { cursor: default; opacity: .65; }
+    </style>
+</head>
+<body>
+<!-- Barra lateral -->
+<div th:replace="barraLateral :: barralateral" class="sidebar"></div>
+
+<!-- Contenido principal -->
+<div class="main-content">
+    <div class="content-wrapper">
+        <h1>Rutes</h1>
+
+        <!-- Mensaje si no hay rutas -->
+        <div th:if="${routeCards == null || #lists.isEmpty(routeCards)}" class="no-routes">
+            <p>No hi ha rutes per mostrar.</p>
+        </div>
+
+        <!-- Tarjetas de rutas -->
+        <div class="routes-grid"
+             th:if="${routeCards != null and !#lists.isEmpty(routeCards)}">
+            <div class="route-card"
+                 th:each="card : ${routeCards}"
+                 th:data-id="${card.id}"
+                 th:classappend="${card.id == null} ? 'disabled' : ''">
+
+                <!-- Cabecera -->
+                <div class="route-header">
+                    <span class="route-title" th:text="${card.title}">Ruta…</span>
+                    <div class="route-stats">
+                        <div><span th:text="${card.distance}">2,55</span> Km</div>
+                        <div><span th:text="${card.points}">2,5</span> p</div>
+                        <div th:text="${card.time}">10:00</div>
+                        <div><span th:text="${card.avgSpeed}">15</span> km/h</div>
+                    </div>
+                </div>
+
+                <!-- Imagen -->
+                <img src="/styles/images/LogoEntrebicis.png" alt="Logo Entrebicis"/>
+
+                <!-- Pie -->
+                <div class="route-footer">
+                    <span th:text="${card.userName}">Nom Usuari</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JS para navegación -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.route-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const id = card.dataset.id;
+                if (id && id !== 'null' && id.trim() !== '') {
+                    window.location.href = `/ruta/detalls/${id}`;
+                } else {
+                    alert('Aquest usuari encara no té cap ruta registrada.');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

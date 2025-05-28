@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Editar Usuari - EntreBicis</title>
+    <link rel="stylesheet" href="/styles/crearUsuari.css"/>
+    <link rel="stylesheet" href="/styles/barraLateral.css"/>
+</head>
+<body>
+<!-- Barra lateral -->
+<div th:replace="barraLateral :: barralateral"></div>
+
+<!-- Contenido principal -->
+<div class="main-content">
+    <h1>Editar Usuari</h1>
+
+    <div class="create-user-container">
+        <!-- Foto -->
+        <div class="profile-picture" id="profilePicture">
+            <img id="fotoPreview"
+                 th:src="${fotoDataUrl != null ? fotoDataUrl : 'https://via.placeholder.com/150'}"/>
+        </div>
+
+        <!-- ========= FORMULARIO ========= -->
+        <!-- Añadimos th:object para que *{...} conozca el modelo -->
+        <form class="user-form"
+              th:object="${usuariForm}"
+              th:action="@{/usuaris/editarUsuari}"
+              method="POST"
+              enctype="multipart/form-data">
+
+            <!-- Foto oculta -->
+            <input type="file" id="fotoInput" name="fileFoto" accept="image/*"
+                   style="display:none" th:disabled="${visualitzar}"/>
+
+            <!-- Email original (id) -->
+            <input type="hidden" name="originalEmail" th:value="*{email}"/>
+
+            <!-- Correu (solo lectura) -->
+            <div class="form-field">
+                <label for="email">Correu</label>
+                <input id="email" type="email" th:field="*{email}" readonly/>
+            </div>
+
+            <!-- Nom -->
+            <div class="form-field">
+                <label for="nom">Nom</label>
+                <input id="nom" type="text" th:field="*{nom}" th:readonly="${visualitzar}" required/>
+            </div>
+
+            <!-- Cognom -->
+            <div class="form-field">
+                <label for="cognom">Cognom</label>
+                <input id="cognom" type="text" th:field="*{cognom}" th:readonly="${visualitzar}" required/>
+            </div>
+
+            <!-- Telèfon -->
+            <div class="form-field">
+                <label for="telefon">Telèfon</label>
+                <input id="telefon" type="text"
+                       pattern="\d{9}" minlength="9" maxlength="9"
+                       inputmode="numeric"
+                       title="Introdueix 9 dígits"
+                       th:field="*{telefon}" th:readonly="${visualitzar}" required/>
+            </div>
+
+            <!-- Saldo -->
+            <div class="form-field">
+                <label for="saldo">Saldo</label>
+                <input id="saldo" type="number" min="0" max="1000" step="0.1"
+                       th:field="*{saldo}" th:readonly="${visualitzar}" required/>
+            </div>
+
+            <!-- Població -->
+            <div class="form-field">
+                <label for="poblacio">Població</label>
+                <input id="poblacio" type="text" th:field="*{poblacio}" th:readonly="${visualitzar}" required/>
+            </div>
+
+
+
+            <!-- ---------- ESTAT ---------- -->
+            <div class="form-field">
+                <label>Estat</label>
+
+                <!-- Selector editable -->
+                <select th:if="${!visualitzar}" th:field="*{estat}">
+                    <option th:each="e : ${estats}"
+                            th:value="${e}"
+                            th:text="${e}"></option>
+                </select>
+
+                <!-- Campo solo lectura -->
+                <input th:if="${visualitzar}" type="text" th:value="*{estat}" readonly/>
+            </div>
+
+            <!-- ---------- ROL ---------- -->
+            <div class="form-field">
+                <label>Rol</label>
+
+                <!-- Selector editable -->
+                <select th:if="${!visualitzar}" th:field="*{rol}">
+                    <option th:each="r : ${rols}"
+                            th:value="${r}"
+                            th:text="${r}"></option>
+                </select>
+
+                <!-- Campo solo lectura -->
+                <input th:if="${visualitzar}" type="text" th:value="*{rol}" readonly/>
+            </div>
+
+            <div class="form-field full-width">
+                <label for="observacions">Observacions</label>
+                <textarea id="observacions" th:field="*{observaciones}" th:readonly="${visualitzar}"
+                          th:attrappend="
+                              required=${!visualitzar ? 'required' : null},
+                              minlength=${!visualitzar ? 1 : null},
+                              maxlength=${!visualitzar ? 255 : null},
+                              title=${!visualitzar ? 'Les observacions han de tenir entre 1 i 255 caràcters.' : null}"></textarea>
+            </div>
+
+            <!-- Botón Guardar -->
+            <div class="form-actions" th:if="${!visualitzar}">
+                <button type="submit">Guardar</button>
+            </div>
+
+            <div class="form-actions" th:if="${visualitzar}">
+                <a class="btn-crear"
+                   th:href="@{/recompensas/recompensa/{recId}(recId=${usuariForm.email})}">
+                    Veure Recompenses
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    /* Selector de foto */
+    document.getElementById('profilePicture')
+        .addEventListener('click', () => document.getElementById('fotoInput').click());
+
+    document.getElementById('fotoInput')
+        .addEventListener('change', e => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = ev => document.getElementById('fotoPreview').src = ev.target.result;
+                reader.readAsDataURL(file);
+            }
+        });
+</script>
+</body>
+</html>

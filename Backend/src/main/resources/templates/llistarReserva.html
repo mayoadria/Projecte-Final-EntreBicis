@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Recompensas</title>
+    <link rel="stylesheet" href="/styles/tablas.css">
+    <link rel="stylesheet" href="/styles/barraLateral.css">
+</head>
+<body>
+<!-- Barra lateral -->
+<div th:replace="barraLateral :: barralateral"></div>
+
+<div class="main-content">
+    <div class="content-wrapper">
+    <h1>Llista Reservas</h1>
+    <div th:if="${errorS}" style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #f5c6cb;">
+        <span th:text="${errorS}"></span>
+    </div>
+    <table class="users-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nom Usuari</th>
+            <th>Estat de la Reserva</th>
+            <th>Descripcio Recompensa</th>
+            <th>Data de la Reserva</th>
+            <th>Accions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="reserva : ${reservas}">
+            <td th:text="${reserva.id}"></td>
+            <td th:text="${reserva.emailUsuari != null ? reserva.emailUsuari.nom : 'Sense usuari'}"></td>
+            <td th:text="${reserva.estat}"></td>
+            <td th:text="${reserva.idRecompensa.descripcio}"></td>
+            <td class="fecha-formateada" th:text="${reserva.datareserva}"></td>
+            <td>
+                <form th:action="@{/reserva/canviarEstat}" method="post" class="acciones">
+                    <input type="hidden" name="reservaId" th:value="${reserva.id}" />
+                    <button type="submit"
+                            class="btn-accion"
+                            th:text="${reserva.estat == 'ASSIGNADA' ?'Canviar a DESASSIGNADA' : 'Canviar a ASSIGNADA'}"></button>
+                    <a class="btn-accion btn-delete"
+                       th:href="@{/reserva/delete/{id}(id=${reserva.id})}"
+                       onclick="return confirm('Estás segur que vols esborrar aquesta reserva?');"
+                    >🗑️</a>
+                </form>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const celdas = document.querySelectorAll(".fecha-formateada");
+
+        celdas.forEach(celda => {
+            const valorOriginal = celda.textContent.trim();
+            if (!valorOriginal) return;
+
+            const fecha = new Date(valorOriginal);
+            if (!isNaN(fecha)) {
+                const fechaStr = fecha.toISOString().split("T")[0];
+                const horaStr = fecha.toTimeString().split(" ")[0];
+                celda.innerHTML = `${fechaStr}<br>${horaStr}`;
+            }
+        });
+    });
+</script>
+</body>
+</html>

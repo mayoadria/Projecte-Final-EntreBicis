@@ -1,0 +1,226 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    height: 100vh;
+    background-color: #3fa6c2; /* Fondo unificado */
+}
+
+/* ===============================
+   BARRA LATERAL
+   =============================== */
+.sidebar {
+    width: 200px;
+    background-color: #85d3f2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.profile {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile img {
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+}
+
+.profile h3 {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #333;
+}
+
+nav ul {
+    list-style: none;
+    width: 100%;
+    text-align: left;
+}
+
+nav ul li a {
+    display: block;
+    padding: 10px 20px;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+nav ul li a:hover,
+.logout a:hover {
+    background-color: #72c0de;
+}
+
+.icon {
+    margin-right: 8px;
+}
+
+.logout {
+    margin-top: auto;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.logout a {
+    display: block;
+    padding: 10px 20px;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+/* ===============================
+   CONTENIDO PRINCIPAL
+   =============================== */
+.main-content {
+    flex: 1;
+    padding: 10px 20px 20px 20px; /* top right bottom left */
+    font-size: 0.9rem;
+}
+
+/* Título */
+.main-content h1 {
+    color: #ffffff;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+/* ===============================
+   CONTENEDOR
+   =============================== */
+.create-user-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* ===============================
+   FOTO DE PERFIL
+   =============================== */
+.profile-picture {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    margin-bottom: 20px;
+    border: 2px solid #0099cc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-picture .edit-icon {
+    position: absolute;
+    font-size: 40px;
+    color: #0099cc;
+}
+
+/* ===============================
+   FORMULARIO
+   =============================== */
+.user-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 600px;
+    width: 100%;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-field label {
+    font-weight: bold;
+    color: #333;
+}
+
+.form-field input,
+.user-form textarea,
+.user-form select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background-color: #fff;
+    color: #333;
+    font-family: inherit;
+}
+
+.user-form textarea {
+    height: 80px;
+    resize: none;
+}
+
+/* Campos que ocupan toda la fila */
+.user-form .full-width {
+    grid-column: 1 / span 2;
+}
+
+/* ===============================
+   BOTÓN CREAR / GUARDAR
+   =============================== */
+.btn-crear,
+.form-actions button {
+    background-color: #0099cc;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background-color 0.3s;
+}
+
+.btn-crear:hover,
+.form-actions button:hover {
+    background-color: #008bb3;
+}
+
+/* Alineación del botón guardar */
+.form-actions {
+    grid-column: 1 / span 2;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Botón de visualización (icono 👁️) */
+.btn-view {
+    font-size: 1.2rem;
+    margin-left: 8px;
+    text-decoration: none;
+}
+
+/* ===============================
+   MENSAJE DE ERROR
+   =============================== */
+.alert-error {
+    color: #a00;
+    background-color: #fdd;
+    border: 1px solid #faa;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    text-align: center;
+    width: 100%;
+}

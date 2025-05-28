@@ -1,0 +1,149 @@
+/* Reinicio básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* BODY con espacio para la sidebar fija */
+body {
+    padding-left: 220px; /* espacio para la barra lateral */
+}
+
+/* Barra lateral fija */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 220px;
+    height: 100vh;
+    background-color: #58b7d3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    z-index: 1000;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Perfil del usuario */
+.profile {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile img {
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+}
+
+.profile h3 {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+/* Contenedor de navegación */
+.nav-sections {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 80%;
+    flex: 1;
+}
+
+/* Listas */
+.nav-top,
+.nav-bottom {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+/* Estilo de enlaces */
+.nav-top li a,
+.nav-bottom li a {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px 20px;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+/* Hover en enlaces */
+.nav-top li a:hover,
+.nav-bottom li a:hover {
+    background-color: #72c0de;
+}
+
+/* Iconos */
+.icon {
+    margin-right: 8px;
+}
+
+/* Parte inferior de navegación */
+.nav-bottom {
+    margin-top: auto;
+    margin-bottom: 40px;
+}
+
+.nav-bottom li:not(:last-child) {
+    margin-bottom: 0;
+}
+
+/* -------------------------------- */
+/* RESPONSIVE */
+/* -------------------------------- */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 10px 20px;
+    }
+
+    .profile {
+        display: none; /* opcional en móvil */
+    }
+
+    .nav-sections {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .nav-top,
+    .nav-bottom {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+        margin-top: 10px;
+    }
+
+    body {
+        padding-left: 0;
+        padding-top: 120px;
+    }
+
+    .nav-bottom {
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+
+    .nav-top li a,
+    .nav-bottom li a {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+}

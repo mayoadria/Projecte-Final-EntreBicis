@@ -1,0 +1,186 @@
+/* ========== Reset mínim ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* ========== Layout general ========== */
+body {
+    display: flex;
+    height: 100vh;
+    background: #aeefff;
+}
+.main-content {
+    flex: 1;
+    padding: 24px 32px;
+    overflow-y: auto;
+}
+.main-content h1 {
+    margin-bottom: 20px;
+}
+
+/* ========== Estils de filtres (basats en tablas.css) ========== */
+.filter-form {
+    margin-bottom: 24px;
+}
+.filter-toggle {
+    background-color: #0099cc;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+}
+.filter-content {
+    display: none;
+    flex-wrap: wrap;
+    gap: 10px;
+    background-color: #007bb5;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 24px;
+}
+.filter-content.active {
+    display: flex;
+}
+.filtre {
+    display: flex;
+    flex-direction: column;
+    width: 150px;
+}
+.filt-txt {
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #fff;
+}
+.filt-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+/* Botó Filtrar */
+.btn-crear {
+    background-color: #0099cc;
+    color: #fff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
+    margin-bottom: 10px;
+    font-size: 16px;
+    text-decoration: none;
+}
+.btn-crear:hover {
+    background-color: #008bb3;
+}
+
+/* ========== Tarjeta de ruta ========== */
+.route-card {
+    display: flex;
+    flex-direction: column;
+    background: #6de0ff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    margin-bottom: 20px;
+}
+.route-card:hover {
+    transform: none;
+}
+
+/* Cabecera: grid 3 columnes */
+.route-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    padding: 12px 16px;
+    background: #49c2e6;
+    color: #fff;
+}
+
+/* Estadístiques centrades */
+.route-stats {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+}
+.route-stats .stat {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    font-size: 14px;
+}
+.route-stats .stat strong {
+    font-size: 16px;
+    font-weight: 600;
+}
+.unit {
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* Switch de validació */
+.switch-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.switch-text {
+    font-size: 14px;
+}
+.switch {
+    position: relative;
+    width: 42px;
+    height: 24px;
+}
+.switch input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+.switch .slider {
+    position: absolute;
+    inset: 0;
+    background-color: #ccc;
+    border-radius: 24px;
+    transition: .2s;
+}
+.switch .slider:before {
+    content: "";
+    position: absolute;
+    width: 16px; height: 16px;
+    left: 4px; bottom: 4px;
+    background: #fff;
+    border-radius: 50%;
+    transition: .2s;
+}
+.switch input:checked + .slider {
+    background-color: #4caf50;
+}
+.switch input:checked + .slider:before {
+    transform: translateX(18px);
+}
+
+/* Descripció */
+.route-description {
+    padding: 8px 16px;
+    background: #e0f7ff;
+    color: #003550;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+/* Mapa */
+.map {
+    width: 100%;
+    height: 320px;
+}

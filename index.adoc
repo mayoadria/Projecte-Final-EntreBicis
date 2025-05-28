@@ -20,14 +20,26 @@ image::Logo.png[align=left]
 
 
 
-* link:./Documents/RecollidaRequerimentsUnai.html[Recollida Requeriments Unai]
-* link:./Documents/RecollidaReuerimentsAdria.html[Recollida Requeriments Adria]
-* link:./Documents/FaseDisseny.html[Fase de Disseny]
-* link:[Fase d'Implementació]
+* link:./Documents/RecollidaRequerimentsUnai.adoc[Recollida Requeriments Unai]
+* link:./Documents/RecollidaReuerimentsAdria.adoc[Recollida Requeriments Adria]
+* link:./Documents/FaseDisseny.adoc[Fase de Disseny]
 
 = Organització
 
 * link:https://trello.com/b/eI2V5YVE/entre-bicis[Trello]
+
+= Linkedin
+
+* link:https://www.linkedin.com/in/adri%C3%A0-mayo-741875239/[Adria]
+
+* link:https://www.linkedin.com/in/unai-reyes-conde-117192252/[Unai]
+
+
+= Portafoli
+
+* link:https://github.com/mayoadria[Adria]
+
+* link:https://github.com/UnaiReyes[Unai]
 
 
 

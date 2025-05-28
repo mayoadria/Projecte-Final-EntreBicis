@@ -1,0 +1,137 @@
+/* Reinicio básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Fondo */
+body {
+    background-color: #aeefff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Contenedor principal */
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+/* Caja de login */
+.login-box {
+    background-color: #b3ecff;
+    border-radius: 12px;
+    padding: 35px 30px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease-in-out;
+}
+
+.login-box h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #222;
+    font-size: 24px;
+}
+
+/* Grupos de entrada */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border 0.2s;
+}
+
+.input-group input:focus {
+    border-color: #0099cc;
+    outline: none;
+}
+
+/* Campo de contraseña */
+/* Agrupación del campo de contraseña */
+.password-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Campo de contraseña */
+.password-field input {
+    width: 100%;
+    padding: 10px 40px 10px 10px; /* espacio para el icono a la derecha */
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+/* Botón del ojo */
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #333;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-password:hover {
+    color: #0099cc;
+}
+
+/* Botón de login */
+.btn-login {
+    width: 100%;
+    background-color: #0099cc;
+    color: #fff;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.btn-login:hover {
+    background-color: #008bb3;
+}
+
+/* Contenedor para el botón */
+.btn-container {
+    margin-top: 25px;
+}
+
+/* Alerta de error */
+.alert-error {
+    color: #a94442;
+    background-color: #f2dede;
+    border: 1px solid #ebccd1;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    text-align: center;
+}
