@@ -16,55 +16,57 @@
 Fase de disseny
 
 === Contextualització de l’organització client
+==== Objectiu de l’aplicació
 
-L’objectiu principal de l’aplicació és l’educació mediambiental i cívica.
+L’objectiu principal de l’aplicació és promoure l’educació mediambiental i cívica mitjançant l’ús de la bicicleta.
 
-Les bicicletes seran compartides, s’envien al mecànic del poble, posar-les a punt fins que apareix una persona que es vol fer a càrrec.
-Aquesta aplicació es mantindrà a partir de donatius de la gent del poble o de persones de pobles propers.
-A part es faran trobades per fer intercanvis de coneixements sostenibles.
+==== Finançament
 
-Només es poden registrar persones que viuen a Vilanova i la Geltrú, Garraf, Alt Penedès, o que viuen a pobles propers. També persones que fan la seva vida a Vilanova, no seria un registre automàtic, s’ha de poder tenir una petita connexió online.
+L’aplicació es mantindrà gràcies als donatius dels habitants de Vilanova i la Geltrú i de pobles propers.
 
-Hi haurà un petit qüestionari a la web
+==== Registre d’usuaris
 
-L’alta del registre no hi serà automàtic, l’haurà de fer un administrador. A part i s'haurà de fer una petita trucada via meet entre l’administrador i la persona que es vol registrar.
+Només es podran registrar persones que resideixin a Vilanova i la Geltrú, al Garraf, a l’Alt Penedès o en municipis propers. També podran registrar-s’hi persones que, tot i no viure-hi, desenvolupin la seva vida quotidiana a Vilanova. El registre no serà automàtic: caldrà disposar d’una connexió en línia mínima i completar un breu qüestionari al web.
+L’alta a l’aplicació haurà de ser aprovada per un administrador, i es completarà amb una breu trucada via Meet entre l’usuari i l’administrador.
 
-Les bicicletes no hi tindran cap identificador
+==== Funcionament i sistema de punts
 
-L’aplicació hi tindrà diferents comerços o recompenses, per exemple:
-Ball de flamenc
-Yoga
-Abonament a un circuit curt en bicicleta (Tour)
-Floristeries
-Un esmorzar a diferents restaurants
+Les bicicletes no portaran cap identificador específic.
 
-La manera d’obtenir les recompenses hi serà via uns punts que obtindrà en realitzar les diferents rutes amb bicicleta.
+L’aplicació oferirà un sistema de recompenses, disponibles a través de diferents comerços i serveis com per 
 
-Les recompenses s'hauran de reservar a través de l’aplicació i el client hi tindrà un límit de 48 hores per recollir la recompensa.
+* Classes de flamenc
 
-El comerç no hi validarà la recompensa, hi serà el mateix ciclista quan rebi la recompensa.
+* Sessions de ioga
 
-El saldo de punts s’ha de restar quan es fa la reserva del producte.
+* Abonaments per a circuits curts en bicicleta
 
-Les rutes es validaran tenint en compte l’inici i el final de la ruta i la seva velocitat mitjana.
+* Descomptes o regals en floristeries
 
-Les rutes les haurà de revisar l’administrador.
+* Esmorzars en restaurants locals
 
-Hi haurà un màxim de recompenses mensuals, entre 3 o 4 per usuari.
+Les recompenses s’obtindran mitjançant punts, que es guanyaran en completar rutes en bicicleta.
+Cada quilòmetre recorregut equivaldrà a 10 punts.
 
-Els ciclistes no hi tindran un límit de quilòmetres màxim per dia.
+Les recompenses s’hauran de reservar a través de l’aplicació, i l’usuari disposarà de 48 hores per recollir-les. La validació de la recompensa no la farà el comerç, sinó que serà responsabilitat del mateix ciclista un cop la rebi.
+Els punts s’hauran de descomptar del saldo de l’usuari en el moment de fer la reserva.
 
-No hi haurà límit mínim de quilòmetres per fer una ruta.
+==== Validació de rutes
 
-Els punts s’hi podran acumular entre diferents rutes.
+Les rutes es validaran tenint en compte l’inici, el final i la velocitat mitjana del recorregut. Aquestes hauran de ser revisades per un administrador.
+Les rutes no tindran ni un límit màxim ni mínim de quilòmetres per dia. Els punts es podran acumular entre diferents rutes.
 
-L’equivalència dels punts hi serà igual a 1 quilòmetre igual a 10 punts
+L’usuari haurà d’iniciar la ruta des del seu telèfon mòbil. Si el ciclista queda aturat durant un període de temps determinat, la ruta es donarà per finalitzada. Tanmateix, els trams amb velocitat zero no afectaran el càlcul de la mitjana.
 
-L’usuari haurà d’iniciar la ruta des del seu telèfon, a part en el cas que es quedi aturat durant un límit de temps, la ruta es donarà com finalitzada. Finalment, aquest tram on el ciclista es quedi aturat, si la velocitat és igual 0, no hi afectarà la mitjana de la ruta.
+Es permetrà pausar i reprendre la ruta en qualsevol moment.
 
-Els missatges de comunicació amb l’usuari hi seran a través de l’aplicació del telèfon
+==== Límit de recompenses
 
-Les rutes podran pausar i quan es vulgui es podrà continuar amb la mateixa ruta
+Cada usuari podrà obtenir un màxim de 3 o 4 recompenses mensuals.
+
+==== Comunicació
+
+Totes les comunicacions amb l’usuari es faran a través de l’aplicació mòbil.
 
 
 === Breu resum del projecte
