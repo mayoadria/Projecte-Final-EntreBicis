@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title th:text="${visualizar} ? 'Detalls de la Recompensa' : 'Modificar Recompensa'"></title>
-    <link rel="stylesheet" href="/styles/crearUsuari.css">
-    <link rel="stylesheet" href="/styles/barraLateral.css">
+    <link rel="stylesheet" href="/styles/crearUsuari.css" />
+    <link rel="stylesheet" href="/styles/barraLateral.css" />
 </head>
 <body>
 <!-- Barra lateral -->
@@ -24,34 +24,41 @@
         </div>
 
         <form class="user-form" th:action="@{/recompensas/editar}" th:object="${recompensas}" method="post" enctype="multipart/form-data">
-            <input type="hidden" th:field="*{id}">
+            <input type="hidden" th:field="*{id}" />
             <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" th:disabled="${visualizar}" />
 
-            <!-- Fila 1 -->
-            <div class="form-field">
-                <label for="descripcio">Descripció</label>
-                <input type="text" id="descripcio" th:field="*{descripcio}" th:readonly="${visualizar}">
-            </div>
+            <!-- Descripció -->
+            <input type="text" id="descripcio" th:field="*{descripcio}" th:readonly="${visualizar}"
+                   th:attrappend="
+                       required=${!visualizar ? 'required' : null},
+                       minlength=${!visualizar ? 1 : null},
+                       maxlength=${!visualizar ? 255 : null},
+                       title=${!visualizar ? 'La descripció ha de tenir entre 1 i 255 caràcters.' : null}" />
 
-            <!-- Fila 2 -->
+            <!-- Cost -->
             <div class="form-field">
                 <label for="cost">Cost</label>
-                <input type="number" id="cost" th:field="*{cost}" min="1" th:readonly="${visualizar}">
+                <input type="number" id="cost" th:field="*{cost}" min="1" th:readonly="${visualizar}"
+                       th:attrappend="
+                           required=${!visualizar ? 'required' : null},
+                           title=${!visualizar ? 'El cost ha de ser un número major que 0.' : null}" />
             </div>
 
+            <!-- Punt de Bescanvi y Estat -->
             <div class="form-field full-width">
                 <div style="display: flex; gap: 1rem;">
                     <!-- Punt de Bescanvi -->
                     <div style="flex: 1;">
                         <label for="besanvi-select">Punt de Bescanvi:</label>
                         <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <select id="besanvi-select" th:field="*{puntBescanviId}" th:disabled="${visualizar}" style="width: 100%;">
-                                <option value="" disabled selected hidden>Seleccionar una opción</option>
-                                <option th:each="bescanvis : ${puntBescanviId}" th:value="${bescanvis.id}"
-                                        th:text="${bescanvis.nom}"></option>
+                            <select id="besanvi-select" th:field="*{puntBescanviId}" th:disabled="${visualizar}" style="width: 100%;"
+                                    th:attrappend="
+                                        required=${!visualizar ? 'required' : null},
+                                        title=${!visualizar ? 'Selecciona un punt de bescanvi.' : null}">
+                                <option value="" disabled selected hidden>Seleccionar una opció</option>
+                                <option th:each="bescanvis : ${puntBescanviId}" th:value="${bescanvis.id}" th:text="${bescanvis.nom}"></option>
                             </select>
-                            <a class="btn-view"
-                               th:if="${visualizar and recompensas.puntBescanviId != null}"
+                            <a class="btn-view" th:if="${visualizar and recompensas.puntBescanviId != null}"
                                th:href="@{/bescanvi/visualizar/{id}(id=${recompensas.puntBescanviId.id})}">👁️</a>
                         </div>
                     </div>
@@ -59,49 +66,52 @@
                     <!-- Estat -->
                     <div style="flex: 1;">
                         <label for="estat">Estat</label>
-                        <select th:field="*{estat}" id="estat" th:disabled="${visualizar}" style="width: 100%;">
+                        <select th:field="*{estat}" id="estat" th:disabled="${visualizar}" style="width: 100%;"
+                                th:attrappend="
+                                    required=${!visualizar ? 'required' : null},
+                                    title=${!visualizar ? 'Selecciona un estat.' : null}">
                             <option value="" disabled selected hidden></option>
-                            <option class="inp_pais" th:each="estat : ${estat}"
-                                    th:value="${estat}"
-                                    th:text="${estat}"></option>
+                            <option class="inp_pais" th:each="estat : ${estat}" th:value="${estat}" th:text="${estat}"></option>
                         </select>
                     </div>
                 </div>
             </div>
 
-
-            <!-- Observacions debajo -->
+            <!-- Observacions -->
             <div class="form-field full-width">
                 <label for="observacions">Observacions</label>
-                <textarea id="observacions" th:field="*{observacions}" th:readonly="${visualizar}"></textarea>
+                <textarea id="observacions" th:field="*{observacions}" th:readonly="${visualizar}"
+                          th:attrappend="
+                              required=${!visualizar ? 'required' : null},
+                              minlength=${!visualizar ? 1 : null},
+                              maxlength=${!visualizar ? 255 : null},
+                              title=${!visualizar ? 'Les observacions han de tenir entre 1 i 255 caràcters.' : null}"></textarea>
             </div>
 
-            <!-- Fila 4 (solo visualizar) -->
+            <!-- Campos solo visualización -->
             <div class="form-field" th:if="${visualizar}">
                 <label for="nomU">Nom Usuari</label>
-                <input type="text" id="nomU" th:field="*{usuariRecompensa}" th:readonly="${visualizar}">
+                <input type="text" id="nomU" th:field="*{usuariRecompensa}" th:readonly="${visualizar}" />
             </div>
 
             <div class="form-field" th:if="${visualizar}">
                 <label for="dataCreacio">Data Creació</label>
-                <input type="text" id="dataCreacio" th:field="*{dataCreacio}" th:readonly="${visualizar}">
+                <input type="text" id="dataCreacio" th:field="*{dataCreacio}" th:readonly="${visualizar}" />
             </div>
 
-            <!-- Fila 5 (solo visualizar) -->
             <div class="form-field" th:if="${visualizar}">
                 <label for="dataAsignacio">Data Assignació</label>
-                <input type="text" id="dataAsignacio" th:field="*{dataAsignacio}" th:readonly="${visualizar}">
+                <input type="text" id="dataAsignacio" th:field="*{dataAsignacio}" th:readonly="${visualizar}" />
             </div>
 
             <div class="form-field" th:if="${visualizar}">
                 <label for="dataReserva">Data Reserva</label>
-                <input type="text" id="dataReserva" th:field="*{dataReserva}" th:readonly="${visualizar}">
+                <input type="text" id="dataReserva" th:field="*{dataReserva}" th:readonly="${visualizar}" />
             </div>
 
-            <!-- Fila 6 (solo visualizar) -->
             <div class="form-field full-width" th:if="${visualizar}">
                 <label for="dataEntrega">Data Entrega</label>
-                <input type="text" id="dataEntrega" th:field="*{dataEntrega}" th:readonly="${visualizar}">
+                <input type="text" id="dataEntrega" th:field="*{dataEntrega}" th:readonly="${visualizar}" />
             </div>
 
             <!-- Botón -->
@@ -123,7 +133,7 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 document.getElementById('fotoPreview').src = e.target.result;
-            }
+            };
             reader.readAsDataURL(file);
         }
     });

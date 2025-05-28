@@ -5,7 +5,9 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -65,18 +67,24 @@ fun detalls(
     val bitmap = remember(recompensa?.foto) {
         recompensa?.foto?.let { decodeBase64ToBitmap(it) }
     }
+    val context = LocalContext.current
     LaunchedEffect(recompensaId) {
-        viewmodel.listar(recompensaId)
+        viewmodel.listar(recompensaId,context)
     }
 
-    val context = LocalContext.current
+
     val puedeReservar =
         nom != null && recompensa != null && nom!!.saldo!! >= recompensa.cost!! && !nom!!.reserva
     val tieneReservas = nom != null && recompensa != null && !nom!!.reserva
+
+    val scrollState = rememberScrollState()
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFE3F2FD)) // Azul claro
+            .verticalScroll(scrollState)
+            .background(Color(0xFFE3F2FD))
             .padding(16.dp)
             .statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -117,8 +125,7 @@ fun detalls(
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 recompensa?.dataCreacio?.let {
-                    val formatter =
-                        DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale("es", "ES"))
+                    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale("es", "ES"))
                     val fechaReservaFormateada = it.format(formatter)
                     Text(
                         "Data Creació $fechaReservaFormateada",
@@ -137,37 +144,22 @@ fun detalls(
                         color = Color(0xFF0288D1)
                     )
                     recompensa?.puntBescanviId?.nom?.let {
-                        Text(
-                            it,
-                            fontSize = 16.sp,
-                            color = Color(0xFF424242)
-                        )
+                        Text(it, fontSize = 16.sp, color = Color(0xFF424242))
                     }
                     recompensa?.puntBescanviId?.adreca?.let {
-                        Text(
-                            it,
-                            fontSize = 14.sp,
-                            color = Color(0xFF757575)
-                        )
+                        Text(it, fontSize = 14.sp, color = Color(0xFF757575))
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     recompensa?.puntBescanviId?.personaContacte?.let {
-                        Text(
-                            "Contacto: $it",
-                            fontSize = 14.sp,
-                            color = Color(0xFF757575)
-                        )
+                        Text("Contacto: $it", fontSize = 14.sp, color = Color(0xFF757575))
                     }
                     recompensa?.puntBescanviId?.telefon?.let {
-                        Text(
-                            "Tel: $it",
-                            fontSize = 14.sp,
-                            color = Color(0xFF757575)
-                        )
+                        Text("Tel: $it", fontSize = 14.sp, color = Color(0xFF757575))
                     }
                 }
             }
         }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         bitmap?.let {
@@ -176,14 +168,13 @@ fun detalls(
                 contentDescription = "Imagen de la recompensa",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(220.dp) // Ajustar tamaño
+                    .height(220.dp)
                     .background(Color.Gray, shape = RoundedCornerShape(12.dp))
             )
         }
+
         Spacer(modifier = Modifier.height(16.dp))
 
-
-        // BOTÓN DE RESERVAR (TU BLOQUE ACTUAL ADAPTADO)
         Button(
             onClick = {
                 val fecha = ZonedDateTime.now(ZoneId.of("Europe/Madrid")).toLocalDateTime()
@@ -192,27 +183,26 @@ fun detalls(
                     if (puedeReservar) {
                         nom?.let { usuario ->
                             usuario.reserva = true
-
                             val saldoActual = usuario.saldo ?: 0.0
                             val coste = recompensa?.cost ?: 0
-                            sessionViewModel.updateSaldo(saldoActual - coste)
-
+                            sessionViewModel.updateSaldo(saldoActual - coste,context)
                             modificarViewModel.updateClient(
                                 client = usuario,
-                                contentResolver = navController.context.contentResolver
+                                contentResolver = navController.context.contentResolver,
+                                context
                             )
                         }
 
                         recompensa?.let { recompensa ->
-                            recompensa.estat = Estat.RESERVADES
+                            recompensa.estat = Estat.RESERVADA
                             recompensa.usuariRecompensa = nom
                             recompensa.dataReserva = fecha
                             viewmodel.updateRecompensa(
                                 client = recompensa,
-                                contentResolver = navController.context.contentResolver
+                                contentResolver = navController.context.contentResolver,
+                                context
                             )
                         }
-
 
                         val nuevaReserva = Reserva(
                             id = null,
@@ -221,21 +211,16 @@ fun detalls(
                             datareserva = fecha,
                             estat = EstatReserva.RESERVADA
                         )
-
-                        reservaViewmodel.crearReserva(nuevaReserva)
+                        reservaViewmodel.crearReserva(nuevaReserva,context)
 
                         navController.navigate("recompensa") {
-                            popUpTo("detallsRecompensa") { inclusive = true }  // o el route correcto
+                            popUpTo("detallsRecompensa") { inclusive = true }
                         }
                     } else {
                         Toast.makeText(context, "Saldo insuficient.", Toast.LENGTH_LONG).show()
                     }
                 } else {
-                    Toast.makeText(
-                        context,
-                        "Límit màxim de reserves obtingut.",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(context, "Límit màxim de reserves obtingut.", Toast.LENGTH_LONG).show()
                 }
             },
             colors = ButtonDefaults.buttonColors(Color(0xFF0288D1)),
@@ -244,6 +229,6 @@ fun detalls(
         ) {
             Text("Reservar", color = Color.White, fontSize = 18.sp)
         }
-
     }
 }
+

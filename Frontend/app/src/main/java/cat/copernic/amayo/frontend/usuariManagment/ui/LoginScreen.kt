@@ -19,6 +19,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -43,7 +44,11 @@ import kotlinx.coroutines.launch
  * @param sessionViewModel ViewModel para gestionar la sesión activa del usuario.
  */
 @Composable
-fun LoginScreen(navController: NavController, viewModel: LoginViewModel ,sessionViewModel: SessionViewModel) {
+fun LoginScreen(
+    navController: NavController,
+    viewModel: LoginViewModel,
+    sessionViewModel: SessionViewModel
+) {
     val isUserLoged by viewModel.isUserLoged.collectAsState()
     val email by viewModel.email.collectAsState()
     val password by viewModel.contra.collectAsState()
@@ -55,12 +60,13 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel ,session
     val emptyEmailError by viewModel.emptyEmailError.collectAsState()
     val emptyContraError by viewModel.emptyContraError.collectAsState()
     val emailNotFoundError by viewModel.emailNotFoundError.collectAsState()
-    val authError  by viewModel.authError.collectAsState()
+    val authError by viewModel.authError.collectAsState()
+    val context = LocalContext.current
     // Si el usuario es distinto de null, se ha iniciado sesión correctamente
     LaunchedEffect(isUserLoged) {
         if (isUserLoged) {
             sessionViewModel.updateSession(
-                SessionUser(email, true)
+                SessionUser(email, true), context
             )
             navController.navigate("inici") {
                 popUpTo("login") { inclusive = true }
@@ -90,7 +96,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel ,session
             OutlinedTextField(
                 value = email,
                 onValueChange = { viewModel.updateEmail(it) },
-                isError = emptyEmailError != null|| authError != null|| emailNotFoundError != null,
+                isError = emptyEmailError != null || authError != null || emailNotFoundError != null,
                 label = { Text("Correu") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
@@ -127,7 +133,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel ,session
             OutlinedTextField(
                 value = password,
                 onValueChange = { viewModel.updateContra(it) },
-                isError = emptyContraError != null ,
+                isError = emptyContraError != null,
                 label = { Text("Contrasenya") },
                 singleLine = true,
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -158,10 +164,12 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel ,session
 
             // Botón Entrar: llama al login del ViewModel
             Button(
-                onClick = {viewModel.viewModelScope.launch {
-                    val user = viewModel.login()
-                    sessionViewModel.updateUserData(user)
-                }},
+                onClick = {
+                    viewModel.viewModelScope.launch {
+                        val user = viewModel.login(context)
+                        sessionViewModel.updateUserData(user)
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00CFFF)),
                 shape = RoundedCornerShape(10.dp)
             ) {

@@ -51,7 +51,7 @@
             <!-- Cognom -->
             <div class="form-field">
                 <label for="cognom">Cognom</label>
-                <input id="cognom" type="text" th:field="*{cognom}" th:readonly="${visualitzar}"/>
+                <input id="cognom" type="text" th:field="*{cognom}" th:readonly="${visualitzar}" required/>
             </div>
 
             <!-- Telèfon -->
@@ -74,8 +74,10 @@
             <!-- Població -->
             <div class="form-field">
                 <label for="poblacio">Població</label>
-                <input id="poblacio" type="text" th:field="*{poblacio}" th:readonly="${visualitzar}"/>
+                <input id="poblacio" type="text" th:field="*{poblacio}" th:readonly="${visualitzar}" required/>
             </div>
+
+
 
             <!-- ---------- ESTAT ---------- -->
             <div class="form-field">
@@ -105,6 +107,16 @@
 
                 <!-- Campo solo lectura -->
                 <input th:if="${visualitzar}" type="text" th:value="*{rol}" readonly/>
+            </div>
+
+            <div class="form-field full-width">
+                <label for="observacions">Observacions</label>
+                <textarea id="observacions" th:field="*{observaciones}" th:readonly="${visualitzar}"
+                          th:attrappend="
+                              required=${!visualitzar ? 'required' : null},
+                              minlength=${!visualitzar ? 1 : null},
+                              maxlength=${!visualitzar ? 255 : null},
+                              title=${!visualitzar ? 'Les observacions han de tenir entre 1 i 255 caràcters.' : null}"></textarea>
             </div>
 
             <!-- Botón Guardar -->

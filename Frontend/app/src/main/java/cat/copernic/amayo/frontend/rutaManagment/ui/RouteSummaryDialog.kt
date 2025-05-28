@@ -40,7 +40,7 @@ fun RouteSummaryDialog(
         containerColor   = MaterialTheme.colorScheme.surface,
         title            = {
             Text(
-                "Resumen de la ruta",
+                "Resum de la ruta",
                 style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
             )
         },
@@ -54,7 +54,7 @@ fun RouteSummaryDialog(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     MetricCard("Distancia", "%.2f km".format(stats.distKm), Modifier.weight(1f))
-                    MetricCard("Tiempo", formatMillis(stats.totalMillis), Modifier.weight(1f))
+                    MetricCard("Temps", formatMillis(stats.totalMillis), Modifier.weight(1f))
                 }
                 // FILA MÉTRICAS 2
                 Row(
@@ -63,15 +63,15 @@ fun RouteSummaryDialog(
                         .padding(bottom = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    MetricCard("Vel. media", "%.2f km/h".format(stats.velMedKmh), Modifier.weight(1f))
-                    MetricCard("Ritmo", "%.1f min/km".format(stats.ritmeMinKm), Modifier.weight(1f))
+                    MetricCard("Vel. mitja", "%.2f km/h".format(stats.velMedKmh), Modifier.weight(1f))
+                    MetricCard("Ritme", "%.1f min/km".format(stats.ritmeMinKm), Modifier.weight(1f))
                 }
 
                 // Nombre de la ruta
                 OutlinedTextField(
                     value = name,
                     onValueChange = { if (it.length <= NAME_MAX) name = it },
-                    label = { Text("Nombre de la ruta") },
+                    label = { Text("Nom de la ruta") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
@@ -87,7 +87,7 @@ fun RouteSummaryDialog(
                 OutlinedTextField(
                     value = desc,
                     onValueChange = { if (it.length <= DESC_MAX) desc = it },
-                    label = { Text("Descripción") },
+                    label = { Text("Descripció") },
                     maxLines = 2,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -111,7 +111,7 @@ fun RouteSummaryDialog(
                 onClick = onDiscard,
                 colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
             ) {
-                Text("DESCARTAR", fontWeight = FontWeight.SemiBold)
+                Text("ESBORRA", fontWeight = FontWeight.SemiBold)
             }
         }
     )

@@ -79,6 +79,9 @@ public class Usuari implements UserDetails {
     @Lob
     private String foto;
 
+    @Column
+    private String observaciones;
+
     /**
      * Rol de l'usuari dins del sistema (CICLISTA, ADMINISTRADOR).
      */

@@ -1,8 +1,10 @@
 package cat.copernic.amayo.frontend.Session
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cat.copernic.amayo.frontend.core.Logger
 import cat.copernic.amayo.frontend.usuariManagment.data.remote.UsuariApi
 import cat.copernic.amayo.frontend.usuariManagment.data.repositories.UsuariRetrofitTLSInstance
 import cat.copernic.amayo.frontend.usuariManagment.model.Usuari
@@ -28,18 +30,20 @@ class SessionViewModel(private val sessionRepository: SessionRepository) : ViewM
     private val _userData = MutableStateFlow<Usuari?>(null)
     val userData: StateFlow<Usuari?> get() = _userData
 
-    fun updateSaldo(nuevoSaldo: Double) {
+    fun updateSaldo(nuevoSaldo: Double, context: Context) {
         val usuarioActual = _userData.value
         if (usuarioActual != null) {
             val usuarioActualizado = usuarioActual.copy(saldo = nuevoSaldo)
             _userData.value = usuarioActualizado
+            Logger.guardarLog(context, "Saldo actualitzat: $nuevoSaldo per ${usuarioActual.email}")
         }
     }
-    fun actualizarReserva(valor: Boolean) {
+    fun actualizarReserva(valor: Boolean, context: Context) {
         val usuarioActual = _userData.value
         if (usuarioActual != null) {
             val usuarioActualizado = usuarioActual.copy(reserva = valor)
             _userData.value = usuarioActualizado
+            Logger.guardarLog(context, "Reserva actualitzada a: $valor per ${usuarioActual.email}")
         }
     }
 
@@ -98,11 +102,12 @@ class SessionViewModel(private val sessionRepository: SessionRepository) : ViewM
     /**
      * Finalitza la sessió de l'usuari, buidant la informació guardada i reiniciant l'estat.
      */
-    fun logout() {
+    fun logout(context: Context) {
         _userSession.value = SessionUser("", false)
         _userData.value = null
         viewModelScope.launch {
             sessionRepository.saveSession(SessionUser("", false))
+            Logger.guardarLog(context, "Sessió tancada")
         }
     }
 
@@ -111,10 +116,11 @@ class SessionViewModel(private val sessionRepository: SessionRepository) : ViewM
      *
      * @param sessionUser Objecte [SessionUser] amb les noves dades de sessió.
      */
-    fun updateSession(sessionUser: SessionUser) {
+    fun updateSession(sessionUser: SessionUser, context: Context) {
         viewModelScope.launch {
             sessionRepository.saveSession(sessionUser)
             _userSession.value = sessionUser
+            Logger.guardarLog(context, "Sessió iniciada per: ${sessionUser.email}")
         }
     }
 }
