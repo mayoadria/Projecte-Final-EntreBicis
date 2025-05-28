@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import cat.copernic.amayo.frontend.Session.SessionRepository
+import cat.copernic.amayo.frontend.core.Logger
 import cat.copernic.amayo.frontend.dataStore
 import cat.copernic.amayo.frontend.rutaManagment.data.local.*
 import cat.copernic.amayo.frontend.rutaManagment.data.remote.RutaApi
@@ -68,6 +69,7 @@ class RutaViewModel(
     fun startRoute(name: String, desc: String, initialLocation: GeoPoint?) {
         nomRuta  = name
         descRuta = desc
+        Logger.guardarLog(getApplication(), "Ruta iniciada: $name - $desc")
 
         /* --- UI --- */
         isRouting = true
@@ -142,6 +144,7 @@ class RutaViewModel(
         }
         prevPoint           = p
         prevTimestampMillis = now
+        Logger.guardarLog(getApplication(), "Punt enregistrat: lat=${p.latitude}, lon=${p.longitude}")
     }
 
     /* ====================================================================== */
@@ -155,6 +158,7 @@ class RutaViewModel(
     fun requestStop() {
         if (!isRouting) return
         isRouting = false
+        Logger.guardarLog(getApplication(), "Ruta parada. Estadístiques pendents preparades.")
         pendingStats = computeStats()
     }
 
@@ -166,6 +170,7 @@ class RutaViewModel(
         nomRuta  = name
         descRuta = desc
         pendingStats = null
+        Logger.guardarLog(getApplication(), "Ruta desada amb nom: $name")
         finalizeRoute(stats, sendToBackend = true)
     }
 
@@ -175,6 +180,7 @@ class RutaViewModel(
     fun discardRoute() {
         val stats = pendingStats ?: return      // usamos para saber ID y limpiar
         pendingStats = null
+        Logger.guardarLog(getApplication(), "Ruta descartada")
         finalizeRoute(stats, sendToBackend = false)
     }
 
@@ -246,16 +252,19 @@ class RutaViewModel(
 
                 try {
                     val resp = rutaApi.saveRuta(dto)
+                    Logger.guardarLog(getApplication(), "Ruta enviada al backend: $nomRuta amb ${dto.posicions.size} punts")
                     if (!resp.isSuccessful) {
                         println("Error HTTP ${resp.code()}: ${resp.errorBody()?.string()}")
                     }
                 } catch (e: Exception) {
+                    Logger.guardarLog(getApplication(), "Error enviant ruta: ${e.message}")
                     println("Excepción al enviar la ruta: $e")
                 }
 
                 /* ----- limpiamos BD local ----- */
                 dao.deletePositionsForRoute(rid)
                 dao.deleteRoute(rid)
+                Logger.guardarLog(getApplication(), "BD local netejada per la ruta amb id: $rid")
             }
         } else if (rid != null) {
             /* ----- solo limpiamos BD local (descartar) ----- */

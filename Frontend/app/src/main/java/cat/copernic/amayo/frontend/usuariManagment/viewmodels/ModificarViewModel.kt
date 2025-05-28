@@ -1,6 +1,7 @@
 package cat.copernic.amayo.frontend.usuariManagment.viewmodels
 
 import android.content.ContentResolver
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -12,6 +13,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cat.copernic.amayo.frontend.core.Logger
 import cat.copernic.amayo.frontend.usuariManagment.data.remote.UsuariApi
 import cat.copernic.amayo.frontend.usuariManagment.data.repositories.UsuariRetrofitTLSInstance
 import cat.copernic.amayo.frontend.usuariManagment.model.Usuari
@@ -47,35 +49,6 @@ class ModificarViewModel :ViewModel() {
     private val _user = mutableStateOf<Usuari?>(null)  // Modificado para Sobres
     val user: State<Usuari?> = _user
 
-
-    /**
-     * Actualitza el valor del nom de l'usuari.
-     * @param nom Nou valor per al camp nom.
-     */
-    fun updateNom(nom: String) {
-        _nom.value = nom
-    }
-    /**
-     * Actualitza el valor del cognom de l'usuari.
-     * @param cognom Nou valor per al camp cognom.
-     */
-    fun updateCognom(cognom: String) {
-        _cognom.value = cognom
-    }
-    /**
-     * Actualitza el valor de la població de l'usuari.
-     * @param poblacio Nou valor per al camp població.
-     */
-    fun updatePoblacio(poblacio: String) {
-        _poblacio.value = poblacio
-    }
-    /**
-     * Actualitza el valor del telèfon de l'usuari.
-     * @param telefon Nou valor per al camp telèfon.
-     */
-    fun updateTelefon(telefon: String) {
-        _telefon.value = telefon
-    }
     /**
      * Actualitza la URI de la imatge seleccionada.
      * @param uri URI de la imatge seleccionada o null si es vol esborrar.
@@ -114,8 +87,9 @@ class ModificarViewModel :ViewModel() {
      * @param contentResolver ContentResolver per accedir a la imatge.
      * @return Bitmap resultant o null si hi ha error.
      */
-    fun loadBitmapFromUri(uri: Uri, contentResolver: ContentResolver): Bitmap? {
+    fun loadBitmapFromUri(uri: Uri, contentResolver: ContentResolver, context: Context): Bitmap? {
         return try {
+            Logger.guardarLog(context, "Convertint URI a bytes: $uri")
             if (Build.VERSION.SDK_INT < 28) {
                 MediaStore.Images.Media.getBitmap(contentResolver, uri)
             } else {
@@ -134,30 +108,38 @@ class ModificarViewModel :ViewModel() {
      * @param client Usuari amb les dades a modificar.
      * @param contentResolver ContentResolver per accedir a imatges.
      */
-    fun updateClient(client: Usuari, contentResolver: ContentResolver) {
+    fun updateClient(client: Usuari, contentResolver: ContentResolver,context: Context) {
         viewModelScope.launch {
             try {
+                Logger.guardarLog(context, "Iniciant updateClient per ${client.email}")
                 // Verificar si se ha actualizado la imagen
                 val imageBytes = _selectedImageUri.value?.let { uri ->
+                    Logger.guardarLog(context, "Processant imatge nova: $uri")
                     convertUriToByteArray(uri, contentResolver)
                 }
 
                 // Convertir a Base64 si hay imagen nueva
-                val base64Image = imageBytes?.let { Base64.encodeToString(it, Base64.DEFAULT) }
+                val base64Image = imageBytes?.let {
+                    Logger.guardarLog(context, "Convertint imatge a Base64")
+                    Base64.encodeToString(it, Base64.DEFAULT) }
 
                 // Asignar la nueva imagen si existe
                 if (base64Image != null) {
                     client.foto = base64Image
+                    Logger.guardarLog(context, "Afegida imatge codificada al client")
                 }
 
                 // Llamada al nuevo endpoint sin clientId separado
                 val response = UserApi.update(client)
                 if (response.isSuccessful) {
+                    Logger.guardarLog(context, "Usuari actualitzat correctament")
                     Log.d("ModificarViewModel", "Usuario actualizado con éxito")
                 } else {
+                    Logger.guardarLog(context, "Error API: ${response.code()} - ${response.errorBody()?.string()}")
                     Log.e("ModificarViewModel", "Error al actualizar el usuario: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
+                Logger.guardarLog(context, "Excepció updateClient: ${e.message}")
                 Log.e("ModificarViewModel", "Excepción al actualizar el usuario: ${e.message}")
             }
         }

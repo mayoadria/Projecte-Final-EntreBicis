@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cat.copernic.amayo.frontend.Session.SessionViewModel
@@ -38,6 +39,7 @@ fun reservesPropies(
     val allReservas by reservaViewmodel.reserva.collectAsState()
     val usuari by sessionViewModel.userData.collectAsState()
     val emailActual = usuari?.email
+    val context = LocalContext.current
 
     // Filtrar solo las reservas hechas por el usuario actual
     val filteredRecompensas = allReservas
@@ -47,7 +49,7 @@ fun reservesPropies(
         .sortedBy { it.datareserva }
 
     LaunchedEffect(Unit) {
-        reservaViewmodel.LlistarReservas()
+        reservaViewmodel.LlistarReservas(context)
     }
 
     Column(
