@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Login - EntreBicis</title>
+    <link rel="stylesheet" href="/styles/login.css" />
+    <!-- Prueba usando Font Awesome con el prefijo "fas" -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+<body>
+<div class="login-container">
+    <div class="login-box">
+        <!-- Título fijo -->
+        <h2 id="login-title">LOGIN</h2>
+        <form th:action="@{/user}" method="post" novalidate>
+        <!-- Campo de correo -->
+            <div class="input-group">
+                <label for="email">Correo</label>
+                <input type="text" id="email" name="email" required/>
+            </div>
+
+            <!-- Campo de contraseña con botón toggle -->
+            <div class="input-group">
+                <label for="contra">Contrasenya</label>
+                <div class="password-field">
+                    <input type="password" id="contra" name="contra" required/>
+                    <button type="button" class="toggle-password" onclick="togglePassword()">
+                        <i id="toggle-icon" class="fas fa-eye-slash"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Botón de envío -->
+            <div class="btn-container">
+                <button type="submit" class="btn-login" id="login-btn">Entrar</button>
+            </div>
+        </form>
+        <div th:if="${errorMessage}" class="alert-error">
+            <p th:text="${errorMessage}"></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Función de toggle de contraseña simplificada
+    function togglePassword() {
+        const passwordInput = document.getElementById('contra');
+        const toggleIcon = document.getElementById('toggle-icon');
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+        }
+    }
+
+    // Validación básica de los campos para habilitar el botón de login
+    const uname = document.querySelector('#email');
+    const pass = document.querySelector('#contra');
+    const btn = document.querySelector('#login-btn');
+
+    btn.disabled = true;
+    function validateInputs() {
+        const filled = uname.value.trim() !== '' && pass.value.trim() !== '';
+        btn.disabled = !filled;
+    }
+    uname.addEventListener('input', validateInputs);
+    pass.addEventListener('input', validateInputs);
+</script>
+</body>
+</html>

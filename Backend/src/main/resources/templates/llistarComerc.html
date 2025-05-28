@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Llista Punts Bescanvi</title>
+    <link rel="stylesheet" href="/styles/tablas.css">
+    <link rel="stylesheet" href="/styles/barraLateral.css">
+</head>
+<body>
+<!-- Barra lateral -->
+<div th:replace="barraLateral :: barralateral"></div>
+
+<div class="main-content">
+    <div class="content-wrapper">
+    <h1>Llista Punts Bescanvi</h1>
+
+    <!-- 1) Flash messages -->
+    <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+    <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}"></div>
+
+    <!-- 2) Botón “Crear” -->
+    <a class="btn-crear" th:href="@{/bescanvi/crear}">Crear</a>
+
+    <!-- Botón para mostrar y ocultar los filtros -->
+    <button class="filter-toggle">Mostrar Filtros</button>
+
+    <!-- 3) Filtros (ahora dentro de un <form> GET) -->
+    <form class="filter-content"
+          th:action="@{/bescanvi/llistar}"
+          method="get">
+        <div class="filtre">
+            <label for="nomPunt" class="filt-txt">Nom:</label>
+            <input type="text"
+                   id="nomPunt"
+                   name="nomPunt"
+                   th:value="${param.nomPunt}"
+                   class="filt-input"/>
+        </div>
+
+        <button type="submit" class="btn-crear">Filtrar</button>
+    </form>
+
+    <!-- 4) Tabla de puntos -->
+    <table class="users-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Adreça</th>
+            <th>Observacions</th>
+            <th>Codi Postal</th>
+            <th>Email</th>
+            <th>Accions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="punt : ${bescanvi}">
+            <td th:text="${punt.id}"></td>
+            <td th:text="${punt.nom}"></td>
+            <td th:text="${punt.adreca}"></td>
+            <td th:text="${punt.observacions}"></td>
+            <td th:text="${punt.codiPostal}"></td>
+            <td th:text="${punt.email}"></td>
+            <td>
+                <a class="btn-view"
+                   th:href="@{/bescanvi/visualizar/{id}(id=${punt.id})}"
+                   title="Visualitzar">👁️</a>
+                <a class="btn-edit"
+                   th:href="@{/bescanvi/edit/{id}(id=${punt.id})}"
+                   title="Editar">✏️</a>
+                <a class="btn-delete"
+                   th:href="@{/bescanvi/delete/{id}(id=${punt.id})}"
+                   title="Eliminar"
+                   onclick="return confirm('Estàs segur que vols eliminar aquest punt de bescanvi?');">
+                    🗑️
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+</div>
+
+<!-- 5) Script para mostrar/ocultar filtros -->
+<script>
+    const filterToggle = document.querySelector('.filter-toggle');
+    const filterContent = document.querySelector('.filter-content');
+
+    filterToggle.addEventListener('click', function (event) {
+        event.preventDefault();              // evita comportamiento por defecto
+        filterContent.classList.toggle('active');
+    });
+</script>
+</body>
+</html>

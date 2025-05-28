@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ca">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Detalls rutes usuari</title>
+
+    <!-- CSS propis -->
+    <link rel="stylesheet" href="/styles/barraLateral.css"/>
+    <link rel="stylesheet" href="/styles/tablas.css"/>  <!-- Per estil de filtres -->
+    <link rel="stylesheet" href="/styles/detallsRuta.css"/>
+
+    <!-- Leaflet -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          crossorigin="anonymous">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<div th:replace="~{barraLateral :: barralateral}"></div>
+
+<div class="main-content">
+    <h1>Rutes de l'usuari</h1>
+
+    <!-- FILTRES EN CLIENT -->
+    <div class="filter-form">
+        <button class="filter-toggle">Mostrar Filtres</button>
+        <div class="filter-content">
+            <!-- Filtres -->
+            <div class="filtre">
+                <label for="f_nomRuta" class="filt-txt">Nom ruta:</label>
+                <input type="text" id="f_nomRuta" class="filt-input"/>
+            </div>
+            <div class="filtre">
+                <label for="f_estat" class="filt-txt">Estat:</label>
+                <select id="f_estat" class="filt-input">
+                    <option value="">Tots</option>
+                    <option th:each="estat : ${T(com.copernic.backend.Backend.entity.enums.EstatRutes).values()}"
+                            th:value="${estat}" th:text="${estat}"></option>
+                </select>
+            </div>
+            <div class="filtre">
+                <label for="f_dataDesde" class="filt-txt">Data des de:</label>
+                <input type="date" id="f_dataDesde" class="filt-input"/>
+            </div>
+            <div class="filtre">
+                <label for="f_dataHasta" class="filt-txt">Fins a:</label>
+                <input type="date" id="f_dataHasta" class="filt-input"/>
+            </div>
+            <div class="filtre">
+                <label for="f_kmMin" class="filt-txt">Km mínims:</label>
+                <input type="number" step="0.01" min="0" id="f_kmMin" class="filt-input"/>
+            </div>
+            <div class="filtre">
+                <label for="f_kmMax" class="filt-txt">Km màxims:</label>
+                <input type="number" step="0.01" min="0" id="f_kmMax" class="filt-input"/>
+            </div>
+            <div class="filtre">
+                <label for="f_tempsMin" class="filt-txt">Temps mínim:</label>
+                <input type="time" step="1" id="f_tempsMin" class="filt-input"/>
+            </div>
+            <div class="filtre">
+                <label for="f_tempsMax" class="filt-txt">Temps màxim:</label>
+                <input type="time" step="1" id="f_tempsMax" class="filt-input"/>
+            </div>
+            <div class="filtre">
+                <label for="f_velMin" class="filt-txt">Vel. mitja mínim:</label>
+                <input type="number" step="0.01" min="0" id="f_velMin" class="filt-input"/>
+            </div>
+            <div class="filtre">
+                <label for="f_velMax" class="filt-txt">Vel. mitja màxim:</label>
+                <input type="number" step="0.01" min="0" id="f_velMax" class="filt-input"/>
+            </div>
+
+            <!-- Controls d’ordenació -->
+            <div class="ordenacio-controls">
+                <label for="sortBy">Ordenar per:</label>
+                <select id="sortBy" class="filt-input">
+                    <option value="">-- Selecciona --</option>
+                    <option value="nom">Nom</option>
+                    <option value="km">Km</option>
+                    <option value="temps">Temps</option>
+                    <option value="vel">Velocitat</option>
+                    <option value="fecha">Data</option>
+                </select>
+                <button id="sortAsc">Asc</button>
+                <button id="sortDesc">Desc</button>
+            </div>
+
+            <button id="btn-filtrar" class="btn-crear">Filtrar</button>
+        </div>
+    </div>
+
+    <!-- TARGETES DE RUTES -->
+    <div id="rutes-container">
+        <div th:each="dto : ${rutes}"
+             class="route-card"
+             th:attr="
+                data-nom=${dto.ruta.nom},
+                data-estat=${dto.ruta.estat},
+                data-fecha=${dto.ruta.getFechaCreacion()},
+                data-km=${dto.ruta.km},
+                data-temps=${dto.ruta.temps},
+                data-vel=${dto.ruta.velMedia}
+             ">
+        <div class="route-header">
+            <span class="route-title" th:text="${dto.ruta.nom}">Nom ruta</span>
+            <div class="route-stats">
+                <div class="stat">
+                    <strong class="route-km" th:attr="data-km=${dto.ruta.km}">0,00</strong>
+                    <span class="unit">Km</span>
+                </div>
+                <div class="stat">
+                    <strong class="route-time" th:attr="data-seconds=${dto.ruta.temps}">00:00:00</strong>
+                </div>
+                <div class="stat">
+                    <strong class="route-speed" th:attr="data-speed=${dto.ruta.velMedia}">0,00</strong>
+                    <span class="unit">km/h</span>
+                </div>
+                <div class="stat">
+                    <strong class="fecha-formateada"
+                            th:attr="data-fecha=${dto.ruta.getFechaCreacion()}">01/01/1970 00:00</strong>
+                </div>
+            </div>
+            <div class="switch-container">
+                <label class="switch" title="Validar ruta">
+                    <input type="checkbox"
+                           th:checked="${dto.ruta.estat == T(com.copernic.backend.Backend.entity.enums.EstatRutes).VALIDA}"
+                           th:onchange="|toggleEstat(${dto.ruta.id}, this.checked)|"/>
+                    <span class="slider"></span>
+                </label>
+                <span class="switch-text">Validar ruta</span>
+            </div>
+        </div>
+
+        <div class="route-description" th:if="${dto.ruta.descripcio}">
+            <p th:text="${dto.ruta.descripcio}">Descripció de la ruta.</p>
+        </div>
+
+        <div th:attr="id=${'map-' + dto.ruta.id}" class="map"></div>
+
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            (function() {
+                const coords = /*[[${dto.coords}]]*/ [];
+                const mapId = 'map-' + /*[[${dto.ruta.id}]]*/ 'x';
+                const card = document.getElementById(mapId).closest('.route-card');
+
+                // Inicialització de Leaflet
+                if (coords.length) {
+                    const map = L.map(mapId);
+                    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19})
+                        .addTo(map);
+                    const poly = L.polyline(coords,{ color: '#0077ff' }).addTo(map);
+                    coords.forEach(c => {
+                        L.circleMarker(c, {
+                            radius: 5,
+                            fillColor: 'transparent',
+                            color: 'red',
+                            weight: 2,
+                            fillOpacity: 0
+                        })
+                            .addTo(map)
+                            .bindTooltip(
+                                `Lat: ${c[0].toFixed(6)}, Lon: ${c[1].toFixed(6)}`,
+                                { direction: 'top', offset: [0, -5] }
+                            );
+                    });
+                    map.fitBounds(poly.getBounds());
+                } else {
+                    card.querySelector('.map').textContent = 'Sense coordenades';
+                }
+
+                // Formatejar Km
+                const kmEl = card.querySelector('.route-km');
+                const kmVal = parseFloat(kmEl.dataset.km) || 0;
+                kmEl.textContent = kmVal.toFixed(2).replace('.', ',');
+
+                // Formatejar Velocitat Mitjana
+                const spEl = card.querySelector('.route-speed');
+                const spVal = parseFloat(spEl.dataset.speed) || 0;
+                spEl.textContent = spVal.toFixed(2).replace('.', ',');
+
+                // Formatejar Temps (hh:mm:ss)
+                const tEl = card.querySelector('.route-time');
+                let secs = parseInt(tEl.dataset.seconds, 10) || 0;
+                const h = Math.floor(secs / 3600);
+                const m = Math.floor((secs % 3600) / 60);
+                const s = secs % 60;
+                const pad = v => String(v).padStart(2, '0');
+                tEl.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+
+                // Formatejar Data (dd/mm/aaaa hh:mm)
+                const dEl = card.querySelector('.fecha-formateada');
+                const raw = dEl.dataset.fecha || '';
+                const [datePart, timePart] = raw.split('T');
+                if (datePart) {
+                    const [y, mo, da] = datePart.split('-');
+                    const [hh, mm] = (timePart || '').split(':');
+                    dEl.textContent = `${da}/${mo}/${y} ${pad(hh || 0)}:${pad(mm || 0)}`;
+                }
+            })();
+            /*]]>*/
+        </script>
+    </div>
+</div>
+</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('.filter-toggle').addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector('.filter-content').classList.toggle('active');
+            });
+
+            document.getElementById('btn-filtrar').addEventListener('click', function () {
+                const nom = document.getElementById('f_nomRuta').value.toLowerCase();
+                const estat = document.getElementById('f_estat').value;
+                const desde = document.getElementById('f_dataDesde').value;
+                const hasta = document.getElementById('f_dataHasta').value;
+                const kmMin = parseFloat(document.getElementById('f_kmMin').value) || -Infinity;
+                const kmMax = parseFloat(document.getElementById('f_kmMax').value) || Infinity;
+                const tMin = document.getElementById('f_tempsMin').value;
+                const tMax = document.getElementById('f_tempsMax').value;
+                const velMin = parseFloat(document.getElementById('f_velMin').value) || -Infinity;
+                const velMax = parseFloat(document.getElementById('f_velMax').value) || Infinity;
+
+                document.querySelectorAll('.route-card').forEach(card => {
+                    let ok = true;
+                    if (nom && !card.dataset.nom.toLowerCase().includes(nom)) ok = false;
+                    if (estat && card.dataset.estat !== estat) ok = false;
+                    const fecha = card.dataset.fecha.split('T')[0];
+                    if (desde && fecha < desde) ok = false;
+                    if (hasta && fecha > hasta) ok = false;
+                    const km = parseFloat(card.dataset.km);
+                    if (km < kmMin || km > kmMax) ok = false;
+                    const secs = parseInt(card.dataset.temps);
+                    if (tMin && secs < tMin.split(':').reduce((a, v, i) => i === 0 ? +v * 3600 : a + +v * (i === 1 ? 60 : 1), 0)) ok = false;
+                    if (tMax && secs > tMax.split(':').reduce((a, v, i) => i === 0 ? +v * 3600 : a + +v * (i === 1 ? 60 : 1), 0)) ok = false;
+                    const vel = parseFloat(card.dataset.vel);
+                    if (vel < velMin || vel > velMax) ok = false;
+                    card.style.display = ok ? '' : 'none';
+                });
+            });
+
+            const sortCards = (prop, asc = true) => {
+                const cards = Array.from(document.querySelectorAll('.route-card'));
+                const container = document.getElementById('rutes-container');
+
+                const getValue = (card) => {
+                    let val = card.dataset[prop];
+                    if (prop === 'km' || prop === 'vel') return parseFloat(val);
+                    if (prop === 'temps') return parseInt(val);
+                    if (prop === 'fecha') return new Date(val);
+                    return val.toLowerCase();
+                };
+
+                cards.sort((a, b) => {
+                    const v1 = getValue(a);
+                    const v2 = getValue(b);
+                    if (v1 < v2) return asc ? -1 : 1;
+                    if (v1 > v2) return asc ? 1 : -1;
+                    return 0;
+                });
+
+                cards.forEach(card => container.appendChild(card));
+            };
+
+            document.getElementById('sortAsc').addEventListener('click', () => {
+                const prop = document.getElementById('sortBy').value;
+                if (prop) sortCards(prop, true);
+            });
+
+            document.getElementById('sortDesc').addEventListener('click', () => {
+                const prop = document.getElementById('sortBy').value;
+                if (prop) sortCards(prop, false);
+            });
+        });
+    </script>
+
+<!-- PUT per validar/invalida -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    function toggleEstat(id, isValid) {
+        const estat = isValid ? 'VALIDA' : 'INVALIDA';
+        fetch('/ruta/' + id + '/estat', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(estat)
+        }).then(r => {
+            if (!r.ok) alert('Error actualitzant estat');
+        }).catch(() => {
+            alert('No s\'ha pogut connectar');
+        });
+    }
+    /*]]>*/
+</script>
+</body>
+</html>

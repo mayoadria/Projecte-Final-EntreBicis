@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Recompensa</title>
+    <link rel="stylesheet" href="/styles/crearUsuari.css">
+    <link rel="stylesheet" href="/styles/barraLateral.css">
+</head>
+<body>
+<!-- Barra lateral -->
+<div th:replace="barraLateral :: barralateral"></div>
+
+<div class="main-content">
+    <h1>Crear Recompensa</h1>
+    <div class="create-user-container">
+        <div class="profile-picture" id="profilePicture">
+            <img id="fotoPreview" src="https://via.placeholder.com/150" alt="" />
+<!--            <span id="editIcon" class="edit-icon">✏️</span>-->
+        </div>
+        <form class="user-form" th:action="@{/recompensas/guardar}" th:object="${recompensas}" method="post" enctype="multipart/form-data">
+            <input type="file" id="fotoInput" name="fileFoto" accept="image/*" style="display:none" />
+
+            <div class="form-field">
+                <label for="descripcio">Descripció</label>
+                <input type="text" id="descripcio" th:field="*{descripcio}" required minlength="1" maxlength="255"
+                       title="La descripció ha de tenir entre 1 i 255 caràcters.">
+            </div>
+
+            <div class="form-field">
+                <label for="observacions">Observacions</label>
+                <textarea id="observacions" th:field="*{observacions}" required minlength="1" maxlength="255"
+                          title="Les observacions han de tenir entre 1 i 255 caràcters."></textarea>
+            </div>
+
+            <div class="form-field">
+                <label for="cost">Cost</label>
+                <input type="number" id="cost" th:field="*{cost}" min="1" max="1000000" required
+                       title="El cost ha de ser un número positiu més gran que 0.">
+            </div>
+
+            <div class="form-field">
+                <label for="bescanvi-select">Punt de Bescanvi:</label>
+                <select id="bescanvi-select" name="bescanvi" required>
+                    <option value="" disabled selected hidden>-- Selecciona un punt --</option>
+                    <option th:each="pt : ${bescanvi}" th:value="${pt.id}" th:text="${pt.nom}"></option>
+                </select>
+            </div>
+
+            <div class="form-field full-width">
+                <label for="pais">Estat:</label>
+                <select class="input" th:field="*{estat}" id="pais" required>
+                    <option value="" disabled selected hidden>-- Selecciona un estat --</option>
+                    <option class="inp_pais" th:each="estat : ${estat}" th:value="${estat}" th:text="${estat}"></option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-crear">Guardar Recompensa</button>
+        </form>
+
+    </div>
+</div>
+<script>
+    // Al hacer clic en el contenedor de foto se abre el selector de archivos
+    document.getElementById('profilePicture').addEventListener('click', function() {
+        document.getElementById('fotoInput').click();
+    });
+    // Previsualización de la foto seleccionada
+
+    document.getElementById('fotoInput').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('fotoPreview').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+</body>
+</html>

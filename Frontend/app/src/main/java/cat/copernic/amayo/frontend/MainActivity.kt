@@ -1,47 +1,52 @@
 package cat.copernic.amayo.frontend
 
+import android.content.Context
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import cat.copernic.amayo.frontend.ui.theme.FrontendTheme
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.ViewModelProvider
+import cat.copernic.amayo.frontend.Session.SessionRepository
+import cat.copernic.amayo.frontend.Session.SessionViewModel
+import cat.copernic.amayo.frontend.Session.ViewModelFactory
+import cat.copernic.amayo.frontend.navigation.AppNavigation
+import org.osmdroid.config.Configuration
+import org.osmdroid.library.BuildConfig
 
+/**
+ * Extensió de la classe Context per proporcionar un DataStore de preferències amb el nom "session".
+ */
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "session")
+/**
+ * Activitat principal de l'aplicació.
+ * S'encarrega d'inicialitzar el SessionRepository i el SessionViewModel per gestionar la sessió de l'usuari.
+ * També configura la navegació principal i la configuració d'orientació de la pantalla.
+ */
 class MainActivity : ComponentActivity() {
+    private lateinit var sessionRepository: SessionRepository
+    private lateinit var sessionViewModel: SessionViewModel
+
+    /**
+     * S'executa en crear l'activitat.
+     * - Bloqueja la rotació a vertical.
+     * - Inicialitza el SessionRepository i SessionViewModel.
+     * - Llama a la navegació principal de l'aplicació.
+     * - Configura el UserAgent per la llibreria de mapes (OpenStreetMap).
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContent {
-            FrontendTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+            sessionRepository =
+                SessionRepository(dataStore = applicationContext.dataStore)
+            sessionViewModel = ViewModelProvider(this, ViewModelFactory(sessionRepository))
+                .get(SessionViewModel::class.java)
+            AppNavigation(sessionViewModel)
         }
-    }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FrontendTheme {
-        Greeting("Android")
+        Configuration.getInstance().userAgentValue = BuildConfig.APPLICATION_ID
     }
 }
