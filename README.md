@@ -77,4 +77,4 @@ El desenvolupament del projecte s'ha realitzat utilitzant un conjunt de tecnolog
     Docker: Utilitzat per contenitzar i desplegar tant el backend com la base de dades, garantint portabilitat i consistència en diferents entorns.
 
 
-    [Enllaç video](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/index.adoc)
+[Enllaç video](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/index.adoc)
