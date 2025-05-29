@@ -109,6 +109,7 @@ Pantalla d’administració on es configuren els paràmetres generals del sistem
 ![Parametros del sistema](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/FotosGithub/ParametrosSistema.png)
 
 🧭 Llista de rutes (Android)
+
 Mostra totes les rutes disponibles dins l'aplicació Android, amb informació bàsica com la distància i el nivell de dificultat.
 
 ![Pantalla lista Ruta Android](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/FotosGithub/PantallaRutaAndr.png)
