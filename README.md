@@ -83,28 +83,37 @@ El desenvolupament del projecte s'ha realitzat utilitzant un conjunt de tecnolog
 
 Pantalles d'exemple:
 
+🟦 Login Web
+Pantalla d'inici de sessió de l'aplicació web, on els usuaris poden autenticar-se amb les seves credencials per accedir al sistema.
 ![Login Web](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/FotosGithub/LoginWeb.png)
 
-
+📱 Login Android
+Versió per a mòbil Android de la pantalla de login, adaptada per a dispositius amb pantalla tàctil.
 ![Login Android](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/FotosGithub/Login.png)
 
-
+🎁 Llista d’exemple de recompenses
+Visualització de les recompenses disponibles per als usuaris, amb opcions per reclamar o reservar.
 ![Lista Ejemplo Recompensas](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/FotosGithub/PantallaRecompensa.png)
 
-
+⚙️ Paràmetres del sistema
+Pantalla d’administració on es configuren els paràmetres generals del sistema com puntuacions, nivells i valors de recompensa.
 ![Parametros del sistema](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/FotosGithub/ParametrosSistema.png)
 
-
+🧭 Llista de rutes (Android)
 ![Pantalla lista Ruta Android](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/FotosGithub/PantallaRutaAndr.png)
 
-
+🌍 Detalls ruta (Web)
+Visualització detallada d’una ruta específica en la versió web, amb informació estesa i mapa.
 ![Pantalla Detalls Ruta Web](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/FotosGithub/PantallaRutaWeb.png)
 
-
+🎫 Reclamar recompensa (Android)
+Interfície d’usuari per a reclamar una recompensa després d’haver completat una ruta.
 ![Pantalla Reclamar Recompensa Android](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/FotosGithub/ReclamarRecompensas.png)
 
-
+🚲 Visualització de ruta (Android)
+Mostra el traçat d’una ruta concreta, permetent a l’usuari seguir el recorregut amb el GPS.
 ![Pantalla Ruta Android](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/FotosGithub/RutaAndroid.png)
 
-
+📌 Reservar recompensa
+Opció per reservar una recompensa concreta abans de completar els requisits, per assegurar-ne la disponibilitat.
 ![Pantalla Reservar Recompensa](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/FotosGithub/ReservarRecompensa.png)
