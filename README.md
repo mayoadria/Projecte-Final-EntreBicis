@@ -80,3 +80,31 @@ El desenvolupament del projecte s'ha realitzat utilitzant un conjunt de tecnolog
 
 [Enllaç video](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/VideoP4Entrbicis.mov)
 [Enllaç Documentació](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/index.adoc)
+
+Pantalles d'exemple:
+
+![Login Web](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/FotosGithub/LoginWeb.png)
+
+
+![Login Android](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/FotosGithub/Login.png)
+
+
+![Lista Ejemplo Recompensas](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/FotosGithub/PantallaRecompensa.png)
+
+
+![Parametros del sistema](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/FotosGithub/ParametrosSistema.png)
+
+
+![Pantalla lista Ruta Android](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/FotosGithub/PantallaRutaAndr.png)
+
+
+![Pantalla Detalls Ruta Web](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/FotosGithub/PantallaRutaWeb.png)
+
+
+![Pantalla Reclamar Recompensa Android](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/FotosGithub/ReclamarRecompensas.png)
+
+
+![Pantalla Ruta Android](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/FotosGithub/RutaAndroid.png)
+
+
+![Pantalla Reservar Recompensa](https://github.com/mayoadria/Projecte-Final-EntreBicis/blob/main/FotosGithub/ReservarRecompensa.png)
